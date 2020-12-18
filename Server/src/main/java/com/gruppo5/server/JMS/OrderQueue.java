@@ -23,10 +23,10 @@ public class OrderQueue{
         
     }
     
-    public void pushOrder(Ordine ordine, int priority){ //gestire exception
+    public void pushOrder(Ordine ordine, int tipo){ //gestire exception
         try {
             this.message.setObject(ordine);
-            this.message.setIntProperty("tipo", priority);
+            this.message.setIntProperty("tipo", tipo);
         } catch (JMSException ex) {
             ex.printStackTrace();
         }
