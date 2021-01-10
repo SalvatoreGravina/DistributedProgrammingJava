@@ -10,8 +10,6 @@ package Backend;
  * @author gruppo 5
  *
  */
-import com.gruppo5.server.Ordini.ComandaForno;
-import com.gruppo5.server.Ordini.ComandaFritto;
 import java.sql.*;
 
 public class Database {
@@ -34,22 +32,22 @@ public class Database {
     }
 
     public void getNewOrdersQueue() throws SQLException {
-        String query = "SELECT ID_OrdineEsterno FROM OrdineEsterno WHERE statoOrdine='attesa'";
-        ResultSet rst = sendQuery(query);
-
-        while (rst.next()) {
-            ComandaFritto fritto = new ComandaFritto();
-            ComandaForno forno = new ComandaForno();
-
-            query = "SELECT id_prodotto,nome,tipo,quantita FROM prova WHERE id_ordineesterno=" + rst.getInt("id_ordineesterno");
-            ResultSet rst1 = sendQuery(query);
-
-            while (rst1.next()) {
-                //ciclo sui prodotti del singolo ordine
-                
-            }
-
-        }
+//        String query = "SELECT ID_OrdineEsterno FROM OrdineEsterno WHERE statoOrdine='attesa'";
+//        ResultSet rst = sendQuery(query);
+//
+//        while (rst.next()) {
+//            //ComandaFritto fritto = new ComandaFritto();
+//            //ComandaForno forno = new ComandaForno();
+//
+//            query = "SELECT id_prodotto,nome,tipo,quantita FROM prova WHERE id_ordineesterno=" + rst.getInt("id_ordineesterno");
+//            ResultSet rst1 = sendQuery(query);
+//
+//            while (rst1.next()) {
+//                //ciclo sui prodotti del singolo ordine
+//                
+//            }
+//
+//        }
 
     }
     

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gruppo5.server.JMS;
+package JMS;
 
 /**
  *
@@ -14,14 +14,19 @@ import org.apache.activemq.*;
 
 public class ConsumerConfiguration {
 
-    private static final String URL = ActiveMQConnection.DEFAULT_BROKER_URL;
-    private static final String QUEUE_NAME = "QUEUE_ORDINI_COMPLETATI";
-    private static ConnectionFactory connectionFactory;
-    private static Connection connection;
-    private static Session session;
-    private static Destination destination;
+    private final String URL = ActiveMQConnection.DEFAULT_BROKER_URL;
+    private final String QUEUE_NAME;
+    private ConnectionFactory connectionFactory;
+    private Connection connection;
+    private Session session;
+    private Destination destination;
 
-    public static MessageConsumer ConsumerConfiguration() throws JMSException {
+    
+    public ConsumerConfiguration(String coda){
+        this.QUEUE_NAME = coda;
+    }
+    
+    public MessageConsumer getConsumer() throws JMSException {
 
         connectionFactory = new ActiveMQConnectionFactory(URL);
         connection = connectionFactory.createConnection();
@@ -32,11 +37,11 @@ public class ConsumerConfiguration {
         return consumer;
     }
     
-    public static void startConnection() throws JMSException{ //eccezione da gestire
+    public void startConnection() throws JMSException{ //eccezione da gestire
         connection.start();      
     }
     
-    public static void stopConnection() throws JMSException{ //eccezione da gestire
+    public void stopConnection() throws JMSException{ //eccezione da gestire
         connection.close();
     }
 

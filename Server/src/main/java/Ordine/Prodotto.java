@@ -1,18 +1,25 @@
-
 package Ordine;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Prodotto {
-    
+
     int ID;
+    private String nome;
     private String tipo;
-    private Map<Integer,String> ingredienti = new HashMap<>();
+    private Map<Integer, String> ingredienti = new HashMap<>();
 
     public Prodotto(int ID) {
         this.ID = ID;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public void setTipo(String tipo) {
@@ -37,7 +44,11 @@ public class Prodotto {
 
     @Override
     public String toString() {
-        return "Prodotto{" + "ID=" + ID + ", tipo=" + tipo + ", ingredienti=" + ingredienti + '}';
-    }   
-    
+        String stringa = getNome().toUpperCase() + ": ";     
+        for(String entry : ingredienti.values()){
+            stringa += entry + ", ";
+        }
+        return stringa;
+    }
+
 }
