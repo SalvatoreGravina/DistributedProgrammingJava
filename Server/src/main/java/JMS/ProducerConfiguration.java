@@ -17,6 +17,7 @@ public class ProducerConfiguration {
 
     private final String URL = ActiveMQConnection.DEFAULT_BROKER_URL;
     private final String QUEUE_NAME;
+    public static final String ORDER_QUEUE="ORDER_QUEUE";
     private ConnectionFactory connectionFactory;
     private Connection connection;
     private Session session;
@@ -44,7 +45,7 @@ public class ProducerConfiguration {
         connection.close();
     }
     
-    public ObjectMessage createMessage() throws JMSException{
-        return session.createObjectMessage();
+    public TextMessage createMessage() throws JMSException{
+        return session.createTextMessage();
     }
 }

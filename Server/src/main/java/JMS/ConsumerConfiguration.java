@@ -9,39 +9,43 @@ package JMS;
  *
  * @author gruppo 5
  */
+import java.util.List;
 import javax.jms.*;
-import org.apache.activemq.*;
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 public class ConsumerConfiguration {
 
     private final String URL = ActiveMQConnection.DEFAULT_BROKER_URL;
-    private final String QUEUE_NAME;
+    public static final String ORDER_QUEUE="ORDER_QUEUE";
+    private String selectedQueue;
+    private String selectedSelector;
     private ConnectionFactory connectionFactory;
     private Connection connection;
     private Session session;
     private Destination destination;
 
-    
-    public ConsumerConfiguration(String coda){
-        this.QUEUE_NAME = coda;
+    public ConsumerConfiguration(String coda, String selector) {
+        this.selectedQueue=coda;
+        this.selectedSelector=selector;
     }
-    
+
     public MessageConsumer getConsumer() throws JMSException {
 
         connectionFactory = new ActiveMQConnectionFactory(URL);
         connection = connectionFactory.createConnection();
-        session = connection.createSession(Session.AUTO_ACKNOWLEDGE);
-        destination = session.createQueue(QUEUE_NAME);
-        MessageConsumer consumer = session.createConsumer(destination);
+        session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        destination = session.createQueue(selectedQueue);
+        MessageConsumer consumer = session.createConsumer(destination,selectedSelector);
         connection.start();
         return consumer;
     }
-    
-    public void startConnection() throws JMSException{ //eccezione da gestire
-        connection.start();      
+
+    public void startConnection() throws JMSException { //eccezione da gestire
+        connection.start();
     }
-    
-    public void stopConnection() throws JMSException{ //eccezione da gestire
+
+    public void stopConnection() throws JMSException { //eccezione da gestire
         connection.close();
     }
 

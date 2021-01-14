@@ -8,6 +8,7 @@ package JMS;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
+import javax.jms.TextMessage;
 
 /**
  *
@@ -17,7 +18,7 @@ public class CompletedOrderQueueProducer {
 
     private MessageProducer producer;
     private ProducerConfiguration configuration;
-    private ObjectMessage message;
+    private TextMessage message;
 
     public CompletedOrderQueueProducer() throws JMSException {
         this.configuration = new ProducerConfiguration("CODA_ORDINI_COMPLETATI");
@@ -29,13 +30,13 @@ public class CompletedOrderQueueProducer {
 
     public void pushOrder(String ordine) { //gestire exception
         //creo un oggetto di tipo comanda da serializzare e mandare
-        try {
-            this.message.setObject("qualcosa");
-            //this.message.setIntProperty("tipo", tipo);
-            producer.send(message);
-        } catch (JMSException ex) {
-            ex.printStackTrace();
-        }
+//        try {
+//            this.message.setObject("qualcosa");
+//            //this.message.setIntProperty("tipo", tipo);
+//            producer.send(message);
+//        } catch (JMSException ex) {
+//            ex.printStackTrace();
+//        }
 
     }
 }

@@ -18,7 +18,7 @@ public class CompletedOrderQueueConsumer {
     
 
     public CompletedOrderQueueConsumer() throws JMSException {
-        this.configuration = new ConsumerConfiguration("CODA_ORDINI_COMPLETATI");
+        //this.configuration = new ConsumerConfiguration("CODA_ORDINI_COMPLETATI");
         this.consumer = configuration.getConsumer();
         configuration.startConnection();
     }
