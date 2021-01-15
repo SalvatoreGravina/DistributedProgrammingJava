@@ -27,3 +27,13 @@ hs_err_pid*
 /.metadata/
 /rest/target/
 /restful/target/
+/Cameriere/target/
+/JavaMail/nbproject/private/
+/JavaMail/dist/
+/JavaMail/build/
+/JavaMailProva/nbproject/private/
+/JavaMailProva/build/
+/JavaMailProva/dist/
+/ProvaMail/nbproject/private/
+/ProvaMail/build/
+/ProvaMail/dist/
