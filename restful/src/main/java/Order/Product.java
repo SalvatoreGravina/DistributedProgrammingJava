@@ -22,6 +22,10 @@ public class Product {
     public void setIngredienti(Map<Integer, String> ingredienti) {
         this.ingredienti = ingredienti;
     }
+    
+    public void addIngrediente(int ID, String name) {
+        ingredienti.put(ID, name);
+    }
 
     public int getID() {
         return ID;

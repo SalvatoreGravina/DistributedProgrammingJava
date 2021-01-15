@@ -1,17 +1,15 @@
-
-package package1;
+ 
+package orderService;
 
 import Order.Order;
 import Order.ExternalOrder;
 import Order.InternalOrder;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class OrderDAO {
     
-    private ArrayList<Order> orderList = new ArrayList<>();
     
     public List<Order> getAllOrders() {
         
