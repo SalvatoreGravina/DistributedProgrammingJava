@@ -5,7 +5,11 @@
  */
 package JMS;
 
+import Order.Comanda;
 import javax.jms.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  *
@@ -19,33 +23,31 @@ public class OrderQueueConsumer {
     public static final String SELECTOR_CUCINA = "destination='CUCINA'";
 
     public OrderQueueConsumer(String selector) throws JMSException {
-        this.configuration = new ConsumerConfiguration(ConsumerConfiguration.ORDER_QUEUE,selector);
+        this.configuration = new ConsumerConfiguration(ConsumerConfiguration.ORDER_QUEUE, selector);
         this.consumer = configuration.getConsumer();
         configuration.startConnection();
     }
 
-    public void popOrder() {
-
+    public Comanda popOrder() {
+        ObjectMapper mapper = new ObjectMapper();
         try {
             TextMessage message = (TextMessage) consumer.receive();
             String json = message.getText();
-            System.out.println(json);
-        } catch (JMSException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public String popOrderString() {
-        String stringa = null;
-        try {
-            TextMessage message = (TextMessage) consumer.receive();
-            stringa = message.getText();
-            //salvare le property
+            Map<String, Integer> map = mapper.readValue(json, Map.class);
             
-        } catch (JMSException ex) {
+            String orderType = message.getStringProperty("type");
+            Integer ID = message.getIntProperty("OrderID");
+            String destination = message.getStringProperty("destination");
+
+            Comanda comanda = new Comanda(map,orderType,ID, destination);
+            
+            return comanda;
+        } catch (JMSException | IOException ex) {
             ex.printStackTrace();
+            return null;
+
         }
-        return stringa;
+
     }
 
 }

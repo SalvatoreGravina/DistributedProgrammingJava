@@ -3,19 +3,12 @@ package JMS;
 
 import Order.DeliveryOrder;
 import Order.FriedProduct;
-import Order.InternalOrder;
 import Order.PizzaProduct;
-import Order.Product;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jms.JMSException;
 
 /**
@@ -59,13 +52,6 @@ public class Sender {
         frittatina.setIngredients(elements);
         ordine.addProduct(frittatina, 100);
 
-        try {
-            OrderQueueProducer producer = new OrderQueueProducer();
-            //json = producer.convertMapToJson(ordine.getPizzaMap());
-            producer.pushOrder(ordine);
-        } catch (JMSException ex) {
-            ex.printStackTrace();
-        }
     }
 
 }

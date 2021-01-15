@@ -1,5 +1,6 @@
 package JMS;
 
+import Order.Comanda;
 import javax.jms.JMSException;
 
 /**
@@ -15,8 +16,9 @@ public class Receiver {
         //Comanda comanda = null;
         String stringa = null;
         try {
-            OrderQueueConsumer consumer = new OrderQueueConsumer(OrderQueueConsumer.SELECTOR_CUCINA);
-            consumer.popOrder();
+            OrderQueueConsumer consumer = new OrderQueueConsumer(OrderQueueConsumer.SELECTOR_FORNO);
+            Comanda comanda = consumer.popOrder();
+            System.out.println(comanda);
         } catch (JMSException ex) {
             ex.printStackTrace();
         }

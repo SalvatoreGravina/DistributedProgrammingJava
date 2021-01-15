@@ -5,9 +5,9 @@
  */
 package JMS;
 
+import Order.Comanda;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 
 /**
@@ -16,27 +16,32 @@ import javax.jms.TextMessage;
  */
 public class CompletedOrderQueueProducer {
 
+    private static final String INTERNAL = "SALA";
+    private static final String TAKE_AWAY = "TAKE AWAY";
+    private static final String DELIVERY = "DELIVERY";
+    private static final String FORNO = "FORNO";
+    private static final String CUCINA = "CUCINA";
+
     private MessageProducer producer;
     private ProducerConfiguration configuration;
     private TextMessage message;
 
     public CompletedOrderQueueProducer() throws JMSException {
-        this.configuration = new ProducerConfiguration("CODA_ORDINI_COMPLETATI");
+        this.configuration = new ProducerConfiguration("ORDER_QUEUE_COMPLETED");
         this.producer = configuration.getProducer();
         configuration.startConnection();
         this.message = configuration.createMessage();
 
     }
 
-    public void pushOrder(String ordine) { //gestire exception
-        //creo un oggetto di tipo comanda da serializzare e mandare
-//        try {
-//            this.message.setObject("qualcosa");
-//            //this.message.setIntProperty("tipo", tipo);
-//            producer.send(message);
-//        } catch (JMSException ex) {
-//            ex.printStackTrace();
-//        }
+    public void pushOrder(Comanda comanda) throws JMSException { //gestire exception
 
+        message.clearProperties();
+        message.clearBody();
+        
+        message.setStringProperty("type", comanda.getOrderType());
+        message.setStringProperty("destination", comanda.getDestination());
+        message.setText(comanda.getID().toString());
+        producer.send(message);
     }
 }
