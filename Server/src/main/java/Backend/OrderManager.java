@@ -6,7 +6,9 @@
 package Backend;
 
 import JMS.CompletedOrderQueueConsumer;
+import JMS.DeliveryMessageListener;
 import JMS.OrderQueueProducer;
+import JMS.TakeAwayMessageListener;
 import Order.DeliveryOrder;
 import Order.InternalOrder;
 import Order.TakeAwayOrder;
@@ -14,9 +16,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
 
 /**
  *
@@ -27,31 +26,42 @@ public class OrderManager {
     private static final String INTERNAL = "SALA";
     private static final String TAKE_AWAY = "TAKE AWAY";
     private static final String DELIVERY = "DELIVERY";
-    private Map<Integer, Integer> orders;
-    private CompletedOrderQueueConsumer salaConsumer;
-    private CompletedOrderQueueConsumer takeawayConsumer;
-    private CompletedOrderQueueConsumer deliveryConsumer;
-    private OrderQueueProducer serverProducer;
+    private final Map<Integer, Integer> orders;
+    private final CompletedOrderQueueConsumer salaConsumer;
+    private final CompletedOrderQueueConsumer takeawayConsumer;
+    private final CompletedOrderQueueConsumer deliveryConsumer;
+    private final OrderQueueProducer serverProducer;
+    private static OrderManager instance;
 
-    public OrderManager() throws JMSException {
+    private OrderManager() throws JMSException {
 
         this.orders = new HashMap<>();
 
         this.salaConsumer = new CompletedOrderQueueConsumer(CompletedOrderQueueConsumer.SELECTOR_SALA);
 
         this.takeawayConsumer = new CompletedOrderQueueConsumer(CompletedOrderQueueConsumer.SELECTOR_TAKE_AWAY);
-        this.takeawayConsumer.setMessageListener(new TakeAwayOrderListener());
+        this.takeawayConsumer.setMessageListener(new TakeAwayMessageListener(this));
 
         this.deliveryConsumer = new CompletedOrderQueueConsumer(CompletedOrderQueueConsumer.SELECTOR_DELIVERY);
-        this.deliveryConsumer.setMessageListener(new DeliveryOrderListener());
+        this.deliveryConsumer.setMessageListener(new DeliveryMessageListener(this));
 
         this.serverProducer = new OrderQueueProducer();
 
     }
 
+    public static synchronized OrderManager getInstance() throws JMSException {
+        if (instance == null) {
+            instance = new OrderManager();
+        }
+        return instance;
+    }
+
     public void pushOrder(InternalOrder order) throws JMSException {
         int i = serverProducer.pushOrder(order, INTERNAL, 0);
-        orders.put(order.getID(), i);
+        //System.out.println("Ordine registrato: " + order.getID());
+        synchronized (orders) {
+            orders.put(order.getID(), i);
+        }
     }
 
     public void pushOrder(TakeAwayOrder order) throws JMSException {
@@ -63,16 +73,21 @@ public class OrderManager {
         } catch (NullPointerException ex) {
             i = serverProducer.pushOrder(order, TAKE_AWAY, 0);
         }
-        orders.put(order.getID(), i);
+        //System.out.println("Ordine registrato: " + order.getID());
+        synchronized (orders) {
+            orders.put(order.getID(), i);
+        }
 
     }
 
     public void pushOrder(DeliveryOrder order) throws JMSException {
         long delay = order.getDeliveryTime().getTimeInMillis() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
         long deliveryDelay = delay <= 0 ? 0 : delay;
-        System.out.println(deliveryDelay);
         int i = serverProducer.pushOrder(order, DELIVERY, deliveryDelay);
-        orders.put(order.getID(), i);
+        //System.out.println("Ordine registrato: " + order.getID());
+        synchronized (orders) {
+            orders.put(order.getID(), i);
+        }
 
     }
 
@@ -80,43 +95,33 @@ public class OrderManager {
 
         String[] result = salaConsumer.popOrder();
         int ID = Integer.parseInt(result[0]);
-        if (orders.put(ID, orders.get(ID) - 1) == 1) {
-            orders.remove(ID);
+        //System.out.println("Ordine ricevuto per sala: " + ID);
+        synchronized (orders) {
+            if (orders.put(ID, orders.get(ID) - 1) == 1) {
+                orders.remove(ID);
+            }
         }
         return result;
     }
 
-    private class TakeAwayOrderListener implements MessageListener {
-
-        @Override
-        public void onMessage(Message msg) {
-            try {
-                TextMessage message = (TextMessage) msg;
-                int ID = Integer.parseInt(message.getText());
-                if (orders.put(ID, orders.get(ID) - 1) == 1) {
-                    System.err.println("Consegnato ordine asporto N° " + ID);
-                    orders.remove(ID);
-                }
-            } catch (JMSException ex) {
-                ex.printStackTrace();
+    public void takeAwayHandler(String message) {
+        int ID = Integer.parseInt(message);
+        synchronized (orders) {
+            if (orders.put(ID, orders.get(ID) - 1) == 1) {
+                System.out.println("Consegnato ordine asporto N° " + ID);
+                orders.remove(ID);
             }
         }
 
     }
 
-    private class DeliveryOrderListener implements MessageListener {
+    public void deliveryHandler(String message) {
 
-        @Override
-        public void onMessage(Message msg) {
-            try {
-                TextMessage message = (TextMessage) msg;
-                int ID = Integer.parseInt(message.getText());
-                if (orders.put(ID, orders.get(ID) - 1) == 1) {
-                    System.err.println("Inviato ordine per consegna N° " + ID);
-                    orders.remove(ID);
-                }
-            } catch (JMSException ex) {
-                ex.printStackTrace();
+        int ID = Integer.parseInt(message);
+        synchronized (orders) {
+            if (orders.put(ID, orders.get(ID) - 1) == 1) {
+                System.out.println("Inviato ordine per consegna N° " + ID);
+                orders.remove(ID);
             }
         }
 
