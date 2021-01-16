@@ -48,12 +48,13 @@ public class OrderService {
         switch(type){
             case 1:
                 isAdded = orderDao.addOrder(name);
+                break;
             case 2:
                 isAdded = orderDao.addOrder(table, sitting);
+                break;
             case 3:
                 isAdded = orderDao.addOrder(email, name, deliveryAddress, phone);
-            default:
-                isAdded = false;
+                break;
         }
         if (isAdded) {
             return SUCCESS_RESULT;
@@ -79,12 +80,13 @@ public class OrderService {
         switch(type){
             case 1:
                 isModified = orderDao.modifyOrder(name, ID);
+                break;
             case 2:
                 isModified = orderDao.modifyOrder(table, sitting, ID);
+                break;
             case 3:
                 isModified = orderDao.modifyOrder(email, isModified, name, deliveryAddress, phone, ID);
-            default:
-                isModified = false;
+                break;
         }
         if (isModified) {
             return SUCCESS_RESULT;
