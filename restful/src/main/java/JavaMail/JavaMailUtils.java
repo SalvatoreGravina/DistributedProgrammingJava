@@ -1,3 +1,5 @@
+package JavaMail;
+
 
 
 import java.util.Properties;

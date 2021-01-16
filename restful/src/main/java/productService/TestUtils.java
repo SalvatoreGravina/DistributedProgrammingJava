@@ -2,7 +2,7 @@
 package productService;
 
 
-import OrderOld.Product;
+import Order.Product;
 import java.util.ArrayList;
 
 public class TestUtils {
@@ -11,7 +11,7 @@ public class TestUtils {
 
         public static ArrayList<Product> prendi() {
         Product p = new Product(10); 
-        p.addIngrediente(14, "cipolla");
+        //p.addIngrediente(14, "cipolla");
         productList.add(p);
         productList.add(new Product(233));
         return productList;

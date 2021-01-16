@@ -1,9 +1,10 @@
  
 package orderService;
 
-import OrderOld.Order;
-import OrderOld.ExternalOrder;
-import OrderOld.InternalOrder;
+import Order.Order;
+import Order.DeliveryOrder;
+import Order.TakeAwayOrder;
+import Order.InternalOrder;
 import java.time.LocalDateTime;
 import java.util.List;
 
