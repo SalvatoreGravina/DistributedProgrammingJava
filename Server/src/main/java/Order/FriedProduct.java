@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gruppo5.server.Ordini;
+package Order;
 
 /**
  *
- * @author dp
+ * @author gruppo 5
  */
-public class ComandaFritto extends Comanda{
-    
-    
+public class FriedProduct extends Product {
+
+    public FriedProduct(int ID) {
+        super(ID);
+    }
+
 }
