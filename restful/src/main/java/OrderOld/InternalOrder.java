@@ -1,5 +1,5 @@
 
-package Order;
+package OrderOld;
 
 import java.time.LocalDateTime;
 
@@ -9,8 +9,8 @@ public class InternalOrder extends Order{
     private int table;
     private int sitting;
 
-    public InternalOrder(int table, int sitting, LocalDateTime date, float cost) {
-        super(date, cost);
+    public InternalOrder(int table, int sitting, int ID, LocalDateTime date, float cost) {
+        super(ID, date, cost);
         this.table = table;
         this.sitting = sitting;
     }

@@ -2,7 +2,7 @@
 package productService;
 
 
-import Order.Product;
+import OrderOld.Product;
 import java.util.ArrayList;
 
 public class TestUtils {

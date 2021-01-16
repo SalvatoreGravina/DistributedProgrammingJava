@@ -1,7 +1,7 @@
 
 package productService;
 
-import Order.Product;
+import OrderOld.Product;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

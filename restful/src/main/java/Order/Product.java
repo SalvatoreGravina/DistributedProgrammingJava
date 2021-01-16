@@ -1,47 +1,42 @@
-
 package Order;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class Product {
-    
-    int ID;
-    private String tipo;
-    private Map<Integer,String> ingredienti = new HashMap<>();
+
+    private int ID;
+    private String nome;
+    private Map<Integer, String> ingredientsMap = new HashMap<>();
 
     public Product(int ID) {
         this.ID = ID;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public String getNome() {
+        return nome;
     }
 
-    public void setIngredienti(Map<Integer, String> ingredienti) {
-        this.ingredienti = ingredienti;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
-    
-    public void addIngrediente(int ID, String name) {
-        ingredienti.put(ID, name);
+
+    public void setIngredients(Map<Integer, String> ingredientsMap) {
+        this.ingredientsMap = ingredientsMap;
     }
 
     public int getID() {
         return ID;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public Map<Integer, String> getIngredienti() {
-        return ingredienti;
+    public Map<Integer, String> getIngredients() {
+        return ingredientsMap;
     }
 
     @Override
     public String toString() {
-        return "Prodotto{" + "ID=" + ID + ", tipo=" + tipo + ", ingredienti=" + ingredienti + '}';
-    }   
-    
+        String stringa = getNome().toUpperCase() + ": ";
+        stringa += ingredientsMap.values().toString();
+        return stringa;
+    }
 }
