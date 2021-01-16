@@ -53,7 +53,7 @@ public class Ordinator {
         ordineSala.addProduct(pizza1, 2);
         ordineSala.addProduct(frittatina, 100);
 
-        TakeAwayOrder ordineAsporto = new TakeAwayOrder("ciccio@gmail.com", "ciccio", LocalDateTime.now(), 100);
+        TakeAwayOrder ordineAsporto = new TakeAwayOrder("ciccio", LocalDateTime.now(), 100);
         ordineAsporto.addProduct(pizza, 5);
         ordineAsporto.addProduct(pizza1, 2);
         ordineAsporto.addProduct(frittatina, 100);

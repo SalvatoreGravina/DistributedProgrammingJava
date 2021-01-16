@@ -4,9 +4,11 @@ package orderService;
 import Order.Order;
 import Order.DeliveryOrder;
 import Order.TakeAwayOrder;
+import java.util.GregorianCalendar;
 import Order.InternalOrder;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 
 public class OrderDAO {
@@ -17,23 +19,40 @@ public class OrderDAO {
         return TestUtils.prendi();
     }
     
+    public boolean addOrder(String name) {
+        TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, LocalDateTime.now(), (float) 19.99);
+        return TestUtils.aggiungi(takeAwayOrder);
+    }
+    
     public boolean addOrder(String email, boolean type, String name, String deliveryAddress, String phone) {
-        ExternalOrder externalOrder = new ExternalOrder(email, type, name, LocalDateTime.now(), deliveryAddress, phone, 100, LocalDateTime.now(), (float) 29.99);
-        return TestUtils.aggiungi(externalOrder);
+        GregorianCalendar deliveryTime = new GregorianCalendar(Locale.ITALY);
+        deliveryTime.set(2021, 0, 14, 19, 30);
+        DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, deliveryTime, deliveryAddress, phone, LocalDateTime.now(), (float) 29.99);
+        return TestUtils.aggiungi(deliveryOrder);
     }
     
     public boolean addOrder(int table, int sitting) {
-        InternalOrder internalOrder = new InternalOrder(table, sitting, LocalDateTime.now().getMinute(), LocalDateTime.now(), (float) 49.99);
+        InternalOrder internalOrder = new InternalOrder(table, sitting, LocalDateTime.now(), (float) 49.99);
         return TestUtils.aggiungi(internalOrder);
     }
     
+    public boolean modifyOrder(String name, int ID) {
+        TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, LocalDateTime.now(), (float) 19.99);
+        takeAwayOrder.setID(ID);
+        return TestUtils.cambia(ID, takeAwayOrder);
+    }
+    
     public boolean modifyOrder(String email, boolean type, String name, String deliveryAddress, String phone, int ID) {
-        ExternalOrder externalOrder = new ExternalOrder(email, type, name, LocalDateTime.now(), deliveryAddress, phone, ID, LocalDateTime.now(), (float) 29.99);
-        return TestUtils.cambia(ID, externalOrder);
+        GregorianCalendar deliveryTime = new GregorianCalendar(Locale.ITALY);
+        deliveryTime.set(2021, 0, 14, 19, 30);
+        DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, deliveryTime, deliveryAddress, phone, LocalDateTime.now(), (float) 19.99);
+        deliveryOrder.setID(ID);
+        return TestUtils.cambia(ID, deliveryOrder);
     }
     
     public boolean modifyOrder(int table, int sitting, int ID) {
-        InternalOrder internalOrder = new InternalOrder(table, sitting, ID, LocalDateTime.now(), (float) 49.99);
+        InternalOrder internalOrder = new InternalOrder(table, sitting, LocalDateTime.now(), (float) 49.99);
+        internalOrder.setID(ID);
         return TestUtils.cambia(ID, internalOrder);
     }
     

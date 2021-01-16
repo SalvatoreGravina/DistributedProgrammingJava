@@ -18,9 +18,8 @@ public class TakeAwayOrder extends Order {
     private String name;
     private Calendar DeliveryTime; //facoltativo
 
-    public TakeAwayOrder(String email, String name, LocalDateTime date, float cost) {
+    public TakeAwayOrder(String name, LocalDateTime date, float cost) {
         super(date, cost);
-        this.email = email;
         this.name = name;
     }
 
@@ -39,4 +38,9 @@ public class TakeAwayOrder extends Order {
     public void setDeliveryTime(Calendar DeliveryTime) {
         this.DeliveryTime = DeliveryTime;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
 }
