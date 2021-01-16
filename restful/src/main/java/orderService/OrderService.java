@@ -31,24 +31,29 @@ public class OrderService {
         return orderDao.getAllOrders();
     }
 
-    @POST
+     @POST
     @Path("/orders")
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public String createOrder(
+            @FormParam("type") int type,
             @FormParam("table") int table,
             @FormParam("sitting") int sitting,
             @FormParam("email") String email,
-            @FormParam("type") boolean type,
-            @FormParam("nome") String name,
-            @FormParam("deliveryaddress") String deliveryAddress,
+            @FormParam("name") String name,
+            @FormParam("deliveryAddress") String deliveryAddress,
             @FormParam("phone") String phone,
             @Context HttpServletResponse servletResponse) throws IOException {
         boolean isAdded = false;
-        if (table == 999) {
-            isAdded = orderDao.addOrder(email, type, name, deliveryAddress, phone);
-        } else {
-            isAdded = orderDao.addOrder(table, sitting);
+        switch(type){
+            case 1:
+                isAdded = orderDao.addOrder(name);
+            case 2:
+                isAdded = orderDao.addOrder(table, sitting);
+            case 3:
+                isAdded = orderDao.addOrder(email, name, deliveryAddress, phone);
+            default:
+                isAdded = false;
         }
         if (isAdded) {
             return SUCCESS_RESULT;
@@ -62,20 +67,24 @@ public class OrderService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public String updateOrder(
             @FormParam("ID") int ID,
+            @FormParam("type") int type,
             @FormParam("table") int table,
             @FormParam("sitting") int sitting,
             @FormParam("email") String email,
-            @FormParam("type") boolean type,
-            @FormParam("nome") String name,
-            @FormParam("deliveryaddress") String deliveryAddress,
+            @FormParam("name") String name,
+            @FormParam("deliveryAddress") String deliveryAddress,
             @FormParam("phone") String phone,
             @Context HttpServletResponse servletResponse) throws IOException {
-
         boolean isModified= false;
-        if (table == 999) {
-            isModified = orderDao.modifyOrder(email, type, name, deliveryAddress, phone, ID);
-        } else {
-            isModified = orderDao.modifyOrder(table, sitting, ID);
+        switch(type){
+            case 1:
+                isModified = orderDao.modifyOrder(name, ID);
+            case 2:
+                isModified = orderDao.modifyOrder(table, sitting, ID);
+            case 3:
+                isModified = orderDao.modifyOrder(email, isModified, name, deliveryAddress, phone, ID);
+            default:
+                isModified = false;
         }
         if (isModified) {
             return SUCCESS_RESULT;

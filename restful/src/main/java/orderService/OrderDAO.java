@@ -24,7 +24,7 @@ public class OrderDAO {
         return TestUtils.aggiungi(takeAwayOrder);
     }
     
-    public boolean addOrder(String email, boolean type, String name, String deliveryAddress, String phone) {
+    public boolean addOrder(String email, String name, String deliveryAddress, String phone) {
         GregorianCalendar deliveryTime = new GregorianCalendar(Locale.ITALY);
         deliveryTime.set(2021, 0, 14, 19, 30);
         DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, deliveryTime, deliveryAddress, phone, LocalDateTime.now(), (float) 29.99);
