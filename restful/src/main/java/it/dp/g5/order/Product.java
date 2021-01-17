@@ -6,19 +6,25 @@ import java.util.Map;
 public class Product {
 
     private int ID;
-    private String nome;
+    private String name;
+    private float cost;
     private Map<Integer, String> ingredientsMap = new HashMap<>();
 
     public Product(int ID) {
         this.ID = ID;
     }
 
+    public Product(int ID, String name, float cost) {
+        this.ID = ID;
+        this.cost = cost;
+    }
+    
     public String getNome() {
-        return nome;
+        return name;
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        this.name = nome;
     }
 
     public void setIngredients(Map<Integer, String> ingredientsMap) {
