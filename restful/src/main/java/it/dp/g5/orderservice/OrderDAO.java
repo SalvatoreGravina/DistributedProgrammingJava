@@ -25,40 +25,22 @@ public class OrderDAO {
     public boolean addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
         TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, Timestamp.valueOf(LocalDateTime.now()), (float) 19.99);
         takeAwayOrder.setDeliveryTime(Timestamp.valueOf(deliveryTime));
-        Map<String, String> pm = objectMapper.readValue(pizzaMap, Map.class);
-        pm.entrySet().forEach(entry -> {
-            takeAwayOrder.addProduct(new PizzaProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
-        Map<String, String> fm = objectMapper.readValue(friedMap, Map.class);
-        fm.entrySet().forEach(entry -> {
-            takeAwayOrder.addProduct(new FriedProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
+        addProducts(pizzaMap, friedMap, takeAwayOrder);
+        //chiamata DB
         return TestUtils.aggiungi(takeAwayOrder);
     }
 
     public boolean addOrder(String email, String name, String deliveryAddress, String phone, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
         DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, Timestamp.valueOf(deliveryTime), deliveryAddress, phone, Timestamp.valueOf(LocalDateTime.now()), (float) 29.99);
-        Map<String, String> pm = objectMapper.readValue(pizzaMap, Map.class);
-        pm.entrySet().forEach(entry -> {
-            deliveryOrder.addProduct(new PizzaProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
-        Map<String, String> fm = objectMapper.readValue(friedMap, Map.class);
-        fm.entrySet().forEach(entry -> {
-            deliveryOrder.addProduct(new FriedProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
+        addProducts(pizzaMap, friedMap, deliveryOrder);
+        //chiamata DB
         return TestUtils.aggiungi(deliveryOrder);
     }
 
     public boolean addOrder(int table, int sitting, String pizzaMap, String friedMap) throws IOException {
         InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()), (float) 49.99);
-        Map<String, String> pm = objectMapper.readValue(pizzaMap, Map.class);
-        pm.entrySet().forEach(entry -> {
-            internalOrder.addProduct(new PizzaProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
-        Map<String, String> fm = objectMapper.readValue(friedMap, Map.class);
-        fm.entrySet().forEach(entry -> {
-            internalOrder.addProduct(new FriedProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
+        addProducts(pizzaMap, friedMap, internalOrder);
+        //chiamata DB
         return TestUtils.aggiungi(internalOrder);
     }
 
@@ -66,42 +48,21 @@ public class OrderDAO {
         TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, Timestamp.valueOf(LocalDateTime.now()), (float) 19.99);
         takeAwayOrder.setDeliveryTime(Timestamp.valueOf(deliveryTime));
         takeAwayOrder.setID(ID);
-        Map<String, String> pm = objectMapper.readValue(pizzaMap, Map.class);
-        pm.entrySet().forEach(entry -> {
-            takeAwayOrder.addProduct(new PizzaProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
-        Map<String, String> fm = objectMapper.readValue(friedMap, Map.class);
-        fm.entrySet().forEach(entry -> {
-            takeAwayOrder.addProduct(new FriedProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
+        addProducts(pizzaMap, friedMap, takeAwayOrder);
         return TestUtils.cambia(ID, takeAwayOrder);
     }
 
     public boolean modifyOrder(String email, boolean type, String name, String deliveryAddress, String phone, int ID, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
         DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, Timestamp.valueOf(deliveryTime), deliveryAddress, phone, Timestamp.valueOf(LocalDateTime.now()), (float) 19.99);
         deliveryOrder.setID(ID);
-        Map<String, String> pm = objectMapper.readValue(pizzaMap, Map.class);
-        pm.entrySet().forEach(entry -> {
-            deliveryOrder.addProduct(new PizzaProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
-        Map<String, String> fm = objectMapper.readValue(friedMap, Map.class);
-        fm.entrySet().forEach(entry -> {
-            deliveryOrder.addProduct(new FriedProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
+        addProducts(pizzaMap, friedMap, deliveryOrder);
         return TestUtils.cambia(ID, deliveryOrder);
     }
 
     public boolean modifyOrder(int table, int sitting, int ID, String pizzaMap, String friedMap) throws IOException {
         InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()), (float) 49.99);
         internalOrder.setID(ID);
-        Map<String, String> pm = objectMapper.readValue(pizzaMap, Map.class);
-        pm.entrySet().forEach(entry -> {
-            internalOrder.addProduct(new PizzaProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
-        Map<String, String> fm = objectMapper.readValue(friedMap, Map.class);
-        fm.entrySet().forEach(entry -> {
-            internalOrder.addProduct(new FriedProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
-        });
+        addProducts(pizzaMap, friedMap, internalOrder);
         return TestUtils.cambia(ID, internalOrder);
     }
 
@@ -112,5 +73,17 @@ public class OrderDAO {
             return TestUtils.cancella(o);
         }
         return false;
+    }
+    
+    
+    private void addProducts(String pizzaMap, String friedMap,Order order) throws IOException{
+        Map<String, String> pm = objectMapper.readValue(pizzaMap, Map.class);
+        pm.entrySet().forEach(entry -> {
+            order.addProduct(new PizzaProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
+        });
+        Map<String, String> fm = objectMapper.readValue(friedMap, Map.class);
+        fm.entrySet().forEach(entry -> {
+            order.addProduct(new FriedProduct(Integer.parseInt(entry.getKey())), Integer.parseInt(entry.getValue()));
+        });
     }
 }
