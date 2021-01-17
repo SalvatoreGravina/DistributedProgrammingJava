@@ -31,7 +31,7 @@ public class OrderService {
         return orderDao.getAllOrders();
     }
 
-     @POST
+    @POST
     @Path("/orders")
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -43,17 +43,20 @@ public class OrderService {
             @FormParam("name") String name,
             @FormParam("deliveryAddress") String deliveryAddress,
             @FormParam("phone") String phone,
+            @FormParam("pizzaMap") String pizzaMap,
+            @FormParam("friedMap") String friedMap,
+            @FormParam("deliveryTime") String deliveryTime,
             @Context HttpServletResponse servletResponse) throws IOException {
         boolean isAdded = false;
-        switch(type){
+        switch (type) {
             case 1:
-                isAdded = orderDao.addOrder(name);
+                isAdded = orderDao.addOrder(name, pizzaMap, friedMap, deliveryTime);
                 break;
             case 2:
-                isAdded = orderDao.addOrder(table, sitting);
+                isAdded = orderDao.addOrder(table, sitting, pizzaMap, friedMap);
                 break;
             case 3:
-                isAdded = orderDao.addOrder(email, name, deliveryAddress, phone);
+                isAdded = orderDao.addOrder(email, name, deliveryAddress, phone, pizzaMap, friedMap, deliveryTime);
                 break;
         }
         if (isAdded) {
@@ -75,17 +78,20 @@ public class OrderService {
             @FormParam("name") String name,
             @FormParam("deliveryAddress") String deliveryAddress,
             @FormParam("phone") String phone,
+            @FormParam("pizzaMap") String pizzaMap,
+            @FormParam("friedMap") String friedMap,
+            @FormParam("deliveryTime") String deliveryTime,
             @Context HttpServletResponse servletResponse) throws IOException {
-        boolean isModified= false;
-        switch(type){
+        boolean isModified = false;
+        switch (type) {
             case 1:
-                isModified = orderDao.modifyOrder(name, ID);
+                isModified = orderDao.modifyOrder(name, ID, pizzaMap, friedMap, deliveryTime);
                 break;
             case 2:
-                isModified = orderDao.modifyOrder(table, sitting, ID);
+                isModified = orderDao.modifyOrder(table, sitting, ID, pizzaMap, friedMap);
                 break;
             case 3:
-                isModified = orderDao.modifyOrder(email, isModified, name, deliveryAddress, phone, ID);
+                isModified = orderDao.modifyOrder(email, isModified, name, deliveryAddress, phone, ID, pizzaMap, friedMap, deliveryTime);
                 break;
         }
         if (isModified) {
