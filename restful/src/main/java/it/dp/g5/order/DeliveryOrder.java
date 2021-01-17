@@ -5,6 +5,7 @@
  */
 package it.dp.g5.order;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
@@ -20,7 +21,7 @@ public class DeliveryOrder extends Order{
     private String deliveryAddress;
     private String phone;
 
-    public DeliveryOrder(String email, String name, Calendar deliveryTime, String deliveryAddress, String phone, LocalDateTime date, float cost) {
+    public DeliveryOrder(String email, String name, Calendar deliveryTime, String deliveryAddress, String phone, Timestamp date, float cost) {
         super(date,cost);
         this.email = email;
         this.name = name;

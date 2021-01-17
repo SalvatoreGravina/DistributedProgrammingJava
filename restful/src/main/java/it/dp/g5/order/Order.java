@@ -1,18 +1,18 @@
 package it.dp.g5.order;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Order {
 
     private int ID;
-    private LocalDateTime date;
+    private Timestamp date;
     private float cost;
     private Map<Product, Integer> pizzaMap = new HashMap<>();
     private Map<Product, Integer> friedMap = new HashMap<>();
 
-    public Order(LocalDateTime date, float cost) {
+    public Order(Timestamp date, float cost) {
         this.date = date;
         this.cost = cost;
     }
@@ -25,11 +25,11 @@ public class Order {
         this.ID = ID;
     }
 
-    public LocalDateTime getData() {
+    public Timestamp getData() {
         return date;
     }
 
-    public void setData(LocalDateTime data) {
+    public void setData(Timestamp data) {
         this.date = data;
     }
 

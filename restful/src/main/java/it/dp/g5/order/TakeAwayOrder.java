@@ -5,6 +5,7 @@
  */
 package it.dp.g5.order;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
@@ -18,7 +19,7 @@ public class TakeAwayOrder extends Order {
     private String name;
     private Calendar DeliveryTime; //facoltativo
 
-    public TakeAwayOrder(String name, LocalDateTime date, float cost) {
+    public TakeAwayOrder(String name, Timestamp date, float cost) {
         super(date, cost);
         this.name = name;
     }
