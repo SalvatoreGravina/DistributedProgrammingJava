@@ -67,7 +67,7 @@ public class OrderManager {
     public void pushOrder(TakeAwayOrder order) throws JMSException {
         int i = 0;
         try {
-            long delay = order.getDeliveryTime().getTimeInMillis() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
+            long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
             long deliveryDelay = delay <= 0 ? 0 : delay;
             i = serverProducer.pushOrder(order, TAKE_AWAY, deliveryDelay);
         } catch (NullPointerException ex) {
@@ -81,7 +81,7 @@ public class OrderManager {
     }
 
     public void pushOrder(DeliveryOrder order) throws JMSException {
-        long delay = order.getDeliveryTime().getTimeInMillis() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
+        long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
         long deliveryDelay = delay <= 0 ? 0 : delay;
         int i = serverProducer.pushOrder(order, DELIVERY, deliveryDelay);
         //System.out.println("Ordine registrato: " + order.getID());
