@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import javax.jms.JMSException;
+import org.json.JSONArray;
 
 public class OrderDAO {
 
@@ -17,8 +18,12 @@ public class OrderDAO {
     private ObjectMapper objectMapper = new ObjectMapper();
     private OrderManager manager = OrderManager.getInstance();
 
-    public List<Order> getAllOrders() {
-        return TestUtils.prendi();
+    public String getAllOrders(String email) {
+        return db.getAllOrdersDB(email);
+    }
+    
+    public boolean getOrderProducts(int orderID, String email){
+        return false;
     }
 
     public boolean addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException, JMSException {
@@ -54,29 +59,29 @@ public class OrderDAO {
         takeAwayOrder.setDeliveryTime(Timestamp.valueOf(deliveryTime));
         takeAwayOrder.setID(ID);
         addProducts(pizzaMap, friedMap, takeAwayOrder);
-        return TestUtils.cambia(ID, takeAwayOrder);
+        return false;
     }
 
     public boolean modifyOrder(String email, boolean type, String name, String deliveryAddress, String phone, int ID, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
         DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, Timestamp.valueOf(deliveryTime), deliveryAddress, phone, Timestamp.valueOf(LocalDateTime.now()));
         deliveryOrder.setID(ID);
         addProducts(pizzaMap, friedMap, deliveryOrder);
-        return TestUtils.cambia(ID, deliveryOrder);
+        return false;
     }
 
     public boolean modifyOrder(int table, int sitting, int ID, String pizzaMap, String friedMap) throws IOException {
         InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()));
         internalOrder.setID(ID);
         addProducts(pizzaMap, friedMap, internalOrder);
-        return TestUtils.cambia(ID, internalOrder);
+        return false;
     }
 
     public boolean deleteOrder(int ID) {
-        Order o = TestUtils.trova(ID);
-        System.err.println(o);
-        if (o != null) {
-            return TestUtils.cancella(o);
-        }
+//        Order o = TestUtils.trova(ID);
+//        System.err.println(o);
+//        if (o != null) {
+//            return TestUtils.cancella(o);
+//        }
         return false;
     }
 

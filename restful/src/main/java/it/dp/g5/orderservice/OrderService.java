@@ -1,8 +1,6 @@
 package it.dp.g5.orderservice;
 
-import it.dp.g5.order.Order;
 import java.io.IOException;
-import java.util.List;
 import javax.jms.JMSException;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -16,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import org.json.JSONArray;
 
 @Path("/OrderService")
 
@@ -26,10 +25,21 @@ public class OrderService {
     private static final String FAILURE_RESULT = "<result>failure</result>";
 
     @GET
-    @Path("/orders")
+    @Path("/orders/{email}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Order> getOrders() {
-        return orderDao.getAllOrders();
+    public String getOrders(@PathParam("email") String email) {
+        return orderDao.getAllOrders(email);
+
+    }
+
+    @GET
+    @Path("/orders/{email}/{orderID}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public boolean getOrderProducts(
+            @PathParam("orderID") int orderID,
+            @PathParam("email") String email) {
+        return orderDao.getOrderProducts(orderID, email);
+
     }
 
     @POST

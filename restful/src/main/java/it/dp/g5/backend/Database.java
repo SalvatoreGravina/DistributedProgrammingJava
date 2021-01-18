@@ -12,6 +12,7 @@ package it.dp.g5.backend;
  */
 import it.dp.g5.order.DeliveryOrder;
 import it.dp.g5.order.InternalOrder;
+import it.dp.g5.order.Order;
 import it.dp.g5.order.Product;
 import it.dp.g5.order.TakeAwayOrder;
 import java.sql.Connection;
@@ -23,21 +24,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.json.bind.JsonbBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Database {
 
     private static final String URLDB = "jdbc:postgresql://localhost/PIZZERIADB";
-    private Connection conn ;
+    private Connection conn;
     private PreparedStatement stm;
     private static Database instance;
-    
-    public static synchronized Database getInstance(){
+
+    public static synchronized Database getInstance() {
         if (instance == null) {
             instance = new Database();
         }
         return instance;
     }
-    
+
     private Database() {
         try {
             conn = DriverManager.getConnection(URLDB, "postgres", "dp");
@@ -87,7 +91,7 @@ public class Database {
         }
     }
 
-    public boolean addNewInternalOrder(InternalOrder internalOrder){
+    public boolean addNewInternalOrder(InternalOrder internalOrder) {
 
         try {
             String query = "INSERT INTO ordinesala (tavolo, coperti,costo)"
@@ -105,18 +109,18 @@ public class Database {
             return false;
         }
     }
-    
-    public void updateProductsInfo(Product product) throws SQLException{
+
+    public void updateProductsInfo(Product product) throws SQLException {
         String query = "SELECT nome FROM prodotto "
-                       + "WHERE id_prodotto=?";
+                + "WHERE id_prodotto=?";
         stm = conn.prepareStatement(query);
-        
+
         stm.setInt(1, product.getID());
         ResultSet rst = stm.executeQuery();
-        while(rst.next()){
+        while (rst.next()) {
             product.setNome(rst.getString("nome"));
         }
-        
+
         query = "SELECT nome FROM ingrediente "
                 + "WHERE id_ingrediente in "
                 + "(SELECT id_ingrediente FROM composizione WHERE id_prodotto=?)";
@@ -124,10 +128,36 @@ public class Database {
         stm.setInt(1, product.getID());
         rst = stm.executeQuery();
         List<String> list = new ArrayList<>();
-        while (rst.next()){
+        while (rst.next()) {
             list.add(rst.getString("nome"));
         }
         product.setIngredientsList(list);
+    }
+    
+    public String getAllOrdersDB(String email){
+        try {
+            String query= "SELECT * FROM ordineesterno "
+                    + "WHERE email=?";
+            stm = conn.prepareStatement(query);
+            stm.setString(1, email);
+            ResultSet rst = stm.executeQuery();
+            List<Order> lista = new ArrayList<>();
+            JSONArray json = new JSONArray();
+            while(rst.next()){
+                  JSONObject jsoninterno = new JSONObject();
+                  jsoninterno.put("ID", rst.getInt("id_ordineesterno"));
+                  jsoninterno.put("domicilio", rst.getBoolean("domicilio"));
+                  jsoninterno.put("nominativo", rst.getString("nominativo"));
+                  jsoninterno.put("dataCreazione", rst.getTimestamp("datacreazione"));
+                  jsoninterno.put("costo", rst.getFloat("costo"));
+                  json.put(jsoninterno);
+
+            }
+            return json.toString();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
     
     
