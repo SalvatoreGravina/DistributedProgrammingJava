@@ -17,8 +17,8 @@ public class TakeAwayOrder extends Order {
     private String name;
     private Timestamp DeliveryTime; //facoltativo
 
-    public TakeAwayOrder(String name, Timestamp date, float cost) {
-        super(date, cost);
+    public TakeAwayOrder(String name, Timestamp date) {
+        super(date);
         this.name = name;
     }
 

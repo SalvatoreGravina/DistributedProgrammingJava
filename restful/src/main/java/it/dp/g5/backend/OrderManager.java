@@ -15,6 +15,8 @@ import it.dp.g5.order.TakeAwayOrder;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.JMSException;
 
 /**
@@ -49,9 +51,13 @@ public class OrderManager {
 
     }
 
-    public static synchronized OrderManager getInstance() throws JMSException {
+    public static synchronized OrderManager getInstance() {
         if (instance == null) {
-            instance = new OrderManager();
+            try {
+                instance = new OrderManager();
+            } catch (JMSException ex) {
+                ex.printStackTrace();
+            }
         }
         return instance;
     }

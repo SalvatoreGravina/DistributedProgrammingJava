@@ -3,6 +3,7 @@ package it.dp.g5.orderservice;
 import it.dp.g5.order.Order;
 import java.io.IOException;
 import java.util.List;
+import javax.jms.JMSException;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -46,7 +47,7 @@ public class OrderService {
             @FormParam("pizzaMap") String pizzaMap,
             @FormParam("friedMap") String friedMap,
             @FormParam("deliveryTime") String deliveryTime,
-            @Context HttpServletResponse servletResponse) throws IOException {
+            @Context HttpServletResponse servletResponse) throws IOException, JMSException {
         boolean isAdded = false;
         switch (type) {
             case 1:

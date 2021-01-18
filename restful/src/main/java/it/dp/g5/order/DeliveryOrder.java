@@ -19,8 +19,8 @@ public class DeliveryOrder extends Order{
     private String deliveryAddress;
     private String phone;
 
-    public DeliveryOrder(String email, String name, Timestamp deliveryTime, String deliveryAddress, String phone, Timestamp date, float cost) {
-        super(date,cost);
+    public DeliveryOrder(String email, String name, Timestamp deliveryTime, String deliveryAddress, String phone, Timestamp date) {
+        super(date);
         this.email = email;
         this.name = name;
         this.deliveryTime = deliveryTime;

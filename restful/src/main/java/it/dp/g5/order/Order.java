@@ -12,9 +12,8 @@ public class Order {
     private Map<Product, Integer> pizzaMap = new HashMap<>();
     private Map<Product, Integer> friedMap = new HashMap<>();
 
-    public Order(Timestamp date, float cost) {
+    public Order(Timestamp date) {
         this.date = date;
-        this.cost = cost;
     }
 
     public int getID() {

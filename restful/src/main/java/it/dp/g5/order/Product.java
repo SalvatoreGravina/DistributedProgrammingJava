@@ -1,14 +1,14 @@
 package it.dp.g5.order;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Product {
 
     private int ID;
     private String name;
     private float cost;
-    private Map<Integer, String> ingredientsMap = new HashMap<>();
+    private List<String> ingredientsList = new ArrayList<>();
 
     public Product(int ID) {
         this.ID = ID;
@@ -27,22 +27,26 @@ public class Product {
         this.name = nome;
     }
 
-    public void setIngredients(Map<Integer, String> ingredientsMap) {
-        this.ingredientsMap = ingredientsMap;
-    }
+
 
     public int getID() {
         return ID;
     }
 
-    public Map<Integer, String> getIngredients() {
-        return ingredientsMap;
+    public List<String> getIngredientsList() {
+        return ingredientsList;
     }
 
-    @Override
-    public String toString() {
-        String stringa = getNome().toUpperCase() + ": ";
-        stringa += ingredientsMap.values().toString();
-        return stringa;
+    public void setIngredientsList(List<String> ingredientsList) {
+        this.ingredientsList = ingredientsList;
     }
+
+
+
+//    @Override
+//    public String toString() {
+//        String stringa = getNome().toUpperCase() + ": ";
+//        stringa += ingredientsList.toString();
+//        return stringa;
+//    }
 }
