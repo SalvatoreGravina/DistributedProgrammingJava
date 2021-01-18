@@ -53,6 +53,7 @@ public class UserService {
     @Produces(MediaType.APPLICATION_XML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public String updateUser(
+            @FormParam("oldemail") String oldemail,
             @FormParam("email") String email,
             @FormParam("password") String password,
             @FormParam("address") String address,
@@ -62,7 +63,7 @@ public class UserService {
             @Context HttpServletResponse servletResponse) throws IOException {
         boolean isAdded = false;
 
-        isAdded = userDao.modifyUser(email, password, address, name, surname, phone);
+        isAdded = userDao.modifyUser(oldemail, email, password, address, name, surname, phone);
 
         if (isAdded) {
             return SUCCESS_RESULT;
