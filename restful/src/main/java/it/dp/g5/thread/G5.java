@@ -14,8 +14,11 @@ public class G5 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        
+
+            Database db = Database.getInstance();
+            OrderManager orderManager = OrderManager.getInstance();
+            //definire mappa per ordini attivi
+
 
     }
 

@@ -20,7 +20,7 @@ import org.json.JSONArray;
 
 public class OrderService {
 
-    OrderDAO orderDao = new OrderDAO();
+    private OrderDAO orderDao = new OrderDAO();
     private static final String SUCCESS_RESULT = "<result>success</result>";
     private static final String FAILURE_RESULT = "<result>failure</result>";
 
@@ -75,50 +75,4 @@ public class OrderService {
         }
         return FAILURE_RESULT;
     }
-
-    @PUT
-    @Path("/orders")
-    @Produces(MediaType.APPLICATION_XML)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public String updateOrder(
-            @FormParam("ID") int ID,
-            @FormParam("type") int type,
-            @FormParam("table") int table,
-            @FormParam("sitting") int sitting,
-            @FormParam("email") String email,
-            @FormParam("name") String name,
-            @FormParam("deliveryAddress") String deliveryAddress,
-            @FormParam("phone") String phone,
-            @FormParam("pizzaMap") String pizzaMap,
-            @FormParam("friedMap") String friedMap,
-            @FormParam("deliveryTime") String deliveryTime,
-            @Context HttpServletResponse servletResponse) throws IOException {
-        boolean isModified = false;
-        switch (type) {
-            case 1:
-                isModified = orderDao.modifyOrder(name, ID, pizzaMap, friedMap, deliveryTime);
-                break;
-            case 2:
-                isModified = orderDao.modifyOrder(table, sitting, ID, pizzaMap, friedMap);
-                break;
-            case 3:
-                isModified = orderDao.modifyOrder(email, isModified, name, deliveryAddress, phone, ID, pizzaMap, friedMap, deliveryTime);
-                break;
-        }
-        if (isModified) {
-            return SUCCESS_RESULT;
-        }
-        return FAILURE_RESULT;
-    }
-
-    @DELETE
-    @Path("/orders/{ID}")
-    @Produces(MediaType.APPLICATION_XML)
-    public String deleteOrder(@PathParam("ID") int ID) {
-        if (orderDao.deleteOrder(ID)) {
-            return SUCCESS_RESULT;
-        }
-        return FAILURE_RESULT;
-    }
-
 }

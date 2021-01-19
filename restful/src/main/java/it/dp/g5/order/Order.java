@@ -15,6 +15,9 @@ public class Order {
     public Order(Timestamp date) {
         this.date = date;
     }
+    public Order(){
+        
+    }
 
     public int getID() {
         return ID;

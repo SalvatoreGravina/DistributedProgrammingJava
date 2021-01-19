@@ -15,7 +15,17 @@ public class InternalOrder extends Order{
         this.table = table;
         this.sitting = sitting;
     }
-    
+
+    public InternalOrder() {
+    }
+
+    public void setTable(int table) {
+        this.table = table;
+    }
+
+    public void setSitting(int sitting) {
+        this.sitting = sitting;
+    }
     
     
     public int getTavolo() {

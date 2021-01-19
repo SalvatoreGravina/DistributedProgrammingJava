@@ -54,11 +54,12 @@ public class Database {
     public boolean addNewTakeAwayOrder(TakeAwayOrder takeAwayOrder) {
 
         try {
-            String query = "INSERT INTO ordineesterno (domicilio, deliverytime, nominativo,costo)"
-                    + "VALUES ('false',?,?,1) RETURNING id_ordineesterno";
+            String query = "INSERT INTO ordineesterno (domicilio, deliverytime, nominativo, dataCreazione)"
+                    + "VALUES ('false',?,?,?) RETURNING id_ordineesterno";
             stm = conn.prepareStatement(query);
             stm.setTimestamp(1, takeAwayOrder.getDeliveryTime());
             stm.setString(2, takeAwayOrder.getName());
+            stm.setTimestamp(3, takeAwayOrder.getData());
             ResultSet rst = stm.executeQuery();
             while (rst.next()) {
                 takeAwayOrder.setID(rst.getInt("id_ordineesterno"));
@@ -73,14 +74,15 @@ public class Database {
     public boolean addNewDeliveryOrder(DeliveryOrder deliveryOrder) {
 
         try {
-            String query = "INSERT INTO ordineesterno (domicilio, deliveryTime, nominativo, email, telefono, indirizzoconsegna,costo)"
-                    + "VALUES ('true',?,?,?,?,?,1) RETURNING id_ordineesterno";
+            String query = "INSERT INTO ordineesterno (domicilio, deliveryTime, nominativo, email, telefono, indirizzoconsegna, dataCreazione)"
+                    + "VALUES ('true',?,?,?,?,?,?) RETURNING id_ordineesterno";
             stm = conn.prepareStatement(query);
             stm.setTimestamp(1, deliveryOrder.getDeliveryTime());
             stm.setString(2, deliveryOrder.getName());
             stm.setString(3, deliveryOrder.getEmail());
             stm.setString(4, deliveryOrder.getPhone());
             stm.setString(5, deliveryOrder.getDeliveryAddress());
+            stm.setTimestamp(6, deliveryOrder.getData());
             ResultSet rst = stm.executeQuery();
             while (rst.next()) {
                 deliveryOrder.setID(rst.getInt("id_ordineesterno"));
@@ -95,11 +97,12 @@ public class Database {
     public boolean addNewInternalOrder(InternalOrder internalOrder) {
 
         try {
-            String query = "INSERT INTO ordinesala (tavolo, coperti,costo)"
-                    + "VALUES (?,?,1) RETURNING id_ordinesala";
+            String query = "INSERT INTO ordinesala (tavolo, coperti, dataCreazione)"
+                    + "VALUES (?,?,?) RETURNING id_ordinesala";
             stm = conn.prepareStatement(query);
             stm.setInt(1, internalOrder.getTavolo());
             stm.setInt(2, internalOrder.getCoperti());
+            stm.setTimestamp(3, internalOrder.getData());
             ResultSet rst = stm.executeQuery();
             while (rst.next()) {
                 internalOrder.setID(rst.getInt("id_ordineesterno"));
@@ -249,6 +252,7 @@ public class Database {
             return false;
         }
     }
+
     
     public String getPassword(String email) {
         try {
@@ -267,4 +271,62 @@ public class Database {
         return null;
     }
 
+
+
+    public String getFreeTablesDB() {
+        try {
+            String query = "SELECT id_tavolo, capienza FROM tavolo WHERE libero=true";
+            stm = conn.prepareStatement(query);
+            ResultSet rst = stm.executeQuery();
+            JSONArray json = new JSONArray();
+            while (rst.next()) {
+                JSONObject jsoninterno = new JSONObject();
+                jsoninterno.put("ID_tavolo", rst.getInt("id_tavolo"));
+                jsoninterno.put("capienza", rst.getInt("capienza"));
+                json.put(jsoninterno);
+            }
+            return json.toString();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public float getBillInternal(InternalOrder order) {
+        try {
+            String query = "SELECT costo FROM ordinesala WHERE id_ordinesala=? AND";
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, order.getID());
+            ResultSet rst = stm.executeQuery();
+            query = "UPDATE tavolo SET libero=true"
+                    + "WHERE tavolo=?";
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, order.getTavolo());
+            stm.executeQuery();
+            while (rst.next()) {
+                return rst.getFloat("costo");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+
+        }
+        return -1;
+    }
+    
+    public float getBillTakeAway(int ID){
+        try {
+            String query = "SELECT costo FROM ordineesterno WHERE id_ordineesterno=?";
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, ID);
+            ResultSet rst = stm.executeQuery();
+            while(rst.next()){
+                return rst.getFloat("costo");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            
+        }
+        return -1;
+    }
 }
