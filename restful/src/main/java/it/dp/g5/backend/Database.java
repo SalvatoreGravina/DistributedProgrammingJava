@@ -233,7 +233,7 @@ public class Database {
 
     public boolean deleteUser(String email) {
         try {
-            String query = "update ordineesterno set email='deleteduser"
+            String query = "UPDATE ordineesterno SET email='deleteduser"
                     + "WHERE email=?";
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
@@ -249,4 +249,22 @@ public class Database {
             return false;
         }
     }
+    
+    public String getPassword(String email) {
+        try {
+            String query = "SELECT password FROM utente"
+                    + "WHERE email=?";
+            stm = conn.prepareStatement(query);
+            stm.setString(1, email);
+            ResultSet rst = stm.executeQuery();
+            
+            while(rst.next()){
+                return rst.getString("password");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
 }

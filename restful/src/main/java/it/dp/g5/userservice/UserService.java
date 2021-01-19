@@ -37,12 +37,50 @@ public class UserService {
             @FormParam("name") String name,
             @FormParam("surname") String surname,
             @FormParam("phone") String phone,
+            @FormParam("token") String token,
             @Context HttpServletResponse servletResponse) throws IOException {
         boolean isAdded = false;
 
         isAdded = userDao.addUser(email, password, address, name, surname, phone);
 
         if (isAdded) {
+            LoginUtils.login(email, password, token);
+            return SUCCESS_RESULT;
+        }
+        return FAILURE_RESULT;
+    }
+    
+    @POST
+    @Path("/users/login")
+    @Produces(MediaType.APPLICATION_XML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public String logUser(
+            @FormParam("email") String email,
+            @FormParam("password") String password,
+            @FormParam("token") String token,
+            @Context HttpServletResponse servletResponse) throws IOException {
+        boolean isLogged = false;
+
+        isLogged = LoginUtils.login(email, password, token);
+
+        if (isLogged) {
+            return SUCCESS_RESULT;
+        }
+        return FAILURE_RESULT;
+    }
+    
+    @POST
+    @Path("/users/logout")
+    @Produces(MediaType.APPLICATION_XML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public String logoutUser(
+            @FormParam("email") String email,
+            @Context HttpServletResponse servletResponse) throws IOException {
+        boolean isLoggedOut = false;
+        
+        isLoggedOut = LoginUtils.logout(email);
+
+        if (isLoggedOut) {
             return SUCCESS_RESULT;
         }
         return FAILURE_RESULT;
