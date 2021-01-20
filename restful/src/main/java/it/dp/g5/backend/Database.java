@@ -45,7 +45,7 @@ public class Database {
 
     private Database() {
         try {
-            conn = DriverManager.getConnection(URLDB, "postgres", "admin");
+            conn = DriverManager.getConnection(URLDB, "postgres", "dp");
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -191,7 +191,7 @@ public class Database {
     public boolean addNewUser(User user) {
         try {
             String query = "INSERT INTO utente (email,password,indirizzo, cognome, nome, telefono) "
-                    + "VALUES (?,?,?,?,?,?,?)";
+                    + "VALUES (?,?,?,?,?,?)";
             stm = conn.prepareStatement(query);
             stm.setString(1, user.getEmail());
             stm.setString(2, user.getPassword());
@@ -199,7 +199,7 @@ public class Database {
             stm.setString(4, user.getName());
             stm.setString(5, user.getSurname());
             stm.setString(6, user.getPhone());
-            stm.executeQuery();
+            stm.executeUpdate();
             return true;
 
         } catch (SQLException ex) {
@@ -227,6 +227,7 @@ public class Database {
             stm.setString(5, surname);
             stm.setString(6, phone);
             stm.setString(7, oldemail);
+            stm.executeUpdate();
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
