@@ -45,7 +45,7 @@ public class Database {
 
     private Database() {
         try {
-            conn = DriverManager.getConnection(URLDB, "postgres", "dp");
+            conn = DriverManager.getConnection(URLDB, "postgres", "admin");
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
