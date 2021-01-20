@@ -257,7 +257,7 @@ public class Database {
     
     public String getPassword(String email) {
         try {
-            String query = "SELECT password FROM utente"
+            String query = "SELECT password FROM utente "
                     + "WHERE email=?";
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
