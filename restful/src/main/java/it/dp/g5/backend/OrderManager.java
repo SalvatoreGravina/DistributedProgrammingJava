@@ -32,6 +32,7 @@ public class OrderManager {
     private final CompletedOrderQueueConsumer deliveryConsumer;
     private final OrderQueueProducer serverProducer;
     private static OrderManager instance;
+    
 
     private OrderManager() throws JMSException {
 
@@ -101,7 +102,11 @@ public class OrderManager {
             long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
             long deliveryDelay = delay <= 0 ? 0 : delay;
             int i = serverProducer.pushOrder(order, DELIVERY, deliveryDelay);
-            System.out.println("Ordine registrato: " + order.getID());
+            System.out.println("Ordine registrato: " + order.getID()+" i: "+i);
+            System.out.println(order.getPizzaMap().keySet().toString());
+            System.out.println(order.getPizzaMap().values().toString());
+            System.out.println(order.getFriedMap().keySet().toString());
+            System.out.println(order.getFriedMap().values().toString());
             synchronized (orders) {
                 orders.put(order.getID(), i);
             }

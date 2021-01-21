@@ -17,7 +17,13 @@ public class G5 {
 
             Database db = Database.getInstance();
             OrderManager orderManager = OrderManager.getInstance();
-            //definire mappa per ordini attivi
+            System.out.println("istanza OrderManager in g5: "+orderManager);
+            Thread cucina = new Thread (new Cucina());
+            cucina.start();
+            Thread forno = new Thread (new Forno());
+            forno.start();
+            Thread ricevitor = new Thread (new Ricevitor());
+            ricevitor.start();
 
 
     }

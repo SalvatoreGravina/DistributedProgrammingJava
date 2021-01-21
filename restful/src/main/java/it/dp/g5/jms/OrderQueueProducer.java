@@ -35,8 +35,9 @@ public class OrderQueueProducer {
         if (!order.getPizzaMap().isEmpty()) {
             message.clearProperties();
             message.clearBody();
-
+            
             String jsonPizze = convertMapToJson(order.getPizzaMap());
+            System.out.println(deliveryDelay);
             message.setText(jsonPizze);
             message.setStringProperty("type", orderType);
             message.setIntProperty("OrderID", order.getID());
@@ -81,6 +82,7 @@ public class OrderQueueProducer {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        System.out.println(json);
         return json;
 
     }

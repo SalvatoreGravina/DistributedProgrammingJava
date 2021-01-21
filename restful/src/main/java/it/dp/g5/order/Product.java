@@ -43,10 +43,10 @@ public class Product {
 
 
 
-//    @Override
-//    public String toString() {
-//        String stringa = getNome().toUpperCase() + ": ";
-//        stringa += ingredientsList.toString();
-//        return stringa;
-//    }
+    @Override
+    public String toString(){
+        String stringa = "";
+        stringa+=getID();
+        return stringa;
+    }
 }

@@ -192,9 +192,10 @@ and open the template in the editor.
                     var quantity = tr[i].getElementsByClassName("quantity")[0].value;
                     if (type.localeCompare("pizza") === 0) {
                         pizzaMap[ID] = quantity;
-                    } else if (type.localeCompare("fritto")) {
+                    } else if (type.localeCompare("fritto")===0) {
                         friedMap[ID] = quantity;
                     }
+                    console.log(ID);
 
                 }
                 var dict = new Object();
@@ -230,6 +231,7 @@ and open the template in the editor.
                         }
                     }
                 };
+                console.log(formBody);
                 xmlHttp.open("POST", baseUrl + "OrderService/orders", true);
                 xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xmlHttp.send(formBody);

@@ -9,7 +9,6 @@ package it.dp.g5.jms;
  *
  * @author gruppo 5
  */
-import java.util.List;
 import javax.jms.*;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;

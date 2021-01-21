@@ -46,7 +46,7 @@ public class OrderDAO {
         updateProductsInformation(deliveryOrder);
         
         manager.pushOrder(deliveryOrder);
-        
+        System.out.println("Istanza OrderManager in rest: "+manager);
         return result;
         
     }
