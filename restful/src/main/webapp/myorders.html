@@ -134,8 +134,51 @@ and open the template in the editor.
                 background: #26a9e0;
             }
         </style>
+        <script>
+            var baseUrl = "http://localhost:8080/restful/resources/";
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+            function getOrders() {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        var a= new Date();
+                        var response = JSON.parse(xmlHttp.responseText);
+                        var table = "<table><tr><th>IDOrdine</th><th>data</th><th>Importo</th></tr>";
+                        for (var i=0; i<response.length; i++) {
+                            console.log(response[i]);
+                            table += "<tr>";
+                            table += "<td>" + response[i].ID + "</td><td>" + response[i].dataCreazione + "</td><td>" + response[i].costo + "</td></tr>";
+                        }
+                        table += "</table>";
+                        document.getElementById("result").innerHTML = table;
+                    }
+                };
+                var cookie = getCookie("email");
+                console.log(cookie);
+                xmlHttp.open("GET", baseUrl + "OrderService/orders/" + cookie, true);
+                xmlHttp.send();
+            }
+        </script>
     </head>
-    <body>
-        <div>TODO write content</div>
+    <body onload="getOrders()">
+        <div class="main-block">
+            <h1>My Orders</h1>
+            <div id="result">
+            </div>
+        </div>
     </body>
 </html>

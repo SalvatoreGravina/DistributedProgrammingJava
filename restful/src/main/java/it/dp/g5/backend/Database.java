@@ -145,7 +145,6 @@ public class Database {
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
             ResultSet rst = stm.executeQuery();
-            List<Order> lista = new ArrayList<>();
             JSONArray json = new JSONArray();
             while (rst.next()) {
                 JSONObject jsoninterno = new JSONObject();
