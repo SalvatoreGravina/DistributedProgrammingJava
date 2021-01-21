@@ -330,4 +330,30 @@ public class Database {
         }
         return -1;
     }
+    
+    public String getUserInfoDB(String email){
+        try{
+            String query = "SELECT * FROM utente WHERE email=?";
+            stm = conn.prepareStatement(query);
+            stm.setString(1, email);
+            ResultSet rst = stm.executeQuery();
+            JSONArray json = new JSONArray();
+            while (rst.next()) {
+                JSONObject jsoninterno = new JSONObject();
+                jsoninterno.put("email", rst.getString("email"));
+                jsoninterno.put("password", rst.getString("password"));
+                jsoninterno.put("address", rst.getString("indirizzo"));
+                jsoninterno.put("name", rst.getString("nome"));
+                jsoninterno.put("surname", rst.getString("cognome"));
+                jsoninterno.put("phone", rst.getString("telefono"));
+                
+                json.put(jsoninterno);
+            }
+            return json.toString();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+            return null;
+            
+        }
+    }
 }

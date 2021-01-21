@@ -132,9 +132,7 @@
         <script>
             var baseUrl = "http://localhost:8080/restful/resources/";
             function addUser() {
-                //var stringa = "email=email2231&password=seriedi&name=ciao&surname=oaic&address=via&phone=123321&token=0";
-                var data = document.getElementById("registrationform");
-                //var formData = new FormData(myForm);  
+                var data = document.getElementById("registrationform");  
                 var inputElements = data.getElementsByTagName("input");
                 var details = new Object();
                 for(var i = 0; i<inputElements.length; i++){

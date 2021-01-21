@@ -135,43 +135,70 @@ and open the template in the editor.
             }
         </style>
         <script>
-            function getCookie(cname) {
-                var name = cname + "=";
-                var decodedCookie = decodeURIComponent(document.cookie);
-                var ca = decodedCookie.split(';');
-                for (var i = 0; i < ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) == ' ') {
-                        c = c.substring(1);
-                    }
-                    if (c.indexOf(name) == 0) {
-                        return c.substring(name.length, c.length);
-                    }
+            var baseUrl = "http://localhost:8080/restful/resources/";
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+                var expires = "expires=" + d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path='/';";
+            }
+            function loginUser() {
+                var data = document.getElementById("loginform");
+                var inputElements = data.getElementsByTagName("input");
+                var details = new Object();
+                for (var i = 0; i < inputElements.length; i++) {
+                    details[inputElements[i].name] = inputElements[i].value;
                 }
-                return "";
+                var formBody = [];
+                for (var property in details) {
+                    var encodedKey = encodeURIComponent(property);
+                    var encodedValue = encodeURIComponent(details[property]);
+                    formBody.push(encodedKey + "=" + encodedValue);
+                }
+                formBody = formBody.join("&");
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+
+                        var response = xmlHttp.responseXML;
+                        var result = response.getElementsByTagName("result")[0].innerHTML;
+                        if (result.localeCompare("success") === 0) {
+                            document.getElementById("result").innerHTML = "login succeded";
+                            setCookie("email", details["email"],10);
+                            setCookie("password", details["password"],10);
+                            setTimeout(() => {
+                                window.location.href = "/restful/home.html";
+                            }, 1000);
+                        } else {
+                            document.getElementById("result").innerHTML = "login failed";
+                        }
+                    }
+                };
+                xmlHttp.open("POST", baseUrl + "UserService/users/login", true);
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.send(formBody);
             }
         </script>
     </head>
     <body>
         <div class="main-block">
-            <h1>Pizzeria DP</h1>
-            <form action="neworder.html" method="GET">
-                <div class="btn-block">
-                    <input type="submit" value="I'M HUNGRY!">
-                </div>
-            </form>
-            <form action="myorders.html" method="GET">
-                <div class="btn-block">
-                    <input type="submit" value="my orders">
-                </div>
-            </form>
+            <h1>Login</h1>
+            <form id="loginform">
 
-            <form action="profile.html" method="GET">
-                <div class="btn-block">
-                    <input type="submit" value="profile">
-                </div>
-            </form>
+                <label id="icon" for="email"><i class="fas fa-envelope"></i></label>
+                <input type="text" name="email" id="email" placeholder="Email" required/>
 
+                <label id="icon" for="password"><i class="fas fa-unlock-alt"></i></label>
+                <input type="password" name="password" id="password" placeholder="Password" required/>
+                <input type="text" name="token" id="token" required hidden value=0/>
+
+
+            </form>
+            <div id="result">
+            </div>
+            <div class="btn-block">
+                <button onclick="loginUser()">Submit</button>
+            </div>
         </div>
     </body>
 </html>

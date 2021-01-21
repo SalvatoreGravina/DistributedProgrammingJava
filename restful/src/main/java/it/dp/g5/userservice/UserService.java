@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -49,7 +50,7 @@ public class UserService {
         }
         return FAILURE_RESULT;
     }
-    
+
     @POST
     @Path("/users/login")
     @Produces(MediaType.APPLICATION_XML)
@@ -68,7 +69,7 @@ public class UserService {
         }
         return FAILURE_RESULT;
     }
-    
+
     @POST
     @Path("/users/logout")
     @Produces(MediaType.APPLICATION_XML)
@@ -77,7 +78,7 @@ public class UserService {
             @FormParam("email") String email,
             @Context HttpServletResponse servletResponse) throws IOException {
         boolean isLoggedOut = false;
-        
+
         isLoggedOut = LoginUtils.logout(email);
 
         if (isLoggedOut) {
@@ -85,7 +86,7 @@ public class UserService {
         }
         return FAILURE_RESULT;
     }
-    
+
     @PUT
     @Path("/users")
     @Produces(MediaType.APPLICATION_XML)
@@ -108,7 +109,7 @@ public class UserService {
         }
         return FAILURE_RESULT;
     }
-    
+
     @DELETE
     @Path("/users/{email}")
     @Produces(MediaType.APPLICATION_XML)
@@ -117,5 +118,12 @@ public class UserService {
             return SUCCESS_RESULT;
         }
         return FAILURE_RESULT;
+    }
+
+    @GET
+    @Path("/users/{email}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getUserInfo(@PathParam("email") String email) {
+        return userDao.getUserInfo(email);
     }
 }

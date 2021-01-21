@@ -28,4 +28,9 @@ public class UserDAO {
         return false;
     }
     
+    public String getUserInfo(String email){
+        return db.getUserInfoDB(email);
+        
+    }
+    
 }
