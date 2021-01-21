@@ -190,9 +190,9 @@ and open the template in the editor.
                     var ID = tr[i].getElementsByClassName("productID")[0].innerHTML;
                     var type = tr[i].getElementsByClassName("productType")[0].innerHTML;
                     var quantity = tr[i].getElementsByClassName("quantity")[0].value;
-                    if (type.localeCompare("pizza") === 0) {
+                    if (type.localeCompare("pizza") === 0 && quantity > 0) {
                         pizzaMap[ID] = quantity;
-                    } else if (type.localeCompare("fritto")===0) {
+                    } else if (type.localeCompare("fritto") === 0 && quantity > 0) {
                         friedMap[ID] = quantity;
                     }
                     console.log(ID);

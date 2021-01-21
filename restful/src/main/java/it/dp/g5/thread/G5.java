@@ -15,15 +15,12 @@ public class G5 {
      */
     public static void main(String[] args) {
 
-            Database db = Database.getInstance();
-            OrderManager orderManager = OrderManager.getInstance();
-            System.out.println("istanza OrderManager in g5: "+orderManager);
             Thread cucina = new Thread (new Cucina());
             cucina.start();
             Thread forno = new Thread (new Forno());
             forno.start();
-            Thread ricevitor = new Thread (new Ricevitor());
-            ricevitor.start();
+//            Thread ricevitor = new Thread (new Ricevitor());
+//            ricevitor.start();
 
 
     }

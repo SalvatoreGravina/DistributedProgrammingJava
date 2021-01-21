@@ -135,7 +135,7 @@ and open the template in the editor.
             }
         </style>
         <script>
-            var baseUrl = "http://localhost:8080/restful/resources/";
+            var baseUrl = "http://10.0.2.2:8080/restful/resources/";
             function setCookie(cname, cvalue, exdays) {
                 var d = new Date();
                 d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -149,7 +149,7 @@ and open the template in the editor.
                 for (var i = 0; i < inputElements.length; i++) {
                     details[inputElements[i].name] = inputElements[i].value;
                 }
-                //details["token"] = JavaScriptInterface.readToken();
+                details["token"] = JavaScriptInterface.readToken();
                 details["token"]=0;
                 var formBody = [];
                 for (var property in details) {
