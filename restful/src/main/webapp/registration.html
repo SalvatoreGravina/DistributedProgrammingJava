@@ -3,7 +3,7 @@
     <head>
         <title>Registration</title>
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" crossorigin="anonymous">
         <style>
             html, body {
                 display: flex;
@@ -132,22 +132,40 @@
         <script>
             var baseUrl = "http://localhost:8080/restful/resources/";
             function addUser() {
-                var stringa = "email=emai2231&password=seriedi&name=ciao&surname=oaic&address=via&phone=123321&token=0";
+                //var stringa = "email=email2231&password=seriedi&name=ciao&surname=oaic&address=via&phone=123321&token=0";
                 var data = document.getElementById("registrationform");
-                var formData = new FormData(data);
+                //var formData = new FormData(myForm);  
+                var inputElements = data.getElementsByTagName("input");
+                var details = new Object();
+                for(var i = 0; i<inputElements.length; i++){
+                    details[inputElements[i].name]=inputElements[i].value;
+                }
+                var formBody = [];
+                for (var property in details) {
+                    var encodedKey = encodeURIComponent(property);
+                    var encodedValue = encodeURIComponent(details[property]);
+                    formBody.push(encodedKey + "=" + encodedValue);
+                }
+                formBody = formBody.join("&");
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function () {
-                    if(xmlHttp.readyState === 4) {
-                        alert(xmlHttp.statusText);
-                        var domParser = new DOMParser();
-                        var xmlResponse = domParser.parseFromString(xmlHttp.responseXML, "text/xml");
-                        var result = xmlResponse.getElementsByTagName("result")[0].nodeValue;
-                        alert(document.getElementById("result").innerHTML);
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+
+                        var response = xmlHttp.responseXML;
+                        var result = response.getElementsByTagName("result")[0].innerHTML;
+                        if (result.localeCompare("success") === 0) {
+                            document.getElementById("result").innerHTML = "registration succeded";
+                            setTimeout(() => {
+                                window.location.href = "/restful/home.html";
+                            }, 1000);
+                        } else {
+                            document.getElementById("result").innerHTML = "registration not succeded";
+                        }
                     }
                 };
                 xmlHttp.open("POST", baseUrl + "UserService/users", true);
                 xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xmlHttp.send(stringa);
+                xmlHttp.send(formBody);
             }
         </script>
     </head>
@@ -155,7 +173,7 @@
         <div class="main-block">
             <h1>Registration</h1>
             <!--form action="http://localhost:8080/restful/resources/UserService/users" method="POST" enctype="application/x-www-form-urlencoded"-->
-            <form onsubmit="addUser()" id="registrationform">
+            <form id="registrationform">
 
                 <label id="icon" for="name"><i class="fas fa-user"></i></label>
                 <input type="text" name="name" id="name" placeholder="Name" required/>
@@ -176,11 +194,10 @@
                 <input type="password" name="password" id="password" placeholder="Password" required/>
                 <input type="text" name="token" id="token" required hidden value=0/>
 
-
-                <div class="btn-block">
-                    <button type="submit">Submit</button>
-                </div>
             </form>
+            <div class="btn-block">
+                <button onclick="addUser()">Submit</button>
+            </div>
             <div id="result">
                 CIAO
             </div>
