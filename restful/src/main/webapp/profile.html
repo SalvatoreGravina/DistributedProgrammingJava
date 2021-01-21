@@ -146,6 +146,12 @@
                 }
                 return "";
             }
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+                var expires = "expires=" + d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path='/';";
+            }
             function getInfo() {
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function () {
@@ -169,6 +175,7 @@
                 var data = document.getElementById("profileform");
                 var inputElements = data.getElementsByTagName("input");
                 var details = new Object();
+                details["oldemail"] = getCookie("email");
                 for (var i = 0; i < inputElements.length; i++) {
                     details[inputElements[i].name] = inputElements[i].value;
                 }
@@ -186,14 +193,17 @@
                         var response = xmlHttp.responseXML;
                         var result = response.getElementsByTagName("result")[0].innerHTML;
                         if (result.localeCompare("success") === 0) {
-                            document.getElementById("result").innerHTML = "registration succeded";
+                            setCookie("email", details["email"],10);
+                            document.getElementById("result").innerHTML = "update succeded";
+                            
                         } else {
-                            document.getElementById("result").innerHTML = "registration not succeded";
+                            document.getElementById("result").innerHTML = "update not succeded";
                         }
                     }
                 };
                 xmlHttp.open("PUT", baseUrl + "UserService/users", true);
                 xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                console.log(formBody);
                 xmlHttp.send(formBody);
             }
         </script>
@@ -202,7 +212,7 @@
         <div class="main-block">
             <h1>Profile</h1>
             <form id="profileform">
-
+                
                 <label id="icon" for="name"><i class="fas fa-user"></i></label>
                 <input type="text" name="name" id="name" placeholder="Name" required/>
 
@@ -220,8 +230,6 @@
 
                 <label id="icon" for="password"><i class="fas fa-unlock-alt"></i></label>
                 <input type="password" name="password" id="password" placeholder="Password" required/>
-
-                <input type="text" name="token" id="token" required hidden value=0/>
 
 
             </form>

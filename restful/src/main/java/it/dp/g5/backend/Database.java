@@ -212,19 +212,19 @@ public class Database {
     public boolean updateUser(String oldemail, String email, String password, String address, String name, String surname, String phone) {
         try {
             String query = "UPDATE utente "
-                    + "SET email=? "
-                    + "password=? "
-                    + "indirizzo=? "
-                    + "cognome=? "
-                    + "nome=? "
+                    + "SET email=?, "
+                    + "password=?, "
+                    + "indirizzo=?, "
+                    + "cognome=?, "
+                    + "nome=?, "
                     + "telefono=? "
                     + "WHERE email=?";
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
             stm.setString(2, password);
             stm.setString(3, address);
-            stm.setString(4, name);
-            stm.setString(5, surname);
+            stm.setString(4, surname);
+            stm.setString(5, name);
             stm.setString(6, phone);
             stm.setString(7, oldemail);
             stm.executeUpdate();
