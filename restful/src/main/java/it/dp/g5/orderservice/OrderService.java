@@ -54,7 +54,7 @@ public class OrderService {
             @FormParam("pizzaMap") String pizzaMap,
             @FormParam("friedMap") String friedMap,
             @FormParam("deliveryTime") String deliveryTime,
-            @Context HttpServletResponse servletResponse) throws IOException, JMSException {
+            @Context HttpServletResponse servletResponse) throws IOException{
         boolean isAdded = false;
         switch (type) {
             case 1:

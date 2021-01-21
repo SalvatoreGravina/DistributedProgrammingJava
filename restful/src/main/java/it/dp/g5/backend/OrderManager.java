@@ -60,22 +60,34 @@ public class OrderManager {
         return instance;
     }
 
-    public void pushOrder(InternalOrder order) throws JMSException {
-        int i = serverProducer.pushOrder(order, INTERNAL, 0);
-        //System.out.println("Ordine registrato: " + order.getID());
-        synchronized (orders) {
-            orders.put(order.getID(), i);
+    public void pushOrder(InternalOrder order){
+        try {
+            int i = serverProducer.pushOrder(order, INTERNAL, 0);
+            //System.out.println("Ordine registrato: " + order.getID());
+            synchronized (orders) {
+                orders.put(order.getID(), i);
+            }
+        } catch (JMSException ex) {
+            ex.printStackTrace();
         }
     }
 
-    public void pushOrder(TakeAwayOrder order) throws JMSException {
+    public void pushOrder(TakeAwayOrder order){
         int i = 0;
         try {
             long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
             long deliveryDelay = delay <= 0 ? 0 : delay;
-            i = serverProducer.pushOrder(order, TAKE_AWAY, deliveryDelay);
+            try {
+                i = serverProducer.pushOrder(order, TAKE_AWAY, deliveryDelay);
+            } catch (JMSException ex) {
+                ex.printStackTrace();
+            }
         } catch (NullPointerException ex) {
-            i = serverProducer.pushOrder(order, TAKE_AWAY, 0);
+            try {
+                i = serverProducer.pushOrder(order, TAKE_AWAY, 0);
+            } catch (JMSException ex1) {
+                ex.printStackTrace();
+            }
         }
         //System.out.println("Ordine registrato: " + order.getID());
         synchronized (orders) {
@@ -84,13 +96,17 @@ public class OrderManager {
 
     }
 
-    public void pushOrder(DeliveryOrder order) throws JMSException {
-        long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
-        long deliveryDelay = delay <= 0 ? 0 : delay;
-        int i = serverProducer.pushOrder(order, DELIVERY, deliveryDelay);
-        //System.out.println("Ordine registrato: " + order.getID());
-        synchronized (orders) {
-            orders.put(order.getID(), i);
+    public void pushOrder(DeliveryOrder order){
+        try {
+            long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
+            long deliveryDelay = delay <= 0 ? 0 : delay;
+            int i = serverProducer.pushOrder(order, DELIVERY, deliveryDelay);
+            System.out.println("Ordine registrato: " + order.getID());
+            synchronized (orders) {
+                orders.put(order.getID(), i);
+            }
+        } catch (JMSException ex) {
+            ex.printStackTrace();
         }
 
     }

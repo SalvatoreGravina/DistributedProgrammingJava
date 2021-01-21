@@ -24,9 +24,9 @@ public class OrderDAO {
         return false;
     }
 
-    public boolean addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException, JMSException {
+    public boolean addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
         TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, Timestamp.valueOf(LocalDateTime.now()));
-        takeAwayOrder.setDeliveryTime(Timestamp.valueOf(deliveryTime));
+        takeAwayOrder.setDeliveryTime(new Timestamp(Long.parseLong(deliveryTime)));
         addProducts(pizzaMap, friedMap, takeAwayOrder);
         boolean result = db.addNewTakeAwayOrder(takeAwayOrder);
         updateProductsInformation(takeAwayOrder);
@@ -34,16 +34,24 @@ public class OrderDAO {
         return result;
     }
 
-    public boolean addOrder(String email, String name, String deliveryAddress, String phone, String pizzaMap, String friedMap, String deliveryTime) throws IOException, JMSException {
-        DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, Timestamp.valueOf(deliveryTime), deliveryAddress, phone, Timestamp.valueOf(LocalDateTime.now()));
+    public boolean addOrder(String email, String name, String deliveryAddress, String phone, String pizzaMap, String friedMap, String deliveryTime) throws IOException{
+        DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, new Timestamp(Long.parseLong(deliveryTime)), deliveryAddress, phone, Timestamp.valueOf(LocalDateTime.now()));
+        
         addProducts(pizzaMap, friedMap, deliveryOrder);
+        
         boolean result = db.addNewDeliveryOrder(deliveryOrder);
+        
+        result = db.addProductsToOrderEsterno(deliveryOrder);
+        
         updateProductsInformation(deliveryOrder);
+        
         manager.pushOrder(deliveryOrder);
+        
         return result;
+        
     }
 
-    public boolean addOrder(int table, int sitting, String pizzaMap, String friedMap) throws IOException, JMSException {
+    public boolean addOrder(int table, int sitting, String pizzaMap, String friedMap) throws IOException {
         InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()));
         addProducts(pizzaMap, friedMap, internalOrder);
         boolean result = db.addNewInternalOrder(internalOrder);

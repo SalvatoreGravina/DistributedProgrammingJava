@@ -133,19 +133,41 @@ and open the template in the editor.
             button:hover {
                 background: #26a9e0;
             }
+            .quantity{
+                width: 50px;
+            }
+            #timeDiv{
+                margin: 20px 50px;
+            }
         </style>
         <script>
             var baseUrl = "http://localhost:8080/restful/resources/";
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
             function getMenu() {
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
                         var response = JSON.parse(xmlHttp.responseText);
-                        var table = "<table><tr><th>IDOrdine</th><th>nome</th><th>costo</th></tr>";
+                        var table = "<table><tr><th>IDProdotto</th><th>nome</th><th>costo</th></tr>";
                         for (var i = 0; i < response.length; i++) {
-                            console.log(response[i]);
                             table += "<tr>";
-                            table += "<td>" + response[i].id_prodotto + "</td><td>" + response[i].nome + "</td><td>" + response[i].costo + "</td></tr>";
+                            table += "<td class=\"productID\">" + response[i].id_prodotto + "</td><td>" + response[i].nome + "</td>";
+                            table += "<td>" + response[i].costo + "</td><td><input class=\"quantity\" type=\"number\" value=\"0\" min=\"0\"></td>";
+                            table += "<td class=\"productType\">" + response[i].tipo + "</td></tr>"; //aggiungere hidden al tipo
                         }
                         table += "</table>";
                         document.getElementById("result").innerHTML = table;
@@ -153,6 +175,64 @@ and open the template in the editor.
                 };
                 xmlHttp.open("GET", baseUrl + "ProductService/products", true);
                 xmlHttp.send();
+
+                var today = new Date().toISOString();
+                var todayn = today.substring(0, 16);
+
+                document.getElementById("deliveryTime").min = todayn;
+
+            }
+            function addOrder() {
+                var pizzaMap = new Object();
+                var friedMap = new Object();
+                var tr = document.getElementsByTagName("tr");
+                for (var i = 1; i < tr.length; i++) {
+                    var ID = tr[i].getElementsByClassName("productID")[0].innerHTML;
+                    var type = tr[i].getElementsByClassName("productType")[0].innerHTML;
+                    var quantity = tr[i].getElementsByClassName("quantity")[0].value;
+                    if (type.localeCompare("pizza") === 0) {
+                        pizzaMap[ID] = quantity;
+                    } else if (type.localeCompare("fritto")) {
+                        friedMap[ID] = quantity;
+                    }
+
+                }
+                var dict = new Object();
+                var date = Date.parse(document.getElementById("deliveryTime").value);
+                console.log(date.valueOf());
+                dict["type"] = 3;
+                dict["email"] = getCookie("email");
+                dict["name"] = "salvatore";
+                dict["deliveryAddress"] = "via brombeis";
+                dict["phone"] = "123124";
+                dict["pizzaMap"] = JSON.stringify(pizzaMap);
+                dict["friedMap"] = JSON.stringify(friedMap);
+                dict["deliveryTime"] = date;
+                console.log(dict["pizzaMap"]);
+                console.log(dict["friedMap"]);
+                var formBody = [];
+                for (var property in dict) {
+                    var encodedKey = encodeURIComponent(property);
+                    var encodedValue = encodeURIComponent(dict[property]);
+                    formBody.push(encodedKey + "=" + encodedValue);
+                }
+                formBody = formBody.join("&");
+
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        var response = xmlHttp.responseXML;
+                        var result = response.getElementsByTagName("result")[0].innerHTML;
+                        if (result.localeCompare("success") === 0) {
+                            document.getElementById("result").innerHTML = "order 66 executed";
+                        } else {
+                            document.getElementById("result").innerHTML = "the republic won";
+                        }
+                    }
+                };
+                xmlHttp.open("POST", baseUrl + "OrderService/orders", true);
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xmlHttp.send(formBody);
             }
         </script>
     </head>
@@ -160,6 +240,15 @@ and open the template in the editor.
         <div class="main-block">
             <h1>MENU</h1>
             <div id="result">
+            </div>
+            <div id="timeDiv">
+                <label for="deliveryTime">A che ora vuoi la pizza?</label>
+                <input type="datetime-local" id="deliveryTime" name="deliveryTime">
+            </div>
+            <div id="result">
+            </div>
+            <div class="btn-block">
+                <button onclick="addOrder()">NewOrder</button>
             </div>
         </div>
     </body>

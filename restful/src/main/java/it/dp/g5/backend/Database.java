@@ -23,9 +23,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.json.bind.JsonbBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -237,7 +237,7 @@ public class Database {
     public boolean deleteUser(String email) {
         try {
             String query = "UPDATE ordineesterno SET email='deleteduser' "
-                           + "WHERE email=?";
+                    + "WHERE email=?";
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
             stm.executeUpdate();
@@ -253,7 +253,6 @@ public class Database {
         }
     }
 
-    
     public String getPassword(String email) {
         try {
             String query = "SELECT password FROM utente "
@@ -261,8 +260,8 @@ public class Database {
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
             ResultSet rst = stm.executeQuery();
-            
-            while(rst.next()){
+
+            while (rst.next()) {
                 return rst.getString("password");
             }
         } catch (SQLException ex) {
@@ -270,8 +269,6 @@ public class Database {
         }
         return null;
     }
-
-
 
     public String getFreeTablesDB() {
         try {
@@ -313,25 +310,25 @@ public class Database {
         }
         return -1;
     }
-    
-    public float getBillTakeAway(int ID){
+
+    public float getBillTakeAway(int ID) {
         try {
             String query = "SELECT costo FROM ordineesterno WHERE id_ordineesterno=?";
             stm = conn.prepareStatement(query);
             stm.setInt(1, ID);
             ResultSet rst = stm.executeQuery();
-            while(rst.next()){
+            while (rst.next()) {
                 return rst.getFloat("costo");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            
+
         }
         return -1;
     }
-    
-    public String getUserInfoDB(String email){
-        try{
+
+    public String getUserInfoDB(String email) {
+        try {
             String query = "SELECT * FROM utente WHERE email=?";
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
@@ -345,20 +342,20 @@ public class Database {
                 jsoninterno.put("name", rst.getString("nome"));
                 jsoninterno.put("surname", rst.getString("cognome"));
                 jsoninterno.put("phone", rst.getString("telefono"));
-                
+
                 json.put(jsoninterno);
             }
             return json.toString();
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
-            
+
         }
     }
-    
-    public String getMenu(){
+
+    public String getMenu() {
         try {
-            String query = "SELECT id_prodotto, nome,costo FROM prodotto";
+            String query = "SELECT id_prodotto, nome,costo, tipo FROM prodotto";
             stm = conn.prepareStatement(query);
             ResultSet rst = stm.executeQuery();
             JSONArray json = new JSONArray();
@@ -366,13 +363,62 @@ public class Database {
                 JSONObject jsoninterno = new JSONObject();
                 jsoninterno.put("id_prodotto", rst.getInt("id_prodotto"));
                 jsoninterno.put("nome", rst.getString("nome"));
-                jsoninterno.put("costo", rst.getFloat("costo"));  
+                jsoninterno.put("tipo", rst.getString("tipo"));
+                jsoninterno.put("costo", rst.getFloat("costo"));
                 json.put(jsoninterno);
             }
             return json.toString();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    public boolean addProductsToOrderEsterno(Order order) {
+        try {
+            String query = "INSERT INTO contenutoordineesterno VALUES (?, ?, ?)";
+            stm = conn.prepareStatement(query);
+            for (Map.Entry<Product, Integer> entry : order.getPizzaMap().entrySet()) {
+                stm.setInt(1, order.getID()); //not sure if String or int or long
+                stm.setInt(2, entry.getKey().getID());
+                stm.setInt(3, entry.getValue());
+                stm.addBatch();
+            }
+            for (Map.Entry<Product, Integer> entry : order.getFriedMap().entrySet()) {
+                stm.setInt(1, order.getID()); //not sure if String or int or long
+                stm.setInt(2, entry.getKey().getID());
+                stm.setInt(3, entry.getValue());
+                stm.addBatch();
+            }
+            stm.executeBatch();
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean addProductsToOrderSala(Order order) {
+        try {
+            String query = "INSERT INTO contenutoordinesala VALUES (?, ?, ?)";
+            stm = conn.prepareStatement(query);
+            for (Map.Entry<Product, Integer> entry : order.getPizzaMap().entrySet()) {
+                stm.setInt(1, order.getID()); //not sure if String or int or long
+                stm.setInt(2, entry.getKey().getID());
+                stm.setInt(3, entry.getValue());
+                stm.addBatch();
+            }
+            for (Map.Entry<Product, Integer> entry : order.getFriedMap().entrySet()) {
+                stm.setInt(1, order.getID()); //not sure if String or int or long
+                stm.setInt(2, entry.getKey().getID());
+                stm.setInt(3, entry.getValue());
+                stm.addBatch();
+            }
+            stm.executeBatch();
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
         }
     }
 }
