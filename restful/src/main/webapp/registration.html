@@ -111,7 +111,6 @@
                 text-align: center;
             }
             .btn-block {
-                margin-top: 150px;
                 text-align: center;
             }
             button {
@@ -128,15 +127,21 @@
             button:hover {
                 background: #26a9e0;
             }
+            #result{
+                margin-top: 30px;
+                margin-bottom: 80px;
+                visibility: hidden;
+                text-align: center;
+            }
         </style>
         <script>
             var baseUrl = "http://localhost:8080/restful/resources/";
             function addUser() {
-                var data = document.getElementById("registrationform");  
+                var data = document.getElementById("registrationform");
                 var inputElements = data.getElementsByTagName("input");
                 var details = new Object();
-                for(var i = 0; i<inputElements.length; i++){
-                    details[inputElements[i].name]=inputElements[i].value;
+                for (var i = 0; i < inputElements.length; i++) {
+                    details[inputElements[i].name] = inputElements[i].value;
                 }
                 var formBody = [];
                 for (var property in details) {
@@ -153,11 +158,13 @@
                         var result = response.getElementsByTagName("result")[0].innerHTML;
                         if (result.localeCompare("success") === 0) {
                             document.getElementById("result").innerHTML = "registration succeded";
+                            document.getElementById("result").style.visibility = "visible";
                             setTimeout(() => {
                                 window.location.href = "/restful/home.html";
                             }, 1000);
                         } else {
                             document.getElementById("result").innerHTML = "registration not succeded";
+                            document.getElementById("result").style.visibility = "visible";
                         }
                     }
                 };
@@ -193,12 +200,13 @@
                 <input type="text" name="token" id="token" required hidden value=0/>
 
             </form>
-            <div class="btn-block">
-                <button onclick="addUser()">Submit</button>
-            </div>
             <div id="result">
                 CIAO
             </div>
+            <div class="btn-block">
+                <button onclick="addUser()">Submit</button>
+            </div>
+
         </div>
     </body>
 </html>

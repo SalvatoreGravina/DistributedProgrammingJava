@@ -24,8 +24,7 @@ public class UserDAO {
     }
     
     public boolean deleteUser(String email) {
-        
-        return false;
+        return db.deleteUser(email);
     }
     
     public String getUserInfo(String email){

@@ -1,8 +1,6 @@
 
 package it.dp.g5.productservice;
 
-import it.dp.g5.order.Product;
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,7 +18,7 @@ public class ProductService {
     @GET
     @Path("/products")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Product> getProducts() {
+    public String getProducts() {
         return productDao.getAllProducts();
     }
     

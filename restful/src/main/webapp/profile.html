@@ -111,7 +111,6 @@
                 text-align: center;
             }
             .btn-block {
-                margin-top: 150px;
                 text-align: center;
             }
             button {
@@ -127,6 +126,12 @@
             }
             button:hover {
                 background: #26a9e0;
+            }
+            #result{
+                margin-top: 30px;
+                margin-bottom: 80px;
+                visibility: hidden;
+                text-align: center;
             }
         </style>
         <script>
@@ -193,18 +198,44 @@
                         var response = xmlHttp.responseXML;
                         var result = response.getElementsByTagName("result")[0].innerHTML;
                         if (result.localeCompare("success") === 0) {
-                            setCookie("email", details["email"],10);
+                            setCookie("email", details["email"], 10);
                             document.getElementById("result").innerHTML = "update succeded";
-                            
+                            document.getElementById("result").style.visibility = "visible";
+
                         } else {
                             document.getElementById("result").innerHTML = "update not succeded";
+                            document.getElementById("result").style.visibility = "visible";
                         }
                     }
                 };
                 xmlHttp.open("PUT", baseUrl + "UserService/users", true);
                 xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                console.log(formBody);
                 xmlHttp.send(formBody);
+            }
+            function deleteUser() {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+
+                        var response = xmlHttp.responseXML;
+                        var result = response.getElementsByTagName("result")[0].innerHTML;
+                        if (result.localeCompare("success") === 0) {
+                            document.getElementById("result").innerHTML = "delete succeded";
+                            document.getElementById("result").style.visibility = "visible";
+                            setCookie("email", "", -1);
+                            setCookie("password", "", -1);
+                            setTimeout(() => {
+                                window.location.href = "/restful/index.html";
+                            }, 1000);
+                        } else {
+                            document.getElementById("result").innerHTML = "delete failed";
+                            document.getElementById("result").style.visibility = "visible";
+                        }
+                    }
+                };
+                var cookie = getCookie("email");
+                xmlHttp.open("DELETE", baseUrl + "UserService/users/" + cookie, true);
+                xmlHttp.send();
             }
         </script>
     </head>
@@ -212,7 +243,7 @@
         <div class="main-block">
             <h1>Profile</h1>
             <form id="profileform">
-                
+
                 <label id="icon" for="name"><i class="fas fa-user"></i></label>
                 <input type="text" name="name" id="name" placeholder="Name" required/>
 
@@ -234,9 +265,16 @@
 
             </form>
             <div id="result">
+                placeholder
             </div>
             <div class="btn-block">
-                <button onclick="modifyUser()">Submit</button>
+                <button onclick="modifyUser()">ModifyUser</button>
+            </div>
+            <div class="btn-block">
+                <button onclick="deleteUser()">DeleteUser</button>
+            </div>
+            <div class="btn-block">
+                <button onclick="modifyUser()">Logout</button>
             </div>
         </div>
     </body>

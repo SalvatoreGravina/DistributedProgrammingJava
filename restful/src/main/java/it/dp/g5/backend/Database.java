@@ -236,16 +236,16 @@ public class Database {
 
     public boolean deleteUser(String email) {
         try {
-            String query = "UPDATE ordineesterno SET email='deleteduser"
+            String query = "UPDATE ordineesterno SET email='deleteduser' "
+                           + "WHERE email=?";
+            stm = conn.prepareStatement(query);
+            stm.setString(1, email);
+            stm.executeUpdate();
+            query = "DELETE FROM utente "
                     + "WHERE email=?";
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
-            stm.executeQuery();
-            query = "DELETE FROM utente"
-                    + "WHERE email=?";
-            stm = conn.prepareStatement(query);
-            stm.setString(1, email);
-            stm.executeQuery();
+            stm.executeUpdate();
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -353,6 +353,26 @@ public class Database {
             ex.printStackTrace();
             return null;
             
+        }
+    }
+    
+    public String getMenu(){
+        try {
+            String query = "SELECT id_prodotto, nome,costo FROM prodotto";
+            stm = conn.prepareStatement(query);
+            ResultSet rst = stm.executeQuery();
+            JSONArray json = new JSONArray();
+            while (rst.next()) {
+                JSONObject jsoninterno = new JSONObject();
+                jsoninterno.put("id_prodotto", rst.getInt("id_prodotto"));
+                jsoninterno.put("nome", rst.getString("nome"));
+                jsoninterno.put("costo", rst.getFloat("costo"));  
+                json.put(jsoninterno);
+            }
+            return json.toString();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
         }
     }
 }
