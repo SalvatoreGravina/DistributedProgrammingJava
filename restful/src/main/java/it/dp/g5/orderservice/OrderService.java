@@ -1,10 +1,6 @@
 package it.dp.g5.orderservice;
 
-import it.dp.g5.javamail.JavaMailUtils;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.jms.JMSException;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -16,6 +12,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+/**
+ * Classe che mappa le risorse relative agli ordini come risorse web service.
+ *
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
+ */
+/**
+ * path relativo ai servizi offerti per l'ordine
+ */
 @Path("/OrderService")
 
 public class OrderService {
@@ -24,6 +31,13 @@ public class OrderService {
     private static final String SUCCESS_RESULT = "<result>success</result>";
     private static final String FAILURE_RESULT = "<result>failure</result>";
 
+    /**
+     * Restituisce tutti gli ordini relativi ad un determinato utente alla
+     * ricezione di una GET
+     *
+     * @param email email dell'utente
+     * @return una stringa contente tutti gli ordini
+     */
     @GET
     @Path("/orders/{email}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,16 +46,39 @@ public class OrderService {
 
     }
 
+    /**
+     * Restituisce tutti i prodotti relativi ad un determinato ordine alla
+     * ricezione di una GET
+     *
+     * @param email email dell'utente
+     * @param orderID ID dell'ordine
+     * @return true se si riesce ad avere accesso alla risorsa
+     */
     @GET
     @Path("/orders/{email}/{orderID}")
     @Produces(MediaType.APPLICATION_JSON)
     public boolean getOrderProducts(
-            @PathParam("orderID") int orderID,
-            @PathParam("email") String email) {
+            @PathParam("email") String email,
+            @PathParam("orderID") int orderID) {
         return orderDao.getOrderProducts(orderID, email);
 
     }
 
+    /**
+     * Restituisce tutti i prodotti relativi ad un determinato ordine alla
+     * ricezione di una GET
+     *
+     * @param type 1 ordine takeaway, 2 ordine di sala, 3 ordine a domicilio 
+     * @param table id del tavolo
+     * @param sitting numero coperti del tavolo
+     * @param email email di chi effettua l'ordine
+     * @param name nome di chi effettua l'ordine
+     * @param pizzaMap mappa contenente le pizze ordinate
+     * @param friedMap mappa contente i fritti ordinati
+     * @param deliveryTime orario di consegna
+     * @return una stringa XML che cotiene un tag result con il risultato dell'operazione
+     */
+    
     @POST
     @Path("/orders")
     @Produces(MediaType.APPLICATION_XML)
