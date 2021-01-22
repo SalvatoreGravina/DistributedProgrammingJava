@@ -26,6 +26,17 @@ function redirectLogin() {
 function redirectRegistration() {
     window.location.href = "/restful/registration.html";
 }
+function redirectProfile() {
+    window.location.href = "/restful/profile.html";
+
+}
+function redirectMyOrders() {
+    window.location.href = "/restful/myorders.html";
+
+}
+function redirectNewOrder() {
+    window.location.href = "/restful/neworder.html";
+}
 function loginUser() {
     var data = document.getElementById("loginform");
     var inputElements = data.getElementsByTagName("input");
@@ -48,6 +59,7 @@ function loginUser() {
             var result = response.getElementsByTagName("result")[0].innerHTML;
             if (result.localeCompare("success") === 0) {
                 document.getElementById("result").innerHTML = result;
+                document.getElementById("result").style.visibility = "visible";
                 setCookie("email", details["email"], 10);
                 setCookie("password", details["password"], 10);
                 setTimeout(() => {
@@ -55,6 +67,7 @@ function loginUser() {
                 }, 1000);
             } else {
                 document.getElementById("result").innerHTML = "login failed";
+                document.getElementById("result").style.visibility = "visible";
             }
         }
     };
@@ -73,10 +86,12 @@ function getOrders() {
             for (var i = 0; i < response.length; i++) {
                 console.log(response[i]);
                 table += "<tr>";
-                table += "<td>" + response[i].ID + "</td><td>" + response[i].dataCreazione + "</td><td>" + response[i].costo + "</td></tr>";
+                table += "<td>" + response[i].ID + "</td><td>" + response[i].dataCreazione.substring(0,16) + "</td><td>" + response[i].costo + "</td></tr>";
             }
             table += "</table>";
-            document.getElementById("result").innerHTML = table;
+            document.getElementById("orderList").innerHTML = table;
+            document.getElementById("orderList").style.visibility = "visible";
+
         }
     };
     var cookie = getCookie("email");
@@ -89,15 +104,17 @@ function getMenu() {
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             var response = JSON.parse(xmlHttp.responseText);
-            var table = "<table><tr><th>IDProdotto</th><th>nome</th><th>costo</th></tr>";
+            var table = "<table><tr><th>tipo</th><th>nome</th><th>costo</th></tr>";
             for (var i = 0; i < response.length; i++) {
                 table += "<tr>";
-                table += "<td class=\"productID\">" + response[i].id_prodotto + "</td><td>" + response[i].nome + "</td>";
+                table += "<td class=\"productID\" hidden>" + response[i].id_prodotto + "</td>";
+                table += "<td class=\"productType\">" + response[i].tipo + "</td>";
+                table += "<td>" + response[i].nome + "</td>";
                 table += "<td>" + response[i].costo + "</td><td><input class=\"quantity\" type=\"number\" value=\"0\" min=\"0\"></td>";
-                table += "<td class=\"productType\">" + response[i].tipo + "</td></tr>"; //aggiungere hidden al tipo
+                table += "</tr>";
             }
             table += "</table>";
-            document.getElementById("result").innerHTML = table;
+            document.getElementById("menu").innerHTML = table;
         }
     };
     xmlHttp.open("GET", baseUrl + "ProductService/products", true);
@@ -151,9 +168,19 @@ function addOrder() {
             var response = xmlHttp.responseXML;
             var result = response.getElementsByTagName("result")[0].innerHTML;
             if (result.localeCompare("success") === 0) {
-                document.getElementById("result").innerHTML = "order 66 executed";
+                document.getElementById("result").innerHTML = "Ordine ricevuto!";
+                document.getElementById("result").style.visibility = "visible";
+
+                setTimeout(() => {
+                    window.location.href = "/restful/myorders.html";
+                }, 1000);
             } else {
-                document.getElementById("result").innerHTML = "the republic won";
+                document.getElementById("result").innerHTML = "Errore ordine";
+                document.getElementById("result").style.visibility = "visible";
+
+                setTimeout(() => {
+                    window.location.href = "/restful/neworder.html";
+                }, 1000);
             }
         }
     };
