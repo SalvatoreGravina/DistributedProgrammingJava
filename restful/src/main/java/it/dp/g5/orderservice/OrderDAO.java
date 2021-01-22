@@ -2,12 +2,15 @@ package it.dp.g5.orderservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.dp.g5.backend.*;
+import it.dp.g5.javamail.JavaMailUtils;
 import it.dp.g5.order.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.JMSException;
 
 public class OrderDAO {
@@ -24,40 +27,51 @@ public class OrderDAO {
         return false;
     }
 
-    public boolean addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
+    public int addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
         TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, Timestamp.valueOf(LocalDateTime.now()));
         takeAwayOrder.setDeliveryTime(new Timestamp(Long.parseLong(deliveryTime)));
         addProducts(pizzaMap, friedMap, takeAwayOrder);
         boolean result = db.addNewTakeAwayOrder(takeAwayOrder);
         updateProductsInformation(takeAwayOrder);
         manager.pushOrder(takeAwayOrder);
-        return result;
+        return takeAwayOrder.getID();
     }
 
-    public boolean addOrder(String email, String name, String deliveryAddress, String phone, String pizzaMap, String friedMap, String deliveryTime) throws IOException{
-        DeliveryOrder deliveryOrder = new DeliveryOrder(email, name, new Timestamp(Long.parseLong(deliveryTime)), deliveryAddress, phone, Timestamp.valueOf(LocalDateTime.now()));
-        
+    public int addDeliveryOrder(String email, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
+
+        DeliveryOrder deliveryOrder = new DeliveryOrder(email, new Timestamp(Long.parseLong(deliveryTime)), Timestamp.valueOf(LocalDateTime.now()));
+
         addProducts(pizzaMap, friedMap, deliveryOrder);
-        
-        boolean result = db.addNewDeliveryOrder(deliveryOrder);
-        
-        result = db.addProductsToOrderEsterno(deliveryOrder);
-        
+
+        boolean result1 = db.getDeliveryInfo(deliveryOrder);
+
+        boolean result2 = db.addNewDeliveryOrder(deliveryOrder);
+
+        boolean result3 = db.addProductsToOrderEsterno(deliveryOrder);
+
         updateProductsInformation(deliveryOrder);
-        
+
         manager.pushOrder(deliveryOrder);
-        System.out.println("Istanza OrderManager in rest: "+manager);
-        return result;
-        
+
+        try {
+            JavaMailUtils.sendMail(deliveryOrder.getEmail(), deliveryOrder.getName(), deliveryOrder.getID());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (result1 && result2 && result3) {
+            return deliveryOrder.getID();
+        }
+        return -1;
     }
 
-    public boolean addOrder(int table, int sitting, String pizzaMap, String friedMap) throws IOException {
+    public int addOrder(int table, int sitting, String pizzaMap, String friedMap) throws IOException {
         InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()));
         addProducts(pizzaMap, friedMap, internalOrder);
         boolean result = db.addNewInternalOrder(internalOrder);
         updateProductsInformation(internalOrder);
         manager.pushOrder(internalOrder);
-        return result;
+        return internalOrder.getID();
     }
 
     private void addProducts(String pizzaMap, String friedMap, Order order) throws IOException {

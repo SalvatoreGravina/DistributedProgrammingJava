@@ -19,13 +19,10 @@ public class DeliveryOrder extends Order{
     private String deliveryAddress;
     private String phone;
 
-    public DeliveryOrder(String email, String name, Timestamp deliveryTime, String deliveryAddress, String phone, Timestamp date) {
+    public DeliveryOrder(String email, Timestamp deliveryTime, Timestamp date) {
         super(date);
         this.email = email;
-        this.name = name;
         this.deliveryTime = deliveryTime;
-        this.deliveryAddress = deliveryAddress;
-        this.phone = phone;
     }
 
     public String getEmail() {
@@ -47,7 +44,26 @@ public class DeliveryOrder extends Order{
     public String getPhone() {
         return phone;
     }
-    
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDeliveryTime(Timestamp deliveryTime) {
+        this.deliveryTime = deliveryTime;
+    }
     
     
 

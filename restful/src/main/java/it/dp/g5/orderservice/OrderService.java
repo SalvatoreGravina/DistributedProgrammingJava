@@ -1,6 +1,9 @@
 package it.dp.g5.orderservice;
 
+import it.dp.g5.javamail.JavaMailUtils;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.JMSException;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
@@ -49,13 +52,11 @@ public class OrderService {
             @FormParam("sitting") int sitting,
             @FormParam("email") String email,
             @FormParam("name") String name,
-            @FormParam("deliveryAddress") String deliveryAddress,
-            @FormParam("phone") String phone,
             @FormParam("pizzaMap") String pizzaMap,
             @FormParam("friedMap") String friedMap,
             @FormParam("deliveryTime") String deliveryTime,
-            @Context HttpServletResponse servletResponse) throws IOException{
-        boolean isAdded = false;
+            @Context HttpServletResponse servletResponse) throws IOException {
+        int isAdded = -1;
         switch (type) {
             case 1:
                 isAdded = orderDao.addOrder(name, pizzaMap, friedMap, deliveryTime);
@@ -64,10 +65,10 @@ public class OrderService {
                 isAdded = orderDao.addOrder(table, sitting, pizzaMap, friedMap);
                 break;
             case 3:
-                isAdded = orderDao.addOrder(email, name, deliveryAddress, phone, pizzaMap, friedMap, deliveryTime);
+                isAdded = orderDao.addDeliveryOrder(email, pizzaMap, friedMap, deliveryTime);
                 break;
         }
-        if (isAdded) {
+        if (isAdded >= 0) {
             return SUCCESS_RESULT;
         }
         return FAILURE_RESULT;

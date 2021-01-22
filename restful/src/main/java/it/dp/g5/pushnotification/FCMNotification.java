@@ -57,9 +57,4 @@ public class FCMNotification {
         in.close();
 
     }
-
-    @SuppressWarnings("static-access")
-    public static void main(String[] args) throws Exception {
-        FCMNotification.pushFCMNotification("USER_DEVICE_TOKEN", "Pizza", "Prova");
-    }
 }

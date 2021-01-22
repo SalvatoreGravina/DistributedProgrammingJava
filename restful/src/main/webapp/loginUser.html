@@ -150,7 +150,6 @@ and open the template in the editor.
                     details[inputElements[i].name] = inputElements[i].value;
                 }
                 details["token"] = JavaScriptInterface.readToken();
-                details["token"]=0;
                 var formBody = [];
                 for (var property in details) {
                     var encodedKey = encodeURIComponent(property);

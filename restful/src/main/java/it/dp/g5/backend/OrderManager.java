@@ -12,9 +12,13 @@ import it.dp.g5.jms.TakeAwayMessageListener;
 import it.dp.g5.order.DeliveryOrder;
 import it.dp.g5.order.InternalOrder;
 import it.dp.g5.order.TakeAwayOrder;
+import it.dp.g5.pushnotification.FCMNotification;
+import it.dp.g5.userservice.LoginUtils;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.jms.JMSException;
 
 /**
@@ -32,7 +36,6 @@ public class OrderManager {
     private final CompletedOrderQueueConsumer deliveryConsumer;
     private final OrderQueueProducer serverProducer;
     private static OrderManager instance;
-    
 
     private OrderManager() throws JMSException {
 
@@ -61,7 +64,7 @@ public class OrderManager {
         return instance;
     }
 
-    public void pushOrder(InternalOrder order){
+    public void pushOrder(InternalOrder order) {
         try {
             int i = serverProducer.pushOrder(order, INTERNAL, 0);
             //System.out.println("Ordine registrato: " + order.getID());
@@ -73,7 +76,7 @@ public class OrderManager {
         }
     }
 
-    public void pushOrder(TakeAwayOrder order){
+    public void pushOrder(TakeAwayOrder order) {
         int i = 0;
         try {
             long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
@@ -97,12 +100,12 @@ public class OrderManager {
 
     }
 
-    public void pushOrder(DeliveryOrder order){
+    public void pushOrder(DeliveryOrder order) {
         try {
             long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
             long deliveryDelay = delay <= 0 ? 0 : delay;
             int i = serverProducer.pushOrder(order, DELIVERY, deliveryDelay);
-            System.out.println("Ordine registrato: " + order.getID()+" i: "+i);
+            System.out.println("Ordine registrato: " + order.getID() + " i: " + i);
             System.out.println(order.getPizzaMap().keySet().toString());
             System.out.println(order.getPizzaMap().values().toString());
             System.out.println(order.getFriedMap().keySet().toString());
@@ -145,8 +148,14 @@ public class OrderManager {
         int ID = Integer.parseInt(message);
         synchronized (orders) {
             if (orders.put(ID, orders.get(ID) - 1) == 1) {
-                System.out.println("Inviato ordine per consegna N° " + ID);
-                orders.remove(ID);
+                try {
+                    System.out.println("Inviato ordine per consegna N° " + ID);
+                    orders.remove(ID);
+                    String email = Database.getInstance().getEmailForPushNotification(ID);
+                    FCMNotification.pushFCMNotification(LoginUtils.getUserToken(email), "Pizzeria Diem", "Il tuo ordine n. " + ID + " è in consegna, caccia la birra dal frigo!");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
 

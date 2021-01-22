@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage;
 
 public class JavaMailUtils {
 
-    public static void sendMail(String recepient) throws Exception{
+    public static void sendMail(String recepient, String name, int orderID) throws Exception{
         System.out.println("Preparing to send email");
         Properties properties = new Properties();
 
@@ -31,19 +31,19 @@ public class JavaMailUtils {
             }
         });
 
-        Message message = prepareMessage(session, myAccountEmail, recepient);
+        Message message = prepareMessage(session, myAccountEmail, recepient, name, orderID);
         
         Transport.send(message);
         System.out.println("Message sent successfully");
     }
 
-    private static Message prepareMessage(Session session, String myAccountEmail, String recepient) {
+    private static Message prepareMessage(Session session, String myAccountEmail, String recepient, String name, int orderID) {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(myAccountEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recepient));
             message.setSubject("Pizzeria DIEM - ordine n. 1");
-            String htmlCode = "<h1> Ecco il tuo ordine </h1> <br/> <h2><b>Ci devi molti soldi</b></h2>";
+            String htmlCode = "<h1>Ordine confermato: </h1> <br/> <h2>" + name + ", il tuo ordine numero " + orderID + " é stato ricevuto </h2>";
             message.setContent(htmlCode, "text/html");
             return message;
         } catch (MessagingException ex) {

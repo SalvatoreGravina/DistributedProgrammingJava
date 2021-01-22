@@ -349,7 +349,24 @@ public class Database {
         } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
+        }
+    }
 
+    public boolean getDeliveryInfo(DeliveryOrder deliveryOrder) {
+        try {
+            String query = "SELECT indirizzo, telefono, nome FROM utente WHERE email=?";
+            stm = conn.prepareStatement(query);
+            stm.setString(1, deliveryOrder.getEmail());
+            ResultSet rst = stm.executeQuery();
+            while (rst.next()) {
+                deliveryOrder.setPhone(rst.getString("telefono"));
+                deliveryOrder.setDeliveryAddress(rst.getString("indirizzo"));
+                deliveryOrder.setName(rst.getString("nome"));
+            }
+            return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
         }
     }
 
@@ -420,5 +437,20 @@ public class Database {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    public String getEmailForPushNotification(int orderID) {
+        try {
+            String query = "SELECT email FROM ordineesterno WHERE id_ordineesterno=?";
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, orderID);
+            ResultSet rst = stm.executeQuery();
+            while (rst.next()) {
+                return rst.getString("email");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }
