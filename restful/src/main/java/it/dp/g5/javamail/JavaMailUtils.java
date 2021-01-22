@@ -10,9 +10,25 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * Classe che fornisce i metodi statici per l'invio di mail
+ *
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
+ */
 public class JavaMailUtils {
 
-    public static void sendMail(String recepient, String name, int orderID) throws Exception{
+    /**
+     * Invia una mail
+     *
+     * @param recepient mail del destinatario
+     * @param name nome del creatore dell'ordine
+     * @param orderID ID dell'ordine da mandare via mail
+     * @throws java.lang.Exception errore durante l'invio della mail
+     */
+    public static void sendMail(String recepient, String name, int orderID) throws Exception {
         System.out.println("Preparing to send email");
         Properties properties = new Properties();
 
@@ -32,11 +48,20 @@ public class JavaMailUtils {
         });
 
         Message message = prepareMessage(session, myAccountEmail, recepient, name, orderID);
-        
+
         Transport.send(message);
         System.out.println("Message sent successfully");
     }
 
+    /**
+     * Prepara il testo della mail da inviare
+     *
+     * @param session sessione con il mail server
+     * @param myAccountEmail account email del mittente
+     * @param recepient account email del destinatario
+     * @param name nome del detinatario
+     * @param orderID ID dell'ordine da notificare
+     */
     private static Message prepareMessage(Session session, String myAccountEmail, String recepient, String name, int orderID) {
         try {
             Message message = new MimeMessage(session);
