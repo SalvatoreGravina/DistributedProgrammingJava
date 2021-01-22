@@ -15,7 +15,7 @@ import javax.jms.JMSException;
 
 
 /**
- * Classe che permette di definire i metodi CRUD.
+ * Classe che permette di definire i metodi CRUD per gli ordini.
  *
  * @author Davide Della Monica
  * @author Vincenzo di Somma
