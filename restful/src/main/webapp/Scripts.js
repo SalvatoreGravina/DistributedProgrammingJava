@@ -126,6 +126,27 @@ function getMenu() {
 
 }
 
+function getTables() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            var response = JSON.parse(xmlHttp.responseText);
+            var select = "<select><tr><th>tipo</th><th>nome</th><th>costo</th></tr>";
+            for (var i = 0; i < response.length; i++) {
+                table += "<tr>";
+                table += "<td class=\"productID\" hidden>" + response[i].id_prodotto + "</td>";
+                table += "<td class=\"productType\">" + response[i].tipo + "</td>";
+                table += "<td>" + response[i].nome + "</td>";
+                table += "<td>" + response[i].costo + "</td><td><input class=\"quantity\" type=\"number\" value=\"0\" min=\"0\"></td>";
+                table += "</tr>";
+            }
+            table += "</select>";
+            document.getElementById("menu").innerHTML = table;
+        }
+    };
+    xmlHttp.open("GET", baseUrl + "TableService/tables", true);
+    xmlHttp.send();
+}
 
 function addOrder() {
     var pizzaMap = new Object();
