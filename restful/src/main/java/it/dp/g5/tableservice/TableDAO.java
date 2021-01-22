@@ -6,7 +6,6 @@
 package it.dp.g5.tableservice;
 
 import it.dp.g5.backend.Database;
-import java.util.Map;
 
 /**
  * Classe che permette di definire i metodi CRUD per i tavoli.
@@ -17,14 +16,15 @@ import java.util.Map;
  * @author Ferdinando Guarino
  */
 public class TableDAO {
+
     private Database db = Database.getInstance();
-    
+
     /**
      * Restituisce tutti i tavoli disponibili.
      *
      * @return una stringa contente tutti i tavoli disponibili
      */
-    public String getFreeTables(){
+    public String getFreeTables() {
         return db.getFreeTablesDB();
     }
 }
