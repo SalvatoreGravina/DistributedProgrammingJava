@@ -44,7 +44,7 @@ public class Product {
         String stringa;
         if (!ingredientsList.isEmpty()) {
             stringa = getNome().toUpperCase() + ": ";
-            stringa = ingredientsList.stream().map(entry -> entry + ", ").reduce(stringa, String::concat);
+            stringa += ingredientsList;
         } else {
             stringa = getNome().toUpperCase() + ": ";
         }

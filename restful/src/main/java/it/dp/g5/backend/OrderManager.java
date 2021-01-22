@@ -13,6 +13,7 @@ import it.dp.g5.order.DeliveryOrder;
 import it.dp.g5.order.InternalOrder;
 import it.dp.g5.order.TakeAwayOrder;
 import it.dp.g5.pushnotification.FCMNotification;
+import it.dp.g5.thread.Waiter;
 import it.dp.g5.userservice.LoginUtils;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -57,6 +58,8 @@ public class OrderManager {
         if (instance == null) {
             try {
                 instance = new OrderManager();
+                Thread waiter = new Thread(new Waiter());
+                waiter.start();
             } catch (JMSException ex) {
                 ex.printStackTrace();
             }
@@ -127,6 +130,9 @@ public class OrderManager {
         synchronized (orders) {
             if (orders.put(ID, orders.get(ID) - 1) == 1) {
                 orders.remove(ID);
+                InternalOrder order = new InternalOrder();
+                order.setID(ID);
+                Database.getInstance().getBillInternal(order);
             }
         }
         return result;
@@ -152,7 +158,7 @@ public class OrderManager {
                     System.out.println("Inviato ordine per consegna N° " + ID);
                     orders.remove(ID);
                     String email = Database.getInstance().getEmailForPushNotification(ID);
-                    FCMNotification.pushFCMNotification(LoginUtils.getUserToken(email), "Pizzeria Diem", "Il tuo ordine n. " + ID + " è in consegna, caccia la birra dal frigo!");
+                    FCMNotification.pushFCMNotification(LoginUtils.getUserToken(email), "Pizzeria Diem", "Il tuo ordine n. " + ID + " sta arrivando, caccia la birra dal frigo!");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

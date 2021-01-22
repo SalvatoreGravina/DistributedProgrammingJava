@@ -42,8 +42,8 @@ public class JavaMailUtils {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(myAccountEmail));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recepient));
-            message.setSubject("Pizzeria DIEM - ordine n. 1");
-            String htmlCode = "<h1>Ordine confermato: </h1> <br/> <h2>" + name + ", il tuo ordine numero " + orderID + " é stato ricevuto </h2>";
+            message.setSubject("Pizzeria DP - ordine ricevuto");
+            String htmlCode = "<h1>Ordine confermato: </h1> <br/> <h2>" + name + ", il tuo ordine numero " + orderID + " è stato ricevuto </h2>";
             message.setContent(htmlCode, "text/html");
             return message;
         } catch (MessagingException ex) {

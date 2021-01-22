@@ -107,10 +107,23 @@ public class Database {
             while (rst.next()) {
                 internalOrder.setID(rst.getInt("id_ordinesala"));
             }
+            setTableState(internalOrder.getTavolo(), false);
             return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
+        }
+    }
+
+    public void setTableState(int table, boolean state) {
+        try {
+            String query = "UPDATE tavolo SET libero=? WHERE id_tavolo = ?";
+            stm = conn.prepareStatement(query);
+            stm.setBoolean(1, state);
+            stm.setInt(2, table);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -292,16 +305,13 @@ public class Database {
 
     public float getBillInternal(InternalOrder order) {
         try {
-            String query = "SELECT costo FROM ordinesala WHERE id_ordinesala=? AND";
+            String query = "SELECT costo, tavolo FROM ordinesala WHERE id_ordinesala=?";
             stm = conn.prepareStatement(query);
             stm.setInt(1, order.getID());
             ResultSet rst = stm.executeQuery();
-            query = "UPDATE tavolo SET libero=true"
-                    + "WHERE tavolo=?";
-            stm = conn.prepareStatement(query);
-            stm.setInt(1, order.getTavolo());
-            stm.executeQuery();
+
             while (rst.next()) {
+                this.setTableState(rst.getInt("tavolo"), true);
                 return rst.getFloat("costo");
             }
         } catch (SQLException ex) {

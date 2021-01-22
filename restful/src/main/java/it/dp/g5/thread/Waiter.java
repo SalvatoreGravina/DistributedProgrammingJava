@@ -11,7 +11,7 @@ import it.dp.g5.backend.OrderManager;
  *
  * @author gruppo 5
  */
- public class Ricevitor implements Runnable{
+ public class Waiter implements Runnable{
     @Override
     public void run(){
         try {
