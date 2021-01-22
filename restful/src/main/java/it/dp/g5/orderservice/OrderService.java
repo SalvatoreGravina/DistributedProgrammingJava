@@ -36,7 +36,7 @@ public class OrderService {
      * ricezione di una GET
      *
      * @param email email dell'utente
-     * @return una stringa contente tutti gli ordini
+     * @return una stringa contenente tutti gli ordini
      */
     @GET
     @Path("/orders/{email}")
@@ -75,7 +75,7 @@ public class OrderService {
      * @param pizzaMap mappa contenente le pizze ordinate
      * @param friedMap mappa contente i fritti ordinati
      * @param deliveryTime orario di consegna
-     * @return una stringa XML che cotiene un tag result con il risultato dell'operazione
+     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
      */
     
     @POST
