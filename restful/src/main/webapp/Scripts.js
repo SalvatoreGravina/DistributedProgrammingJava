@@ -91,7 +91,6 @@ function getOrders() {
             table += "</table>";
             document.getElementById("orderList").innerHTML = table;
             document.getElementById("orderList").style.visibility = "visible";
-
         }
     };
     var cookie = getCookie("email");

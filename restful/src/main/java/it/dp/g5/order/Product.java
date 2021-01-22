@@ -18,7 +18,7 @@ public class Product {
         this.ID = ID;
         this.cost = cost;
     }
-    
+
     public String getNome() {
         return name;
     }
@@ -26,8 +26,6 @@ public class Product {
     public void setNome(String nome) {
         this.name = nome;
     }
-
-
 
     public int getID() {
         return ID;
@@ -41,12 +39,15 @@ public class Product {
         this.ingredientsList = ingredientsList;
     }
 
-
-
     @Override
-    public String toString(){
-        String stringa = "";
-        stringa+=getID();
+    public String toString() {
+        String stringa;
+        if (!ingredientsList.isEmpty()) {
+            stringa = getNome().toUpperCase() + ": ";
+            stringa = ingredientsList.stream().map(entry -> entry + ", ").reduce(stringa, String::concat);
+        } else {
+            stringa = getNome().toUpperCase() + ": ";
+        }
         return stringa;
     }
 }
