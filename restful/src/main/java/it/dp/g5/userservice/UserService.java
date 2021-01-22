@@ -19,6 +19,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+
+/**
+ * Classe che mappa le risorse relative agli utenti come risorse web service.
+ *
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
+ */
+
+/**
+ * path relativo ai servizi offerti per l'utente
+ */
 @Path("/UserService")
 
 public class UserService {
@@ -27,6 +40,18 @@ public class UserService {
     private static final String SUCCESS_RESULT = "<result>success</result>";
     private static final String FAILURE_RESULT = "<result>failure</result>";
 
+    /**
+     * Crea un utente tramite una POST
+     *
+     * @param email email dell'utente
+     * @param password password dell'utente
+     * @param address indirizzo dell'utente
+     * @param name nome dell'utente
+     * @param surname cognome dell'utente
+     * @param phone numero di telefono dell'utente
+     * @param token identificativo dell'utente
+     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     */
     @POST
     @Path("/users")
     @Produces(MediaType.APPLICATION_XML)
@@ -51,6 +76,14 @@ public class UserService {
         return FAILURE_RESULT;
     }
 
+    /**
+     * Esegue il login dell'utente tramite una POST
+     *
+     * @param email email dell'utente
+     * @param password password dell'utente
+     * @param token identificativo dell'utente
+     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     */
     @POST
     @Path("/users/login")
     @Produces(MediaType.APPLICATION_XML)
@@ -70,6 +103,12 @@ public class UserService {
         return FAILURE_RESULT;
     }
 
+    /**
+     * Esegue il logout tramite una POST
+     *
+     * @param email email dell'utente
+     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     */
     @POST
     @Path("/users/logout")
     @Produces(MediaType.APPLICATION_XML)
@@ -87,6 +126,18 @@ public class UserService {
         return FAILURE_RESULT;
     }
 
+    /**
+     * Modifica le informazioni di un utente tramite una PUT
+     *
+     * @param oldemail email attuale dell'utente
+     * @param email possibile nuova email dell'utente
+     * @param password possibile nuova password dell'utente
+     * @param address possibile nuovo indirizzo dell'utente
+     * @param name possibile nuovo nome dell'utente
+     * @param surname possibile nuovo cognome dell'utente
+     * @param phone possibile nuovo numero di telefono dell'utente
+     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     */
     @PUT
     @Path("/users")
     @Produces(MediaType.APPLICATION_XML)
@@ -110,6 +161,12 @@ public class UserService {
         return FAILURE_RESULT;
     }
 
+     /**
+     * Elimina un utente tramite una DELETE
+     *
+     * @param email email dell'utente da eliminare
+     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     */
     @DELETE
     @Path("/users/{email}")
     @Produces(MediaType.APPLICATION_XML)
@@ -120,6 +177,12 @@ public class UserService {
         return FAILURE_RESULT;
     }
 
+     /**
+     * Accede alle informazioni di un utente tramite una GET
+     *
+     * @param email possibile nuova email dell'utente
+     * @return una stringa contenente tutte le informazioni dell'utente
+     */
     @GET
     @Path("/users/{email}")
     @Produces(MediaType.APPLICATION_JSON)
