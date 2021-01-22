@@ -12,8 +12,12 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * Classe di creazione di un consumer per ORDER_QUEUE
  *
- * @author dp
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
  */
 public class OrderQueueConsumer {
 
@@ -21,13 +25,23 @@ public class OrderQueueConsumer {
     private MessageConsumer consumer;
     public static final String SELECTOR_FORNO = "destination='FORNO'";
     public static final String SELECTOR_CUCINA = "destination='CUCINA'";
-
+    
+    /**
+     *  Costruttore della classe OrderQueueConsumer
+     * 
+     * @param selector costante per selezionare gli ordini da ricevere
+     *
+     */
     public OrderQueueConsumer(String selector) throws JMSException {
         this.configuration = new ConsumerConfiguration(ConsumerConfiguration.ORDER_QUEUE, selector);
         this.consumer = configuration.getConsumer();
         configuration.startConnection();
     }
-
+    
+    /**
+     * Effettua una pop dalla coda JMS ORDER_QUEUE
+     * @return restitusce un'istanza di un oggetto Comanda
+     */
     public Comanda popOrder() {
         ObjectMapper mapper = new ObjectMapper();
         try {

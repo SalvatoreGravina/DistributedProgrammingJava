@@ -11,8 +11,12 @@ import javax.jms.MessageProducer;
 import javax.jms.TextMessage;
 
 /**
+ * Classe di creazione di un Producer per ORDER_QUEUE_COMPLETED
  *
- * @author gruppo 5
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
  */
 public class CompletedOrderQueueProducer {
 
@@ -26,6 +30,10 @@ public class CompletedOrderQueueProducer {
     private ProducerConfiguration configuration;
     private TextMessage message;
 
+    /**
+     * Costruttore della classe CompletedOrderQueueProducer
+     *
+     */
     public CompletedOrderQueueProducer() throws JMSException {
         this.configuration = new ProducerConfiguration("ORDER_QUEUE_COMPLETED");
         this.producer = configuration.getProducer();
@@ -34,11 +42,17 @@ public class CompletedOrderQueueProducer {
 
     }
 
+    /**
+     * Inserisce una comanda sulla coda ORDER_QUEUE_COMPLETED
+     *
+     * @param comanda istanza di una comanda
+     *
+     */
     public void pushOrder(Comanda comanda) throws JMSException { //gestire exception
 
         message.clearProperties();
         message.clearBody();
-        
+
         message.setStringProperty("type", comanda.getOrderType());
         message.setStringProperty("destination", comanda.getDestination());
         message.setText(comanda.getID().toString());
