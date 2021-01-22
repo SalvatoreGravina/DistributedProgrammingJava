@@ -65,8 +65,7 @@ public class OrderService {
     }
 
     /**
-     * Restituisce tutti i prodotti relativi ad un determinato ordine alla
-     * ricezione di una GET
+     * Crea un ordine tramite una POST
      *
      * @param type 1 ordine takeaway, 2 ordine di sala, 3 ordine a domicilio 
      * @param table id del tavolo
