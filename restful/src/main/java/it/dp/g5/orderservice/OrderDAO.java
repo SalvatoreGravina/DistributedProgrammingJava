@@ -32,9 +32,13 @@ public class OrderDAO {
         takeAwayOrder.setDeliveryTime(new Timestamp(Long.parseLong(deliveryTime)));
         addProducts(pizzaMap, friedMap, takeAwayOrder);
         boolean result = db.addNewTakeAwayOrder(takeAwayOrder);
+        boolean result2 = db.addProductsToOrderEsterno(takeAwayOrder);
         updateProductsInformation(takeAwayOrder);
         manager.pushOrder(takeAwayOrder);
-        return takeAwayOrder.getID();
+        if (result && result2) {
+            return takeAwayOrder.getID();
+        }
+        return -1;
     }
 
     public int addDeliveryOrder(String email, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
@@ -69,9 +73,13 @@ public class OrderDAO {
         InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()));
         addProducts(pizzaMap, friedMap, internalOrder);
         boolean result = db.addNewInternalOrder(internalOrder);
+        boolean result2 = db.addProductsToOrderSala(internalOrder);
         updateProductsInformation(internalOrder);
         manager.pushOrder(internalOrder);
-        return internalOrder.getID();
+        if (result && result2) {
+            return internalOrder.getID();
+        }
+        return -1;
     }
 
     private void addProducts(String pizzaMap, String friedMap, Order order) throws IOException {

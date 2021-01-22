@@ -97,7 +97,7 @@ public class Database {
     public boolean addNewInternalOrder(InternalOrder internalOrder) {
 
         try {
-            String query = "INSERT INTO ordinesala (tavolo, coperti, dataCreazione)"
+            String query = "INSERT INTO ordinesala (tavolo, coperti, datacreazione)"
                     + "VALUES (?,?,?) RETURNING id_ordinesala";
             stm = conn.prepareStatement(query);
             stm.setInt(1, internalOrder.getTavolo());
@@ -105,7 +105,7 @@ public class Database {
             stm.setTimestamp(3, internalOrder.getData());
             ResultSet rst = stm.executeQuery();
             while (rst.next()) {
-                internalOrder.setID(rst.getInt("id_ordineesterno"));
+                internalOrder.setID(rst.getInt("id_ordinesala"));
             }
             return true;
         } catch (SQLException ex) {
