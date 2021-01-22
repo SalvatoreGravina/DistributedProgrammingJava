@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.dp.g5.backend;
 
 import it.dp.g5.jms.CompletedOrderQueueConsumer;
@@ -31,7 +26,7 @@ import javax.jms.JMSException;
  */
 @Singleton
 public class OrderManager {
-    
+
     private static final String INTERNAL = "SALA";
     private static final String TAKE_AWAY = "TAKE AWAY";
     private static final String DELIVERY = "DELIVERY";
@@ -41,12 +36,11 @@ public class OrderManager {
     private final CompletedOrderQueueConsumer deliveryConsumer;
     private final OrderQueueProducer serverProducer;
     private static OrderManager instance;
-    
-    
+
     /**
      * Costruttore della classe OrderManager
-     * 
-     * 
+     *
+     *
      */
     private OrderManager() throws JMSException {
 
@@ -63,9 +57,10 @@ public class OrderManager {
         this.serverProducer = new OrderQueueProducer();
 
     }
+
     /**
      * Ottiene l'istanza dell'oggetto
-     * 
+     *
      * @return istanza dell'oggetto
      */
     public static synchronized OrderManager getInstance() {
@@ -80,11 +75,10 @@ public class OrderManager {
         }
         return instance;
     }
-    
-    
+
     /**
      * Invia un ordine sala alla coda ORDER_QUEUE
-     * 
+     *
      * @param order istanza di ordine sala
      */
     public void pushOrder(InternalOrder order) {
@@ -98,10 +92,10 @@ public class OrderManager {
             ex.printStackTrace();
         }
     }
-    
+
     /**
      * Invia un ordine asporto alla coda ORDER_QUEUE
-     * 
+     *
      * @param order istanza di ordine asporto
      */
     public void pushOrder(TakeAwayOrder order) {
@@ -127,10 +121,10 @@ public class OrderManager {
         }
 
     }
-    
+
     /**
      * Invia un ordine domicilio alla coda ORDER_QUEUE
-     * 
+     *
      * @param order istanza di ordine domicilio
      */
     public void pushOrder(DeliveryOrder order) {
@@ -151,11 +145,12 @@ public class OrderManager {
         }
 
     }
-    
+
     /**
      * Richiede la pop da ORDER_QUEUE_COMPLETED
-     * 
-     * @return un array di stringhe contente l'ID ordine, il producer di partenza e il tipo di ordine
+     *
+     * @return un array di stringhe contente l'ID ordine, il producer di
+     * partenza e il tipo di ordine
      */
     public String[] popOrder() {
 
@@ -172,11 +167,10 @@ public class OrderManager {
         }
         return result;
     }
-    
-    
+
     /**
      * Simula la consegna degli ordini takeaway.
-     * 
+     *
      * @param message messaggio JMS in arrivo da ORDER_QUEUE_CONSUMER
      */
     public void takeAwayHandler(String message) {
@@ -190,10 +184,9 @@ public class OrderManager {
 
     }
 
-    
     /**
      * Simula la consegna degli ordini a domicilio
-     * 
+     *
      * @param message messaggio JMS in arrivo da ORDER_QUEUE_CONSUMER
      */
     public void deliveryHandler(String message) {

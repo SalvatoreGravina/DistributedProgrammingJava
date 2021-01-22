@@ -1,6 +1,5 @@
 package it.dp.g5.backend;
 
-
 import it.dp.g5.order.DeliveryOrder;
 import it.dp.g5.order.InternalOrder;
 import it.dp.g5.order.Order;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Singleton;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -28,6 +28,7 @@ import org.json.JSONObject;
  * @author Salvatore Gravina
  * @author Ferdinando Guarino
  */
+@Singleton
 public class Database {
 
     private static final String URLDB = "jdbc:postgresql://localhost/PIZZERIADB";
@@ -35,6 +36,11 @@ public class Database {
     private PreparedStatement stm;
     private static Database instance;
 
+    /**
+     * Ottiene l'istanza dell'oggetto
+     *
+     * @return istanza dell'oggetto
+     */
     public static synchronized Database getInstance() {
         if (instance == null) {
             instance = new Database();
@@ -42,6 +48,9 @@ public class Database {
         return instance;
     }
 
+    /**
+     * Costruttore della classe Database
+     */
     private Database() {
         try {
             conn = DriverManager.getConnection(URLDB, "postgres", "dp");
@@ -50,6 +59,12 @@ public class Database {
         }
     }
 
+    /**
+     * Aggiunge un nuovo ordine asporto al DB
+     *
+     * @param takeAwayOrder ordine asporto
+     * @return boolean sul risultato della query
+     */
     public boolean addNewTakeAwayOrder(TakeAwayOrder takeAwayOrder) {
 
         try {
@@ -70,6 +85,12 @@ public class Database {
         }
     }
 
+    /**
+     * Aggiunge un nuovo ordine domicilio al DB
+     *
+     * @param deliveryOrder ordine domicilio
+     * @return boolean sul risultato della query
+     */
     public boolean addNewDeliveryOrder(DeliveryOrder deliveryOrder) {
 
         try {
@@ -93,6 +114,12 @@ public class Database {
         }
     }
 
+    /**
+     * Aggiunge un nuovo ordine sala al DB
+     *
+     * @param internalOrder ordine sala
+     * @return boolean sul risultato della query
+     */
     public boolean addNewInternalOrder(InternalOrder internalOrder) {
 
         try {
@@ -114,6 +141,12 @@ public class Database {
         }
     }
 
+    /**
+     * Aggiorna lo stato di un tavolo
+     *
+     * @param table identificativo del tavolo
+     * @param state nuovo stato del tavolo
+     */
     public void setTableState(int table, boolean state) {
         try {
             String query = "UPDATE tavolo SET libero=? WHERE id_tavolo = ?";
@@ -126,30 +159,47 @@ public class Database {
         }
     }
 
-    public void updateProductsInfo(Product product) throws SQLException {
-        String query = "SELECT nome FROM prodotto "
-                + "WHERE id_prodotto=?";
-        stm = conn.prepareStatement(query);
+    /**
+     * Aggiunge gli ingredienti allo specifico prodotto
+     *
+     * @param product istanza di un prodotto
+     *
+     */
+    public void updateProductsInfo(Product product) {
+        try {
+            String query = "SELECT nome FROM prodotto "
+                    + "WHERE id_prodotto=?";
+            stm = conn.prepareStatement(query);
 
-        stm.setInt(1, product.getID());
-        ResultSet rst = stm.executeQuery();
-        while (rst.next()) {
-            product.setNome(rst.getString("nome"));
-        }
+            stm.setInt(1, product.getID());
+            ResultSet rst = stm.executeQuery();
+            while (rst.next()) {
+                product.setNome(rst.getString("nome"));
+            }
 
-        query = "SELECT nome FROM ingrediente "
-                + "WHERE id_ingrediente in "
-                + "(SELECT id_ingrediente FROM composizione WHERE id_prodotto=?)";
-        stm = conn.prepareStatement(query);
-        stm.setInt(1, product.getID());
-        rst = stm.executeQuery();
-        List<String> list = new ArrayList<>();
-        while (rst.next()) {
-            list.add(rst.getString("nome"));
+            query = "SELECT nome FROM ingrediente "
+                    + "WHERE id_ingrediente in "
+                    + "(SELECT id_ingrediente FROM composizione WHERE id_prodotto=?)";
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, product.getID());
+            rst = stm.executeQuery();
+            List<String> list = new ArrayList<>();
+            while (rst.next()) {
+                list.add(rst.getString("nome"));
+            }
+            product.setIngredientsList(list);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        product.setIngredientsList(list);
     }
 
+    /**
+     * Recupera tutti gli ordini di uno specifico utente
+     *
+     * @param email di uno specifico utente
+     * @return json con tutti gli ordini (ID, domicilio, nominativo,
+     * dataCreazione, costo)
+     */
     public String getAllOrdersDB(String email) {
         try {
             String query = "SELECT * FROM ordineesterno "
@@ -175,6 +225,14 @@ public class Database {
         }
     }
 
+    /**
+     * Recupera i prodotti relativi ad uno specifico ordine
+     *
+     * @param email dell'utente associato all'ordine
+     * @param orderID identificativo dell'ordine
+     * @return json con i prodotti e le quantità dello specifico ordine (ID,
+     * nome, costo)
+     */
     public String getOrderProducts(String email, int orderID) {
         try {
             String query = "SELECT prodotto.id_prodotto, prodotto.nome, prodotto.costo, contenutoordineesterno.quantita "
@@ -199,6 +257,12 @@ public class Database {
         }
     }
 
+    /**
+     * Aggiunge un nuovo utente al DB
+     *
+     * @param user istanza di un utente
+     * @return boolean sul risultato della query
+     */
     public boolean addNewUser(User user) {
         try {
             String query = "INSERT INTO utente (email,password,indirizzo, cognome, nome, telefono) "
@@ -220,6 +284,18 @@ public class Database {
 
     }
 
+    /**
+     * Aggiunge le informazioni di un utente
+     *
+     * @param oldemail email attuale dell'utente
+     * @param email nuova email dell'utente
+     * @param password nuova password dell'utente
+     * @param address nuovo indirizzo dell'utente
+     * @param name nuovo nome dell'utente
+     * @param surname nuovo cognome dell'utente
+     * @param phone nuovo numero di telefono dell'utente
+     * @return boolean sul risultato della query
+     */
     public boolean updateUser(String oldemail, String email, String password, String address, String name, String surname, String phone) {
         try {
             String query = "UPDATE utente "
@@ -246,6 +322,12 @@ public class Database {
         }
     }
 
+    /**
+     * Rimuove un utente dal DB
+     *
+     * @param email identificativa dell'utente
+     * @return boolean sul risultato della query
+     */
     public boolean deleteUser(String email) {
         try {
             String query = "UPDATE ordineesterno SET email='deleteduser' "
@@ -265,6 +347,12 @@ public class Database {
         }
     }
 
+    /**
+     * Recupera la password di un utente
+     *
+     * @param email identificativa dell'utente
+     * @return password dell'utente
+     */
     public String getPassword(String email) {
         try {
             String query = "SELECT password FROM utente "
@@ -282,6 +370,11 @@ public class Database {
         return null;
     }
 
+    /**
+     * Recupera i tavoli liberi
+     *
+     * @return json con i tavoli liberi (ID_tavolo,capienza)
+     */
     public String getFreeTablesDB() {
         try {
             String query = "SELECT id_tavolo, capienza FROM tavolo WHERE libero=true";
@@ -302,6 +395,12 @@ public class Database {
 
     }
 
+    /**
+     *
+     *
+     * @param order
+     * @return
+     */
     public float getBillInternal(InternalOrder order) {
         try {
             String query = "SELECT costo, tavolo FROM ordinesala WHERE id_ordinesala=?";
@@ -320,6 +419,11 @@ public class Database {
         return -1;
     }
 
+    /**
+     *
+     * @param ID
+     * @return
+     */
     public float getBillTakeAway(int ID) {
         try {
             String query = "SELECT costo FROM ordineesterno WHERE id_ordineesterno=?";
@@ -336,6 +440,13 @@ public class Database {
         return -1;
     }
 
+    /**
+     * Recupera le informazioni di uno specifico utente
+     *
+     * @param email identificativa di un utente
+     * @return json con le informazioni dell'utente
+     * (email,passoword,address,name,surname,phone)
+     */
     public String getUserInfoDB(String email) {
         try {
             String query = "SELECT * FROM utente WHERE email=?";
@@ -360,7 +471,13 @@ public class Database {
             return null;
         }
     }
-
+    
+    /**
+     * Recupera le informazioni per il delivery per uno specifico utente
+     * 
+     * @param deliveryOrder istanza di ordine domicilio
+     * @return boolean sul risultato della query
+     */
     public boolean getDeliveryInfo(DeliveryOrder deliveryOrder) {
         try {
             String query = "SELECT indirizzo, telefono, nome FROM utente WHERE email=?";
@@ -378,7 +495,12 @@ public class Database {
             return false;
         }
     }
-
+    
+    /**
+     * Recupera il menù dal DB
+     * 
+     * @return json con il menù (id_prodotto,nome,tipo,costo)
+     */
     public String getMenu() {
         try {
             String query = "SELECT id_prodotto, nome,costo, tipo FROM prodotto";
@@ -399,19 +521,25 @@ public class Database {
             return null;
         }
     }
-
+    
+    /**
+     * Associa dei prodotti ad un ordine takeaway
+     * 
+     * @param order istanza di un generico ordine
+     * @return boolean sul risultato della query
+     */
     public boolean addProductsToOrderEsterno(Order order) {
         try {
             String query = "INSERT INTO contenutoordineesterno VALUES (?, ?, ?)";
             stm = conn.prepareStatement(query);
             for (Map.Entry<Product, Integer> entry : order.getPizzaMap().entrySet()) {
-                stm.setInt(1, order.getID()); //not sure if String or int or long
+                stm.setInt(1, order.getID());
                 stm.setInt(2, entry.getKey().getID());
                 stm.setInt(3, entry.getValue());
                 stm.addBatch();
             }
             for (Map.Entry<Product, Integer> entry : order.getFriedMap().entrySet()) {
-                stm.setInt(1, order.getID()); //not sure if String or int or long
+                stm.setInt(1, order.getID());
                 stm.setInt(2, entry.getKey().getID());
                 stm.setInt(3, entry.getValue());
                 stm.addBatch();
@@ -423,7 +551,13 @@ public class Database {
             return false;
         }
     }
-
+    
+    /**
+     * Associa dei prodotti ad un ordine sala
+     * 
+     * @param order istanza di un generico ordine
+     * @return boolean sul risultato della query
+     */
     public boolean addProductsToOrderSala(Order order) {
         try {
             String query = "INSERT INTO contenutoordinesala VALUES (?, ?, ?)";
@@ -447,7 +581,13 @@ public class Database {
             return false;
         }
     }
-
+    
+    /**
+     * Recupera la mail associata ad un ordine
+     * 
+     * @param orderID identificativo dell'ordine
+     * @return email dell'utente associato all'ordine
+     */
     public String getEmailForPushNotification(int orderID) {
         try {
             String query = "SELECT email FROM ordineesterno WHERE id_ordineesterno=?";
