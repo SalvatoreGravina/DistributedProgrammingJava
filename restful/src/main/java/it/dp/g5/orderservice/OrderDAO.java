@@ -13,20 +13,52 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
 
+
+/**
+ * Classe che permette di definire i metodi CRUD.
+ *
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
+ */
 public class OrderDAO {
 
     private Database db = Database.getInstance();
     private ObjectMapper objectMapper = new ObjectMapper();
     private OrderManager manager = OrderManager.getInstance();
-
+    
+    
+    /**
+     * Restituisce tutti gli ordini relativi ad un determinato utente.
+     *
+     * @param email email dell'utente
+     * @return una stringa contente tutti gli ordini
+     */
     public String getAllOrders(String email) {
         return db.getAllOrdersDB(email);
     }
 
+    /**
+     * Restituisce tutti gli prodotti relativi ad un determinato ordine
+     *
+     * @param orderID ID dell'ordine
+     * @param email email dell'utente
+     * @return true se si riesce ad ottenere tali prodotti
+     */
     public boolean getOrderProducts(int orderID, String email) {
         return false;
     }
 
+    /**
+     * Crea un ordine takeaway
+     *
+     * @param name nome di chi effettua l'ordine
+     * @param pizzaMap mappa contenente le pizze ordinate
+     * @param friedMap mappa contenente i fritti ordinati
+     * @param deliveryTime orario di completamento dell'ordine
+     * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
+     */
     public int addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
         TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, Timestamp.valueOf(LocalDateTime.now()));
         takeAwayOrder.setDeliveryTime(new Timestamp(Long.parseLong(deliveryTime)));
@@ -41,6 +73,15 @@ public class OrderDAO {
         return -1;
     }
 
+    /**
+     * Crea un ordine a domicilio
+     *
+     * @param email email di chi effettua l'ordine
+     * @param pizzaMap mappa contenente le pizze ordinate
+     * @param friedMap mappa contenente i fritti ordinati
+     * @param deliveryTime orario di consegna
+     * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
+     */
     public int addDeliveryOrder(String email, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
 
         DeliveryOrder deliveryOrder = new DeliveryOrder(email, new Timestamp(Long.parseLong(deliveryTime)), Timestamp.valueOf(LocalDateTime.now()));
@@ -69,6 +110,15 @@ public class OrderDAO {
         return -1;
     }
 
+    /**
+     * Crea un ordine di sala
+     *
+     * @param table ID del tavolo
+     * @param sitting numero coperti del tavolo
+     * @param pizzaMap mappa contenente le pizze ordinate
+     * @param friedMap mappa contenente i fritti ordinati
+     * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
+     */
     public int addOrder(int table, int sitting, String pizzaMap, String friedMap) throws IOException {
         InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()));
         addProducts(pizzaMap, friedMap, internalOrder);
@@ -82,6 +132,13 @@ public class OrderDAO {
         return -1;
     }
 
+    /**
+     * Inserisce prodotti in un ordine
+     *
+     * @param pizzaMap mappa contenente le pizze ordinate
+     * @param friedMap mappa contenente i fritti ordinati
+     * @param order ordine in cui inserire i prodotti
+     */
     private void addProducts(String pizzaMap, String friedMap, Order order) throws IOException {
         Map<String, String> pm = objectMapper.readValue(pizzaMap, Map.class);
         pm.entrySet().forEach(entry -> {
@@ -94,6 +151,11 @@ public class OrderDAO {
         });
     }
 
+    /**
+     * Aggiorna informazioni dei prodotti relativi agli ordini
+     *
+     * @param order ordine effettuato
+     */
     private void updateProductsInformation(Order order) {
         Map<Product, Integer> pm = order.getPizzaMap();
         pm.entrySet().forEach(entry -> {
