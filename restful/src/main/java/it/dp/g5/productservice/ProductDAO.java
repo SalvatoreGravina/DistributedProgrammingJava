@@ -1,10 +1,6 @@
-
 package it.dp.g5.productservice;
 
-
 import it.dp.g5.backend.Database;
-import it.dp.g5.order.Product;
-import java.util.List;
 
 /**
  * Classe che permette di definire i metodi CRUD per i prodotti.
@@ -15,6 +11,7 @@ import java.util.List;
  * @author Ferdinando Guarino
  */
 public class ProductDAO {
+
     private Database db = Database.getInstance();
 
     /**
@@ -25,5 +22,5 @@ public class ProductDAO {
     public String getAllProducts() {
         return db.getMenu();
     }
-    
+
 }

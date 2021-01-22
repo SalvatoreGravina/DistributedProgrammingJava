@@ -1,16 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.dp.g5.order;
 
 /**
+ * Classe che rappresenta un oggetto della tipologia fritti
  *
- * @author gruppo 5
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
  */
 public class FriedProduct extends Product {
-
+    
+    /**
+     * Costruttore della classe FriedProduct
+     * 
+     * @param ID identificativo del prodotto
+     */
     public FriedProduct(int ID) {
         super(ID);
     }

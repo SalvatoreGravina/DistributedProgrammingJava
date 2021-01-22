@@ -1,15 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.dp.g5.backend;
 
-/**
- *
- * @author gruppo 5
- *
- */
+
 import it.dp.g5.order.DeliveryOrder;
 import it.dp.g5.order.InternalOrder;
 import it.dp.g5.order.Order;
@@ -29,6 +20,14 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Classe che gestice la comunicazione con il DB
+ *
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
+ */
 public class Database {
 
     private static final String URLDB = "jdbc:postgresql://localhost/PIZZERIADB";

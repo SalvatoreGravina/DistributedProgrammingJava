@@ -18,16 +18,20 @@ import it.dp.g5.userservice.LoginUtils;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.inject.Singleton;
 import javax.jms.JMSException;
 
 /**
+ * Classe SINGLETON che gestisce producer e consumer delle code JMS
  *
- * @author gruppo 5
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
  */
+@Singleton
 public class OrderManager {
-
+    
     private static final String INTERNAL = "SALA";
     private static final String TAKE_AWAY = "TAKE AWAY";
     private static final String DELIVERY = "DELIVERY";
@@ -37,7 +41,13 @@ public class OrderManager {
     private final CompletedOrderQueueConsumer deliveryConsumer;
     private final OrderQueueProducer serverProducer;
     private static OrderManager instance;
-
+    
+    
+    /**
+     * Costruttore della classe OrderManager
+     * 
+     * 
+     */
     private OrderManager() throws JMSException {
 
         this.orders = new HashMap<>();
@@ -53,7 +63,11 @@ public class OrderManager {
         this.serverProducer = new OrderQueueProducer();
 
     }
-
+    /**
+     * Ottiene l'istanza dell'oggetto
+     * 
+     * @return istanza dell'oggetto
+     */
     public static synchronized OrderManager getInstance() {
         if (instance == null) {
             try {
@@ -66,7 +80,13 @@ public class OrderManager {
         }
         return instance;
     }
-
+    
+    
+    /**
+     * Invia un ordine sala alla coda ORDER_QUEUE
+     * 
+     * @param order istanza di ordine sala
+     */
     public void pushOrder(InternalOrder order) {
         try {
             int i = serverProducer.pushOrder(order, INTERNAL, 0);
@@ -78,7 +98,12 @@ public class OrderManager {
             ex.printStackTrace();
         }
     }
-
+    
+    /**
+     * Invia un ordine asporto alla coda ORDER_QUEUE
+     * 
+     * @param order istanza di ordine asporto
+     */
     public void pushOrder(TakeAwayOrder order) {
         int i = 0;
         try {
@@ -102,7 +127,12 @@ public class OrderManager {
         }
 
     }
-
+    
+    /**
+     * Invia un ordine domicilio alla coda ORDER_QUEUE
+     * 
+     * @param order istanza di ordine domicilio
+     */
     public void pushOrder(DeliveryOrder order) {
         try {
             long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
@@ -121,7 +151,12 @@ public class OrderManager {
         }
 
     }
-
+    
+    /**
+     * Richiede la pop da ORDER_QUEUE_COMPLETED
+     * 
+     * @return un array di stringhe contente l'ID ordine, il producer di partenza e il tipo di ordine
+     */
     public String[] popOrder() {
 
         String[] result = salaConsumer.popOrder();
@@ -137,7 +172,13 @@ public class OrderManager {
         }
         return result;
     }
-
+    
+    
+    /**
+     * Simula la consegna degli ordini takeaway.
+     * 
+     * @param message messaggio JMS in arrivo da ORDER_QUEUE_CONSUMER
+     */
     public void takeAwayHandler(String message) {
         int ID = Integer.parseInt(message);
         synchronized (orders) {
@@ -149,6 +190,12 @@ public class OrderManager {
 
     }
 
+    
+    /**
+     * Simula la consegna degli ordini a domicilio
+     * 
+     * @param message messaggio JMS in arrivo da ORDER_QUEUE_CONSUMER
+     */
     public void deliveryHandler(String message) {
 
         int ID = Integer.parseInt(message);
