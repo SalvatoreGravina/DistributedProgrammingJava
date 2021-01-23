@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.dp.g5.jms;
 
 import it.dp.g5.order.Comanda;
@@ -25,10 +20,10 @@ public class OrderQueueConsumer {
     private MessageConsumer consumer;
     public static final String SELECTOR_FORNO = "destination='FORNO'";
     public static final String SELECTOR_CUCINA = "destination='CUCINA'";
-    
+
     /**
-     *  Costruttore della classe OrderQueueConsumer
-     * 
+     * Costruttore della classe OrderQueueConsumer
+     *
      * @param selector costante per selezionare gli ordini da ricevere
      *
      */
@@ -37,9 +32,10 @@ public class OrderQueueConsumer {
         this.consumer = configuration.getConsumer();
         configuration.startConnection();
     }
-    
+
     /**
      * Effettua una pop dalla coda JMS ORDER_QUEUE
+     *
      * @return restitusce un'istanza di un oggetto Comanda
      */
     public Comanda popOrder() {
@@ -48,13 +44,13 @@ public class OrderQueueConsumer {
             TextMessage message = (TextMessage) consumer.receive();
             String json = message.getText();
             Map<String, Integer> map = mapper.readValue(json, Map.class);
-            
+
             String orderType = message.getStringProperty("type");
             Integer ID = message.getIntProperty("OrderID");
             String destination = message.getStringProperty("destination");
 
-            Comanda comanda = new Comanda(map,orderType,ID, destination);
-            
+            Comanda comanda = new Comanda(map, orderType, ID, destination);
+
             return comanda;
         } catch (JMSException | IOException ex) {
             ex.printStackTrace();

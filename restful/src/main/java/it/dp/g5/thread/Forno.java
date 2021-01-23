@@ -1,27 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.dp.g5.thread;
 
 import it.dp.g5.jms.CompletedOrderQueueProducer;
 import it.dp.g5.jms.OrderQueueConsumer;
 import it.dp.g5.order.Comanda;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.jms.JMSException;
 
 /**
+ * Thread simulazione Forno
  *
- * @author gruppo 5
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
  */
-public class Forno implements Runnable{
-    
+public class Forno implements Runnable {
+
     private OrderQueueConsumer consumer;
     private CompletedOrderQueueProducer producer;
-        
-    public Forno(){
+
+    public Forno() {
         try {
             this.consumer = new OrderQueueConsumer(OrderQueueConsumer.SELECTOR_FORNO);
             this.producer = new CompletedOrderQueueProducer();
@@ -29,6 +26,7 @@ public class Forno implements Runnable{
             ex.printStackTrace();
         }
     }
+
     @Override
     public void run() {
         while (true) {
@@ -45,5 +43,4 @@ public class Forno implements Runnable{
         }
     }
 
-    
 }

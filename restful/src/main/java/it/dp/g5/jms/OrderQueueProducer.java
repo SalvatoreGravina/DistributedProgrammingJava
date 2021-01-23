@@ -24,10 +24,10 @@ public class OrderQueueProducer {
     private ProducerConfiguration configuration;
     private TextMessage message;
     ObjectMapper objectMapper = new ObjectMapper();
-    
+
     /**
      * Costruttore di OrderQueueProducer
-     * 
+     *
      */
     public OrderQueueProducer() throws JMSException {
         this.configuration = new ProducerConfiguration(ProducerConfiguration.ORDER_QUEUE);
@@ -36,14 +36,16 @@ public class OrderQueueProducer {
         this.message = configuration.createMessage();
 
     }
-     /**
-      * Invia un messaggio sulla coda JMS ORDER_QUEUE
-      * @param order istanza di Order
-      * @param orderType tipo di ordine (sala, takeaway, domicilio)
-      * @param deliveryDelay ritardo di consegna JMS in millisecondi
-      * @return numero di messaggi inviati
-      * 
-      */
+
+    /**
+     * Invia un messaggio sulla coda JMS ORDER_QUEUE
+     *
+     * @param order istanza di Order
+     * @param orderType tipo di ordine (sala, takeaway, domicilio)
+     * @param deliveryDelay ritardo di consegna JMS in millisecondi
+     * @return numero di messaggi inviati
+     *
+     */
     public int pushOrder(Order order, String orderType, long deliveryDelay) throws JMSException {
         int i = 0;
         if (!order.getPizzaMap().isEmpty()) {
@@ -76,12 +78,12 @@ public class OrderQueueProducer {
         return i;
     }
 
-     /**
-      * Formatta una collection in un JSON
-      * 
-      * @param products Collection da convertire
-      * @return json con la collection
-      */
+    /**
+     * Formatta una collection in un JSON
+     *
+     * @param products Collection da convertire
+     * @return json con la collection
+     */
     public String convertMapToJson(Map<Product, Integer> products) {
 
         String json = null;

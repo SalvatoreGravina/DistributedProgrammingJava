@@ -1,12 +1,12 @@
 package it.dp.g5.thread;
 
-import it.dp.g5.backend.Database;
-import it.dp.g5.backend.OrderManager;
-import javax.jms.JMSException;
-
 /**
+ * Simulatori pizzeria
  *
- * @author gruppo 5
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
  */
 public class G5 {
 
@@ -15,13 +15,10 @@ public class G5 {
      */
     public static void main(String[] args) {
 
-            Thread cucina = new Thread (new Cucina());
-            cucina.start();
-            Thread forno = new Thread (new Forno());
-            forno.start();
-//            Thread ricevitor = new Thread (new Ricevitor());
-//            ricevitor.start();
-
+        Thread cucina = new Thread(new Cucina());
+        cucina.start();
+        Thread forno = new Thread(new Forno());
+        forno.start();
 
     }
 

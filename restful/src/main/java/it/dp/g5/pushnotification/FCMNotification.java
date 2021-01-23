@@ -24,7 +24,8 @@ public class FCMNotification {
     /**
      * Manda una notifica push
      *
-     * @param DeviceIdKey TokenID univoco relativo al dispositivo android di target della notifica
+     * @param DeviceIdKey TokenID univoco relativo al dispositivo android di
+     * target della notifica
      * @param title Titolo della notifica
      * @param text Corpo della notifica
      * @throws java.lang.Exception errore durante l'invio della notifica
@@ -48,7 +49,7 @@ public class FCMNotification {
         JSONObject data = new JSONObject();
         data.put("to", DeviceIdKey.trim());
         JSONObject info = new JSONObject();
-        info.put("title", title); 
+        info.put("title", title);
         info.put("text", text);
         data.put("notification", info);
 

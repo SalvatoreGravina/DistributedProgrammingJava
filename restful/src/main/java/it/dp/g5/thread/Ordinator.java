@@ -18,8 +18,13 @@ import java.util.Random;
 import javax.jms.JMSException;
 
 /**
+ * Classe che gestice la comunicazione con il DB
  *
- * @author gruppo 5
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
+ * @deprecated
  */
 public class Ordinator {
 //

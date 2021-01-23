@@ -17,19 +17,19 @@ public class Product {
     private String name;
     private float cost;
     private List<String> ingredientsList = new ArrayList<>();
-    
+
     /**
      * Costruttore della classe Product
-     * 
+     *
      * @param ID identificativo del prodotto
      */
     public Product(int ID) {
         this.ID = ID;
     }
-    
+
     /**
      * Costruttore della classe Product
-     * 
+     *
      * @param ID identificativo del prodotto
      * @param name nome del prodotto
      * @param cost costo del prodotto
@@ -38,34 +38,34 @@ public class Product {
         this.ID = ID;
         this.cost = cost;
     }
-    
+
     /**
-     * 
-     * 
+     *
+     *
      * @return nome del prodotto
      */
     public String getNome() {
         return name;
     }
-    
+
     /**
-     * 
+     *
      * @param nome nome del prodotto
      */
     public void setNome(String nome) {
         this.name = nome;
     }
-    
+
     /**
-     * 
+     *
      * @return identificativo dell'ordine
      */
     public int getID() {
         return ID;
     }
-    
+
     /**
-     * 
+     *
      * @return collection degli ingredienti
      */
     public List<String> getIngredientsList() {
@@ -73,16 +73,17 @@ public class Product {
     }
 
     /**
-     * 
+     *
      * @param ingredientsList collection degli ingredienti
      */
     public void setIngredientsList(List<String> ingredientsList) {
         this.ingredientsList = ingredientsList;
     }
-    
+
     /**
-     * 
-     * @return fornisce informazioni complete sul prodotto (nome, ingredienti e quantità)
+     *
+     * @return fornisce informazioni complete sul prodotto (nome, ingredienti e
+     * quantità)
      */
     @Override
     public String toString() {

@@ -400,7 +400,9 @@ public class Database {
      *
      * @param order
      * @return
+     * @deprecated
      */
+
     public float getBillInternal(InternalOrder order) {
         try {
             String query = "SELECT costo, tavolo FROM ordinesala WHERE id_ordinesala=?";
@@ -423,6 +425,7 @@ public class Database {
      *
      * @param ID
      * @return
+     * @deprecated
      */
     public float getBillTakeAway(int ID) {
         try {
@@ -471,10 +474,10 @@ public class Database {
             return null;
         }
     }
-    
+
     /**
      * Recupera le informazioni per il delivery per uno specifico utente
-     * 
+     *
      * @param deliveryOrder istanza di ordine domicilio
      * @return boolean sul risultato della query
      */
@@ -495,10 +498,10 @@ public class Database {
             return false;
         }
     }
-    
+
     /**
      * Recupera il menù dal DB
-     * 
+     *
      * @return json con il menù (id_prodotto,nome,tipo,costo)
      */
     public String getMenu() {
@@ -521,10 +524,10 @@ public class Database {
             return null;
         }
     }
-    
+
     /**
      * Associa dei prodotti ad un ordine takeaway
-     * 
+     *
      * @param order istanza di un generico ordine
      * @return boolean sul risultato della query
      */
@@ -551,10 +554,10 @@ public class Database {
             return false;
         }
     }
-    
+
     /**
      * Associa dei prodotti ad un ordine sala
-     * 
+     *
      * @param order istanza di un generico ordine
      * @return boolean sul risultato della query
      */
@@ -581,10 +584,10 @@ public class Database {
             return false;
         }
     }
-    
+
     /**
      * Recupera la mail associata ad un ordine
-     * 
+     *
      * @param orderID identificativo dell'ordine
      * @return email dell'utente associato all'ordine
      */

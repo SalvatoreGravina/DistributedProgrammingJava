@@ -6,8 +6,12 @@ import it.dp.g5.order.Comanda;
 import javax.jms.JMSException;
 
 /**
+ * Thread simulazione cucina
  *
- * @author gruppo 5
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
  */
 public class Cucina implements Runnable {
 

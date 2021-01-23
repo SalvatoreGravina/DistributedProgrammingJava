@@ -8,17 +8,15 @@ package it.dp.g5.order;
  * @author Salvatore Gravina
  * @author Ferdinando Guarino
  */
+public class PizzaProduct extends Product {
 
-public class PizzaProduct extends Product{
-    
     /**
      * Costruttore della classe PizzaProduct
+     *
      * @param ID identificativo del prodotto
      */
     public PizzaProduct(int ID) {
         super(ID);
     }
-    
-    
-    
+
 }

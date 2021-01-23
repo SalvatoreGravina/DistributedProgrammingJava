@@ -14,10 +14,10 @@ public class InternalOrder extends Order {
 
     private int table;
     private int sitting;
-    
+
     /**
      * Costruttore della classe InternalOrder
-     * 
+     *
      * @param table identificativo del tavolo associato all'ordine
      * @param sitting numero di coperti
      * @param date data creazione ordine
@@ -27,39 +27,39 @@ public class InternalOrder extends Order {
         this.table = table;
         this.sitting = sitting;
     }
-    
+
     /**
      * Costruttore della classe InternalOrder
      */
     public InternalOrder() {
     }
-    
+
     /**
-     * 
+     *
      * @param table identificativo del tavolo associato all'ordine
      */
     public void setTable(int table) {
         this.table = table;
     }
-    
+
     /**
-     * 
+     *
      * @param sitting numero di coperti
      */
     public void setSitting(int sitting) {
         this.sitting = sitting;
     }
-    
+
     /**
-     * 
+     *
      * @return identificativo del tavolo associato all'ordine
      */
     public int getTavolo() {
         return table;
     }
-    
+
     /**
-     * 
+     *
      * @return numero di coperti
      */
     public int getCoperti() {

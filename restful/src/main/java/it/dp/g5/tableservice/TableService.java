@@ -1,12 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.dp.g5.tableservice;
 
-import it.dp.g5.order.Product;
-import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,7 +13,6 @@ import javax.ws.rs.core.MediaType;
  * @author Salvatore Gravina
  * @author Ferdinando Guarino
  */
-
 /**
  * path relativo ai servizi offerti per il tavolo
  */
@@ -33,8 +25,7 @@ public class TableService {
     private static final String FAILURE_RESULT = "<result>failure</result>";
 
     /**
-     * Restituisce tutti i tavoli disponibili alla
-     * ricezione di una GET
+     * Restituisce tutti i tavoli disponibili alla ricezione di una GET
      *
      * @return una stringa contente tutti i tavoli liberi
      */

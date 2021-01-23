@@ -13,6 +13,7 @@ import java.util.Map;
 /**
  *
  * @author gruppo 5
+ * @deprecated
  */
 public class CashDesk implements Runnable {
 

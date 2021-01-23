@@ -20,18 +20,19 @@ public class ProducerConfiguration {
     private Connection connection;
     private Session session;
     private Destination destination;
-    
+
     /**
      * Costruttore della classe ProducerConfiguration
+     *
      * @param queue nome della coda da configurare
      */
     public ProducerConfiguration(String queue) {
         this.QUEUE_NAME = queue;
     }
-    
+
     /**
-     * Restituisce un'istanza di un producer 
-     * 
+     * Restituisce un'istanza di un producer
+     *
      * @return istanza di un producer
      *
      */
@@ -44,28 +45,28 @@ public class ProducerConfiguration {
         MessageProducer producer = session.createProducer(destination);
         return producer;
     }
-    
+
     /**
      * Avvia la connessione del producer al broker
-     * 
+     *
      */
     public void startConnection() throws JMSException { //eccezione da gestire
         connection.start();
     }
-    
+
     /**
      * Ferma la connessione del producer al broker
-     * 
+     *
      */
     public void stopConnection() throws JMSException { //eccezione da gestire
         connection.close();
     }
-    
+
     /**
      * Restituisce un'istanza di un messaggio JMS
-     * 
+     *
      * @return istanza di un messaggio di testo JMS
-     * 
+     *
      */
     public TextMessage createMessage() throws JMSException {
         return session.createTextMessage();

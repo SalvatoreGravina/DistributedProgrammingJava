@@ -1,19 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.dp.g5.thread;
 
 import it.dp.g5.backend.OrderManager;
 
 /**
+ * Thread simulazione Cameriere
  *
- * @author gruppo 5
+ * @author Davide Della Monica
+ * @author Vincenzo di Somma
+ * @author Salvatore Gravina
+ * @author Ferdinando Guarino
  */
- public class Waiter implements Runnable{
+public class Waiter implements Runnable {
+
     @Override
-    public void run(){
+    public void run() {
         try {
             OrderManager manager = OrderManager.getInstance();
             while (true) {
@@ -26,4 +26,4 @@ import it.dp.g5.backend.OrderManager;
         }
 
     }
-    }
+}

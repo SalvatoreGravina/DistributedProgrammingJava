@@ -9,10 +9,10 @@ package it.dp.g5.order;
  * @author Ferdinando Guarino
  */
 public class FriedProduct extends Product {
-    
+
     /**
      * Costruttore della classe FriedProduct
-     * 
+     *
      * @param ID identificativo del prodotto
      */
     public FriedProduct(int ID) {

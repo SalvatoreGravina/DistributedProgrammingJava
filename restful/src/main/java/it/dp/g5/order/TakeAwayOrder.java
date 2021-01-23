@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package it.dp.g5.order;
 
 import java.sql.Timestamp;
@@ -17,64 +12,64 @@ import java.sql.Timestamp;
  */
 public class TakeAwayOrder extends Order {
 
-    private String email; //facoltativa
+    private String email;
     private String name;
-    private Timestamp DeliveryTime; //facoltativo
+    private Timestamp DeliveryTime;
 
     /**
-    * Costruttore della classe TakeAwayOrder
-    *
-    * @param name nome di chi ha effettuato l'ordine
-    * @param date data di creazione dell'ordine
-    */
+     * Costruttore della classe TakeAwayOrder
+     *
+     * @param name nome di chi ha effettuato l'ordine
+     * @param date data di creazione dell'ordine
+     */
     public TakeAwayOrder(String name, Timestamp date) {
         super(date);
         this.name = name;
     }
 
     /**
-    * Ottiene l'email dell'utente che effettua l'ordine
-    *
-    * @return la stringa contenente l'email dell'utente
-    */
+     * Ottiene l'email dell'utente che effettua l'ordine
+     *
+     * @return la stringa contenente l'email dell'utente
+     */
     public String getEmail() {
         return email;
     }
 
     /**
-    * Ottiene il nome dell'utente che effettua l'ordine
-    *
-    * @return la stringa contenente il nome dell'utente
-    */
+     * Ottiene il nome dell'utente che effettua l'ordine
+     *
+     * @return la stringa contenente il nome dell'utente
+     */
     public String getName() {
         return name;
     }
 
     /**
-    * Ottiene l'orario di consegna dell'ordine
-    *
-    * @return un timestamp dell'orario di consegna
-    */
+     * Ottiene l'orario di consegna dell'ordine
+     *
+     * @return un timestamp dell'orario di consegna
+     */
     public Timestamp getDeliveryTime() {
         return DeliveryTime;
     }
 
     /**
-    * Imposta l'orario di consegna dell'ordine
-    *
-    * @param DeliveryTime l'orario di consegna da inserire
-    */
+     * Imposta l'orario di consegna dell'ordine
+     *
+     * @param DeliveryTime l'orario di consegna da inserire
+     */
     public void setDeliveryTime(Timestamp DeliveryTime) {
         this.DeliveryTime = DeliveryTime;
     }
 
     /**
-    * Imposta l'email dell'utente che effettua l'ordine
-    *
-    * @param email l'email dell'utente da inserire
-    */
+     * Imposta l'email dell'utente che effettua l'ordine
+     *
+     * @param email l'email dell'utente da inserire
+     */
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
 }

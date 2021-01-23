@@ -5,14 +5,9 @@ import it.dp.g5.backend.*;
 import it.dp.g5.javamail.JavaMailUtils;
 import it.dp.g5.order.*;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.jms.JMSException;
-
 
 /**
  * Classe che permette di definire i metodi CRUD per gli ordini.
@@ -27,8 +22,7 @@ public class OrderDAO {
     private Database db = Database.getInstance();
     private ObjectMapper objectMapper = new ObjectMapper();
     private OrderManager manager = OrderManager.getInstance();
-    
-    
+
     /**
      * Restituisce tutti gli ordini relativi ad un determinato utente.
      *
@@ -159,19 +153,11 @@ public class OrderDAO {
     private void updateProductsInformation(Order order) {
         Map<Product, Integer> pm = order.getPizzaMap();
         pm.entrySet().forEach(entry -> {
-            try {
-                db.updateProductsInfo(entry.getKey());
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            db.updateProductsInfo(entry.getKey());
         });
         Map<Product, Integer> fm = order.getFriedMap();
         fm.entrySet().forEach(entry -> {
-            try {
-                db.updateProductsInfo(entry.getKey());
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+            db.updateProductsInfo(entry.getKey());
         });
 
     }
