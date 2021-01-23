@@ -1,6 +1,8 @@
 package it.dp.g5.userservice;
 
 import it.dp.g5.backend.Database;
+import it.dp.g5.exception.DatabaseException;
+import it.dp.g5.exception.UserException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,13 +37,24 @@ public class LoginUtils {
      * login
      * @return true se il login é effettuato correttamente, altrimenti false.
      */
-    public static boolean login(String email, String password, String token) {
-        if (password.equals(db.getPassword(email))) {
-            loggedMap.put(email, token);
-            return true;
-        } else {
-            return false;
+    public static boolean login(String email, String password, String token) throws UserException {
+
+        try {
+            if (db != null) {
+                if (password.equals(db.getPassword(email))) {
+                    loggedMap.put(email, token);
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                throw new UserException();
+            }
+
+        } catch (DatabaseException ex) {
+            throw new UserException();
         }
+
     }
 
     /**

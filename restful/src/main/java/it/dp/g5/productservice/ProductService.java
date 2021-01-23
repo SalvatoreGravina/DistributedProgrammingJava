@@ -1,5 +1,6 @@
 package it.dp.g5.productservice;
 
+import it.dp.g5.exception.ProductServiceException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -33,7 +34,11 @@ public class ProductService {
     @Path("/products")
     @Produces(MediaType.APPLICATION_JSON)
     public String getProducts() {
-        return productDao.getAllProducts();
+        try {
+            return productDao.getAllProducts();
+        } catch (ProductServiceException ex) {
+            return "error";
+        }
     }
 
 }

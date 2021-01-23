@@ -46,9 +46,10 @@ public class OrderQueueProducer {
      * @param deliveryDelay ritardo di consegna JMS in millisecondi
      * @return numero di messaggi inviati
      * @throws javax.jms.JMSException eccezione JMS
+     * @throws com.fasterxml.jackson.core.JsonProcessingException errore mappatura json
      *
      */
-    public int pushOrder(Order order, String orderType, long deliveryDelay) throws JMSException {
+    public int pushOrder(Order order, String orderType, long deliveryDelay) throws JMSException, JsonProcessingException {
         int i = 0;
         if (!order.getPizzaMap().isEmpty()) {
             message.clearProperties();
@@ -85,16 +86,12 @@ public class OrderQueueProducer {
      *
      * @param products Collection da convertire
      * @return json con la collection
+     * @throws com.fasterxml.jackson.core.JsonProcessingException errore formattazione json
      */
-    public String convertMapToJson(Map<Product, Integer> products) {
+    public String convertMapToJson(Map<Product, Integer> products) throws JsonProcessingException {
 
         String json = null;
-        try {
-            json = objectMapper.writeValueAsString(products);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        System.out.println(json);
+        json = objectMapper.writeValueAsString(products);
         return json;
 
     }

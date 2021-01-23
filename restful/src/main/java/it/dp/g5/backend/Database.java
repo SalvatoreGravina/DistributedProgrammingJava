@@ -39,12 +39,14 @@ public class Database {
      * Ottiene l'istanza dell'oggetto
      *
      * @return istanza dell'oggetto
-     * @throws it.dp.g5.exception.DatabaseException se non riesce a collegarsi
-     * al database
      */
-    public static synchronized Database getInstance() throws DatabaseException {
+    public static synchronized Database getInstance() {
         if (instance == null) {
-            instance = new Database();
+            try {
+                instance = new Database();
+            } catch (DatabaseException ex) {
+                return null;
+            }
         }
         return instance;
     }
@@ -64,7 +66,8 @@ public class Database {
      * Aggiunge un nuovo ordine asporto al DB
      *
      * @param takeAwayOrder ordine asporto
-     * @throws it.dp.g5.exception.DatabaseException errore database durante la creazione dell'ordine
+     * @throws it.dp.g5.exception.DatabaseException errore database durante la
+     * creazione dell'ordine
      */
     public void addNewTakeAwayOrder(TakeAwayOrder takeAwayOrder) throws DatabaseException {
 
@@ -89,7 +92,8 @@ public class Database {
      * Aggiunge un nuovo ordine domicilio al DB
      *
      * @param deliveryOrder ordine domicilio
-     * @throws it.dp.g5.exception.DatabaseException errore del database durante la add di un nuovo deliveryorder
+     * @throws it.dp.g5.exception.DatabaseException errore del database durante
+     * la add di un nuovo deliveryorder
      */
     public void addNewDeliveryOrder(DeliveryOrder deliveryOrder) throws DatabaseException {
 
@@ -116,7 +120,8 @@ public class Database {
      * Aggiunge un nuovo ordine sala al DB
      *
      * @param internalOrder ordine sala
-     * @throws it.dp.g5.exception.DatabaseException errore del database durante la add di un nuovo internalorder
+     * @throws it.dp.g5.exception.DatabaseException errore del database durante
+     * la add di un nuovo internalorder
      */
     public void addNewInternalOrder(InternalOrder internalOrder) throws DatabaseException {
 
@@ -142,7 +147,8 @@ public class Database {
      *
      * @param table identificativo del tavolo
      * @param state nuovo stato del tavolo
-     * @throws it.dp.g5.exception.DatabaseException errore durante l'update nel database
+     * @throws it.dp.g5.exception.DatabaseException errore durante l'update nel
+     * database
      */
     public void setTableState(int table, boolean state) throws DatabaseException {
         try {
@@ -160,7 +166,8 @@ public class Database {
      * Aggiunge gli ingredienti allo specifico prodotto
      *
      * @param product istanza di un prodotto
-     * @throws it.dp.g5.exception.DatabaseException errore durante la add dei prodotti
+     * @throws it.dp.g5.exception.DatabaseException errore durante la add dei
+     * prodotti
      *
      */
     public void updateProductsInfo(Product product) throws DatabaseException {
@@ -197,7 +204,8 @@ public class Database {
      * @param email di uno specifico utente
      * @return json con tutti gli ordini (ID, domicilio, nominativo,
      * dataCreazione, costo)
-     * @throws it.dp.g5.exception.DatabaseException errore durante la get dal database
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get dal
+     * database
      */
     public String getAllOrdersDB(String email) throws DatabaseException {
         try {
@@ -230,7 +238,8 @@ public class Database {
      * @param orderID identificativo dell'ordine
      * @return json con i prodotti e le quantità dello specifico ordine (ID,
      * nome, costo)
-     * @throws it.dp.g5.exception.DatabaseException errore durante la get del database
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get del
+     * database
      */
     public String getOrderProducts(String email, int orderID) throws DatabaseException {
         try {
@@ -259,7 +268,8 @@ public class Database {
      * Aggiunge un nuovo utente al DB
      *
      * @param user istanza di un utente
-     * @throws it.dp.g5.exception.DatabaseException errore del database durante la add di un nuovo user
+     * @throws it.dp.g5.exception.DatabaseException errore del database durante
+     * la add di un nuovo user
      */
     public void addNewUser(User user) throws DatabaseException {
         try {
@@ -290,7 +300,8 @@ public class Database {
      * @param name nuovo nome dell'utente
      * @param surname nuovo cognome dell'utente
      * @param phone nuovo numero di telefono dell'utente
-     * @throws it.dp.g5.exception.DatabaseException errore durante l'update nel database
+     * @throws it.dp.g5.exception.DatabaseException errore durante l'update nel
+     * database
      */
     public void updateUser(String oldemail, String email, String password, String address, String name, String surname, String phone) throws DatabaseException {
         try {
@@ -320,7 +331,8 @@ public class Database {
      * Rimuove un utente dal DB
      *
      * @param email identificativa dell'utente
-     * @throws it.dp.g5.exception.DatabaseException Errore durante la cancellazione dell' user nel database
+     * @throws it.dp.g5.exception.DatabaseException Errore durante la
+     * cancellazione dell' user nel database
      */
     public void deleteUser(String email) throws DatabaseException {
         try {
@@ -368,7 +380,8 @@ public class Database {
      * Recupera i tavoli liberi
      *
      * @return json con i tavoli liberi (ID_tavolo,capienza)
-     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel database
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel
+     * database
      */
     public String getFreeTablesDB() throws DatabaseException {
         try {
@@ -438,7 +451,8 @@ public class Database {
      * @param email identificativa di un utente
      * @return json con le informazioni dell'utente
      * (email,passoword,address,name,surname,phone)
-     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel database
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel
+     * database
      */
     public String getUserInfoDB(String email) throws DatabaseException {
         try {
@@ -490,7 +504,8 @@ public class Database {
      * Recupera il menù dal DB
      *
      * @return json con il menù (id_prodotto,nome,tipo,costo)
-     * @throws it.dp.g5.exception.DatabaseException errore durante la gen nel database
+     * @throws it.dp.g5.exception.DatabaseException errore durante la gen nel
+     * database
      */
     public String getMenu() throws DatabaseException {
         try {
@@ -516,7 +531,8 @@ public class Database {
      * Associa dei prodotti ad un ordine takeaway
      *
      * @param order istanza di un generico ordine
-     * @throws it.dp.g5.exception.DatabaseException errore durante il get dal database
+     * @throws it.dp.g5.exception.DatabaseException errore durante il get dal
+     * database
      */
     public void addProductsToOrderEsterno(Order order) throws DatabaseException {
         try {
@@ -544,7 +560,8 @@ public class Database {
      * Associa dei prodotti ad un ordine sala
      *
      * @param order istanza di un generico ordine
-     * @throws it.dp.g5.exception.DatabaseException errore durante la add nel database
+     * @throws it.dp.g5.exception.DatabaseException errore durante la add nel
+     * database
      */
     public void addProductsToOrderSala(Order order) throws DatabaseException {
         try {
@@ -573,7 +590,8 @@ public class Database {
      *
      * @param orderID identificativo dell'ordine
      * @return email dell'utente associato all'ordine
-     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel database
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel
+     * database
      */
     public String getEmailForPushNotification(int orderID) throws DatabaseException {
         try {

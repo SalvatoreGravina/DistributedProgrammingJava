@@ -1,6 +1,9 @@
 package it.dp.g5.orderservice;
 
+import it.dp.g5.exception.OrderServiceException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -42,7 +45,11 @@ public class OrderService {
     @Path("/orders/{email}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getOrders(@PathParam("email") String email) {
-        return orderDao.getAllOrders(email);
+        try {
+            return orderDao.getAllOrders(email);
+        } catch (OrderServiceException ex) {
+            return "error";
+        }
 
     }
 
@@ -94,21 +101,23 @@ public class OrderService {
             @FormParam("friedMap") String friedMap,
             @FormParam("deliveryTime") String deliveryTime,
             @Context HttpServletResponse servletResponse) throws IOException {
-        int isAdded = -1;
-        switch (type) {
-            case 1:
-                isAdded = orderDao.addOrder(name, pizzaMap, friedMap, deliveryTime);
-                break;
-            case 2:
-                isAdded = orderDao.addOrder(table, sitting, pizzaMap, friedMap);
-                break;
-            case 3:
-                isAdded = orderDao.addDeliveryOrder(email, pizzaMap, friedMap, deliveryTime);
-                break;
-        }
-        if (isAdded >= 0) {
+        try {
+            switch (type) {
+                case 1:
+                    orderDao.addOrder(name, pizzaMap, friedMap, deliveryTime);
+                    break;
+                case 2:
+                    orderDao.addOrder(table, sitting, pizzaMap, friedMap);
+                    break;
+                case 3:
+                    orderDao.addDeliveryOrder(email, pizzaMap, friedMap, deliveryTime);
+                    break;
+            }
+
             return SUCCESS_RESULT;
+
+        } catch (OrderServiceException ex) {
+            return FAILURE_RESULT;
         }
-        return FAILURE_RESULT;
     }
 }

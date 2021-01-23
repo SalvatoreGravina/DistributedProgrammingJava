@@ -1,6 +1,9 @@
 package it.dp.g5.thread;
 
 import it.dp.g5.backend.OrderManager;
+import it.dp.g5.exception.OrderManagerException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Thread simulazione Cameriere
@@ -12,18 +15,26 @@ import it.dp.g5.backend.OrderManager;
  */
 public class Waiter implements Runnable {
 
+    public static final String DASHES = new String(new char[80]).replace("\0", "-");
+
     @Override
     public void run() {
+
         try {
-            OrderManager manager = OrderManager.getInstance();
-            while (true) {
-                Thread.sleep(15000);
-                String[] results = manager.popOrder();
-                System.out.println("Servito ordine per la sala N°" + results[0] + " in arrivo da: " + results[1]);
+            OrderManager manager = null;
+            manager = OrderManager.getInstance();
+            if (manager == null) {
+                System.err.println(DASHES + "\nErrore pop da parte del cameriere\n" + DASHES);
+            } else {
+                while (true) {
+                    Thread.sleep(15000);
+                    String[] results = manager.popOrder();
+                    System.out.println("Servito ordine per la sala N°" + results[0] + " in arrivo da: " + results[1]);
+                }
             }
         } catch (InterruptedException ex) {
-            ex.printStackTrace();
+        } catch (OrderManagerException ex) {
+            System.err.println(DASHES + "\nErrore pop da parte del cameriere\n" + DASHES);
         }
-
     }
 }

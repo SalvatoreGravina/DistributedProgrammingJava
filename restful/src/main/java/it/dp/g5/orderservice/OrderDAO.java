@@ -2,6 +2,10 @@ package it.dp.g5.orderservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.dp.g5.backend.*;
+import it.dp.g5.exception.DatabaseException;
+import it.dp.g5.exception.JavaMailException;
+import it.dp.g5.exception.OrderManagerException;
+import it.dp.g5.exception.OrderServiceException;
 import it.dp.g5.javamail.JavaMailUtils;
 import it.dp.g5.order.*;
 import java.io.IOException;
@@ -19,6 +23,7 @@ import java.util.Map;
  */
 public class OrderDAO {
 
+    public static final String DASHES = new String(new char[80]).replace("\0", "-");
     private Database db = Database.getInstance();
     private ObjectMapper objectMapper = new ObjectMapper();
     private OrderManager manager = OrderManager.getInstance();
@@ -28,9 +33,19 @@ public class OrderDAO {
      *
      * @param email email dell'utente
      * @return una stringa contente tutti gli ordini
+     * @throws it.dp.g5.exception.OrderServiceException eccezione recupero
+     * ordini utente
      */
-    public String getAllOrders(String email) {
-        return db.getAllOrdersDB(email);
+    public String getAllOrders(String email) throws OrderServiceException {
+        try {
+            if (db != null) {
+                return db.getAllOrdersDB(email);
+            } else {
+                throw new OrderServiceException();
+            }
+        } catch (DatabaseException ex) {
+            throw new OrderServiceException();
+        }
     }
 
     /**
@@ -51,21 +66,27 @@ public class OrderDAO {
      * @param pizzaMap mappa contenente le pizze ordinate
      * @param friedMap mappa contenente i fritti ordinati
      * @param deliveryTime orario di completamento dell'ordine
-     * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
-     * @throws java.io.IOException eccezione IO
+     * @throws it.dp.g5.exception.OrderServiceException errore aggiunta ordine
+     * asporto
      */
-    public int addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
-        TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, Timestamp.valueOf(LocalDateTime.now()));
-        takeAwayOrder.setDeliveryTime(new Timestamp(Long.parseLong(deliveryTime)));
-        addProducts(pizzaMap, friedMap, takeAwayOrder);
-        boolean result = db.addNewTakeAwayOrder(takeAwayOrder);
-        boolean result2 = db.addProductsToOrderEsterno(takeAwayOrder);
-        updateProductsInformation(takeAwayOrder);
-        manager.pushOrder(takeAwayOrder);
-        if (result && result2) {
-            return takeAwayOrder.getID();
+    public void addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws OrderServiceException {
+        try {
+            TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, Timestamp.valueOf(LocalDateTime.now()));
+            takeAwayOrder.setDeliveryTime(new Timestamp(Long.parseLong(deliveryTime)));
+            addProducts(pizzaMap, friedMap, takeAwayOrder);
+            if (db != null && manager!=null) {
+                db.addNewTakeAwayOrder(takeAwayOrder);
+                db.addProductsToOrderEsterno(takeAwayOrder);
+                updateProductsInformation(takeAwayOrder);
+                manager.pushOrder(takeAwayOrder);
+                takeAwayOrder.getID();
+            } else {
+                throw new OrderServiceException();
+            }
+        } catch (DatabaseException | OrderManagerException | IOException ex) {
+            throw new OrderServiceException();
         }
-        return -1;
+
     }
 
     /**
@@ -75,35 +96,33 @@ public class OrderDAO {
      * @param pizzaMap mappa contenente le pizze ordinate
      * @param friedMap mappa contenente i fritti ordinati
      * @param deliveryTime orario di consegna
-     * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
-     * @throws java.io.IOException eccezione IO
+     * @throws it.dp.g5.exception.OrderServiceException errore aggiunta ordine
+     * delivery
      */
-    public int addDeliveryOrder(String email, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
-
-        DeliveryOrder deliveryOrder = new DeliveryOrder(email, new Timestamp(Long.parseLong(deliveryTime)), Timestamp.valueOf(LocalDateTime.now()));
-
-        addProducts(pizzaMap, friedMap, deliveryOrder);
-
-        boolean result1 = db.getDeliveryInfo(deliveryOrder);
-
-        boolean result2 = db.addNewDeliveryOrder(deliveryOrder);
-
-        boolean result3 = db.addProductsToOrderEsterno(deliveryOrder);
-
-        updateProductsInformation(deliveryOrder);
-
-        manager.pushOrder(deliveryOrder);
+    public void addDeliveryOrder(String email, String pizzaMap, String friedMap, String deliveryTime) throws OrderServiceException {
 
         try {
-            JavaMailUtils.sendMail(deliveryOrder.getEmail(), deliveryOrder.getName(), deliveryOrder.getID());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            DeliveryOrder deliveryOrder = new DeliveryOrder(email, new Timestamp(Long.parseLong(deliveryTime)), Timestamp.valueOf(LocalDateTime.now()));
+            addProducts(pizzaMap, friedMap, deliveryOrder);
+            if (db != null && manager!=null) {
+                db.getDeliveryInfo(deliveryOrder);
+                db.addNewDeliveryOrder(deliveryOrder);
+                db.addProductsToOrderEsterno(deliveryOrder);
+                updateProductsInformation(deliveryOrder);
+                manager.pushOrder(deliveryOrder);
+
+                try {
+                    JavaMailUtils.sendMail(deliveryOrder.getEmail(), deliveryOrder.getName(), deliveryOrder.getID());
+                } catch (JavaMailException ex) {
+                    System.err.println(DASHES + "\nErrore invio mail all'utente\n" + DASHES);
+                }
+            } else {
+                throw new OrderServiceException();
+            }
+        } catch (IOException | DatabaseException | OrderManagerException ex) {
+            throw new OrderServiceException();
         }
 
-        if (result1 && result2 && result3) {
-            return deliveryOrder.getID();
-        }
-        return -1;
     }
 
     /**
@@ -113,20 +132,26 @@ public class OrderDAO {
      * @param sitting numero coperti del tavolo
      * @param pizzaMap mappa contenente le pizze ordinate
      * @param friedMap mappa contenente i fritti ordinati
-     * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
-     * @throws java.io.IOException eccezione IO
+     * @throws it.dp.g5.exception.OrderServiceException eccezione aggiunta
+     * ordine sala
      */
-    public int addOrder(int table, int sitting, String pizzaMap, String friedMap) throws IOException {
-        InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()));
-        addProducts(pizzaMap, friedMap, internalOrder);
-        boolean result = db.addNewInternalOrder(internalOrder);
-        boolean result2 = db.addProductsToOrderSala(internalOrder);
-        updateProductsInformation(internalOrder);
-        manager.pushOrder(internalOrder);
-        if (result && result2) {
-            return internalOrder.getID();
+    public void addOrder(int table, int sitting, String pizzaMap, String friedMap) throws OrderServiceException {
+        try {
+            InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()));
+            addProducts(pizzaMap, friedMap, internalOrder);
+            if (db != null && manager!=null) {
+                db.addNewInternalOrder(internalOrder);
+                db.addProductsToOrderSala(internalOrder);
+                updateProductsInformation(internalOrder);
+                manager.pushOrder(internalOrder);
+                internalOrder.getID();
+            } else {
+                throw new OrderServiceException();
+            }
+        } catch (IOException | DatabaseException | OrderManagerException ex) {
+            throw new OrderServiceException();
         }
-        return -1;
+
     }
 
     /**
@@ -153,15 +178,24 @@ public class OrderDAO {
      *
      * @param order ordine effettuato
      */
-    private void updateProductsInformation(Order order) {
-        Map<Product, Integer> pm = order.getPizzaMap();
-        pm.entrySet().forEach(entry -> {
-            db.updateProductsInfo(entry.getKey());
-        });
-        Map<Product, Integer> fm = order.getFriedMap();
-        fm.entrySet().forEach(entry -> {
-            db.updateProductsInfo(entry.getKey());
-        });
+    private void updateProductsInformation(Order order) throws OrderServiceException {
+        try {
+            if (db != null) {
+                Map<Product, Integer> pm = order.getPizzaMap();
+                for (Map.Entry<Product, Integer> entry : pm.entrySet()) {
+                    db.updateProductsInfo(entry.getKey());
+                }
+
+                Map<Product, Integer> fm = order.getFriedMap();
+                for (Map.Entry<Product, Integer> entry : fm.entrySet()) {
+                    db.updateProductsInfo(entry.getKey());
+                }
+            }else{
+                throw new OrderServiceException();
+            }
+        } catch (DatabaseException ex) {
+            throw new OrderServiceException();
+        }
 
     }
 }

@@ -27,8 +27,9 @@ public class CompletedOrderQueueProducer {
 
     /**
      * Costruttore della classe CompletedOrderQueueProducer
+     *
      * @throws javax.jms.JMSException errore jms
-     * 
+     *
      */
     public CompletedOrderQueueProducer() throws JMSException {
         this.configuration = new ProducerConfiguration("ORDER_QUEUE_COMPLETED");

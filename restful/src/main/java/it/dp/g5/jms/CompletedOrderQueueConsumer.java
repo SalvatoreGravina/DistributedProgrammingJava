@@ -26,8 +26,8 @@ public class CompletedOrderQueueConsumer {
      *
      * @param selector costante per selezionare gli ordini da ricevere
      * @throws javax.jms.JMSException eccezione JMS
-     * 
-     * 
+     *
+     *
      */
     public CompletedOrderQueueConsumer(String selector) throws JMSException {
         this.configuration = new ConsumerConfiguration("ORDER_QUEUE_COMPLETED", selector);
@@ -46,22 +46,19 @@ public class CompletedOrderQueueConsumer {
     }
 
     /**
-     *Effettua una pop dalla coda JMS ORDER_QUEUE_COMPLETED
-     * 
-     * @return un array di stringhe contente l'ID ordine, il producer di partenza e il tipo di ordine
+     * Effettua una pop dalla coda JMS ORDER_QUEUE_COMPLETED
+     *
+     * @return un array di stringhe contente l'ID ordine, il producer di
+     * partenza e il tipo di ordine
+     * @throws javax.jms.JMSException eccezione JMS durante pop order
      */
-    public String[] popOrder() {
+    public String[] popOrder() throws JMSException {
 
         String[] result = new String[3];
-        try {
-            TextMessage message = (TextMessage) consumer.receive();
-            result[0] = message.getText();
-            result[1] = message.getStringProperty("destination");
-            result[2] = message.getStringProperty("type");
-            return result;
-        } catch (JMSException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+        TextMessage message = (TextMessage) consumer.receive();
+        result[0] = message.getText();
+        result[1] = message.getStringProperty("destination");
+        result[2] = message.getStringProperty("type");
+        return result;
     }
 }

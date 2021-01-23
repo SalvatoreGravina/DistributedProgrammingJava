@@ -39,9 +39,8 @@ public class OrderQueueConsumer {
      *
      * @return restitusce un'istanza di un oggetto Comanda
      */
-    public Comanda popOrder() {
+    public Comanda popOrder() throws JMSException, IOException {
         ObjectMapper mapper = new ObjectMapper();
-        try {
             TextMessage message = (TextMessage) consumer.receive();
             String json = message.getText();
             Map<String, Integer> map = mapper.readValue(json, Map.class);
@@ -53,11 +52,7 @@ public class OrderQueueConsumer {
             Comanda comanda = new Comanda(map, orderType, ID, destination);
 
             return comanda;
-        } catch (JMSException | IOException ex) {
-            ex.printStackTrace();
-            return null;
 
-        }
 
     }
 

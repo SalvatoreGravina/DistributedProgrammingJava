@@ -1,6 +1,9 @@
 package it.dp.g5.tableservice;
 
 import it.dp.g5.backend.Database;
+import it.dp.g5.exception.DatabaseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classe che permette di definire i metodi CRUD per i tavoli.
@@ -11,7 +14,7 @@ import it.dp.g5.backend.Database;
  * @author Ferdinando Guarino
  */
 public class TableDAO {
-
+    
     private Database db = Database.getInstance();
 
     /**
@@ -20,6 +23,15 @@ public class TableDAO {
      * @return una stringa contente tutti i tavoli disponibili
      */
     public String getFreeTables() {
-        return db.getFreeTablesDB();
+        try {
+            if(db!=null){
+                return db.getFreeTablesDB();
+            }
+            else{
+                return null;
+            }
+        } catch (DatabaseException ex) {
+            return null;
+        }
     }
 }

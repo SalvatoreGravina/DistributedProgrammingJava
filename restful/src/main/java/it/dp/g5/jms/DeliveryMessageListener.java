@@ -15,7 +15,8 @@ import javax.jms.TextMessage;
  * @author Ferdinando Guarino
  */
 public class DeliveryMessageListener implements MessageListener {
-
+    
+    public static final String DASHES = new String(new char[80]).replace("\0", "-");
     private OrderManager manager;
 
     /**
@@ -34,11 +35,12 @@ public class DeliveryMessageListener implements MessageListener {
      */
     @Override
     public void onMessage(Message msg) {
+
         try {
             TextMessage message = (TextMessage) msg;
             manager.deliveryHandler(message.getText());
         } catch (JMSException ex) {
-            ex.printStackTrace();
+            manager.deliveryHandler("error");
         }
     }
 

@@ -1,5 +1,6 @@
 package it.dp.g5.javamail;
 
+import it.dp.g5.exception.JavaMailException;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -26,31 +27,35 @@ public class JavaMailUtils {
      * @param recepient mail del destinatario
      * @param name nome del creatore dell'ordine
      * @param orderID ID dell'ordine da mandare via mail
-     * @throws java.lang.Exception errore durante l'invio della mail
+     * @throws it.dp.g5.exception.JavaMailException errore invio mail ad utente
      */
-    public static void sendMail(String recepient, String name, int orderID) throws Exception {
-        System.out.println("Preparing to send email");
-        Properties properties = new Properties();
+    public static void sendMail(String recepient, String name, int orderID) throws JavaMailException {
+        try {
+            System.out.println("Preparing to send email");
+            Properties properties = new Properties();
 
-        properties.put("mail.smtp.auth", "true");
-        properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", "smtp.gmail.com");
-        properties.put("mail.smtp.port", "587");
+            properties.put("mail.smtp.auth", "true");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.host", "smtp.gmail.com");
+            properties.put("mail.smtp.port", "587");
 
-        String myAccountEmail = "PizzeriaDiem@gmail.com";
-        String password = "PizzaDiem2020";
+            String myAccountEmail = "PizzeriaDiem@gmail.com";
+            String password = "PizzaDiem2020";
 
-        Session session = Session.getInstance(properties, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(myAccountEmail, password);
-            }
-        });
+            Session session = Session.getInstance(properties, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(myAccountEmail, password);
+                }
+            });
 
-        Message message = prepareMessage(session, myAccountEmail, recepient, name, orderID);
+            Message message = prepareMessage(session, myAccountEmail, recepient, name, orderID);
 
-        Transport.send(message);
-        System.out.println("Message sent successfully");
+            Transport.send(message);
+            System.out.println("Message sent successfully");
+        } catch (MessagingException ex) {
+            throw new JavaMailException();
+        }
     }
 
     /**

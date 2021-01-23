@@ -81,6 +81,13 @@ function getOrders() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if (xmlHttp.responseText.localeCompare("error")) {
+                document.getElementById("orderList").innerHTML = "errore recupero ordini";
+                document.getElementById("orderList").style.visibility = "visible";
+                setTimeout(() => {
+                    window.location.href = "/restful/home.html";
+                }, 1000);
+            }
             var a = new Date();
             var response = JSON.parse(xmlHttp.responseText);
             var table = "<table><tr><th>IDOrdine</th><th>data</th><th>Importo</th></tr>";
@@ -103,6 +110,13 @@ function getMenu() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if (xmlHttp.responseText.localeCompare("error")) {
+                document.getElementById("result").innerHTML = "errore recupero menu";
+                document.getElementById("result").style.visibility = "visible";
+                setTimeout(() => {
+                    window.location.href = "/restful/index.html";
+                }, 1000);
+            }
             var response = JSON.parse(xmlHttp.responseText);
             var table = "<table><tr><th>tipo</th><th>nome</th><th>costo</th></tr>";
             for (var i = 0; i < response.length; i++) {
@@ -146,6 +160,13 @@ function getInternalMenu() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if (xmlHttp.responseText.localeCompare("error")) {
+                document.getElementById("result").innerHTML = "errore recupero menu";
+                document.getElementById("result").style.visibility = "visible";
+                setTimeout(() => {
+                    window.location.href = "/restful/internalorder.html";
+                }, 1000);
+            }
             var response = JSON.parse(xmlHttp.responseText);
             var table = "<table><tr><th>tipo</th><th>nome</th><th>costo</th></tr>";
             for (var i = 0; i < response.length; i++) {
@@ -309,7 +330,13 @@ function getInfo() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-
+            if (xmlHttp.responseText.localeCompare("error")) {
+                document.getElementById("result").innerHTML = "errore recupero info";
+                document.getElementById("result").style.visibility = "visible";
+                setTimeout(() => {
+                    window.location.href = "/restful/home.html";
+                }, 1000);
+            }
             var response = JSON.parse(xmlHttp.responseText);
             document.getElementById("name").value = response[0].name;
             document.getElementById("surname").value = response[0].surname;

@@ -5,7 +5,10 @@
  */
 package it.dp.g5.userservice;
 
+import it.dp.g5.exception.UserException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -19,7 +22,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-
 /**
  * Classe che mappa le risorse relative agli utenti come risorse web service.
  *
@@ -28,7 +30,6 @@ import javax.ws.rs.core.MediaType;
  * @author Salvatore Gravina
  * @author Ferdinando Guarino
  */
-
 /**
  * path relativo ai servizi offerti per l'utente
  */
@@ -51,7 +52,8 @@ public class UserService {
      * @param phone numero di telefono dell'utente
      * @param token identificativo dell'utente
      * @param servletResponse risposta server
-     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @return una stringa XML che contiene un tag result con il risultato
+     * dell'operazione
      * @throws java.io.IOException eccezione IO
      */
     @POST
@@ -67,15 +69,15 @@ public class UserService {
             @FormParam("phone") String phone,
             @FormParam("token") String token,
             @Context HttpServletResponse servletResponse) throws IOException {
-        boolean isAdded = false;
 
-        isAdded = userDao.addUser(email, password, address, name, surname, phone);
-
-        if (isAdded) {
+        try {
+            userDao.addUser(email, password, address, name, surname, phone);
             LoginUtils.login(email, password, token);
             return SUCCESS_RESULT;
+        } catch (UserException ex) {
+            return FAILURE_RESULT;
         }
-        return FAILURE_RESULT;
+
     }
 
     /**
@@ -85,7 +87,8 @@ public class UserService {
      * @param password password dell'utente
      * @param token identificativo dell'utente
      * @param servletResponse risposta server
-     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @return una stringa XML che contiene un tag result con il risultato
+     * dell'operazione
      * @throws java.io.IOException eccezione IO
      */
     @POST
@@ -97,14 +100,14 @@ public class UserService {
             @FormParam("password") String password,
             @FormParam("token") String token,
             @Context HttpServletResponse servletResponse) throws IOException {
-        boolean isLogged = false;
 
-        isLogged = LoginUtils.login(email, password, token);
-
-        if (isLogged) {
+        try {
+            LoginUtils.login(email, password, token);
             return SUCCESS_RESULT;
+        } catch (UserException ex) {
+            return FAILURE_RESULT;
         }
-        return FAILURE_RESULT;
+
     }
 
     /**
@@ -112,7 +115,8 @@ public class UserService {
      *
      * @param email email dell'utente
      * @param servletResponse risposta server
-     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @return una stringa XML che contiene un tag result con il risultato
+     * dell'operazione
      * @throws java.io.IOException eccezione IO
      */
     @POST
@@ -122,11 +126,8 @@ public class UserService {
     public String logoutUser(
             @FormParam("email") String email,
             @Context HttpServletResponse servletResponse) throws IOException {
-        boolean isLoggedOut = false;
 
-        isLoggedOut = LoginUtils.logout(email);
-
-        if (isLoggedOut) {
+        if (LoginUtils.logout(email)) {
             return SUCCESS_RESULT;
         }
         return FAILURE_RESULT;
@@ -143,7 +144,8 @@ public class UserService {
      * @param surname possibile nuovo cognome dell'utente
      * @param phone possibile nuovo numero di telefono dell'utente
      * @param servletResponse risposta server
-     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @return una stringa XML che contiene un tag result con il risultato
+     * dell'operazione
      * @throws java.io.IOException eccezione IO
      */
     @PUT
@@ -159,33 +161,38 @@ public class UserService {
             @FormParam("surname") String surname,
             @FormParam("phone") String phone,
             @Context HttpServletResponse servletResponse) throws IOException {
-        boolean isAdded = false;
 
-        isAdded = userDao.modifyUser(oldemail, email, password, address, name, surname, phone);
+        try {
+            userDao.modifyUser(oldemail, email, password, address, name, surname, phone);
 
-        if (isAdded) {
             return SUCCESS_RESULT;
+
+        } catch (UserException ex) {
+            return FAILURE_RESULT;
         }
-        return FAILURE_RESULT;
     }
 
-     /**
+    /**
      * Elimina un utente tramite una DELETE
      *
      * @param email email dell'utente da eliminare
-     * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @return una stringa XML che contiene un tag result con il risultato
+     * dell'operazione
      */
     @DELETE
     @Path("/users/{email}")
     @Produces(MediaType.APPLICATION_XML)
     public String deleteUser(@PathParam("email") String email) {
-        if (userDao.deleteUser(email)) {
+        try {
+            userDao.deleteUser(email);
             return SUCCESS_RESULT;
+        } catch (UserException ex) {
+            return FAILURE_RESULT;
         }
-        return FAILURE_RESULT;
+
     }
 
-     /**
+    /**
      * Accede alle informazioni di un utente tramite una GET
      *
      * @param email possibile nuova email dell'utente
@@ -195,6 +202,10 @@ public class UserService {
     @Path("/users/{email}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getUserInfo(@PathParam("email") String email) {
-        return userDao.getUserInfo(email);
+        try {
+            return userDao.getUserInfo(email);
+        } catch (UserException ex) {
+            return "error";
+        }
     }
 }

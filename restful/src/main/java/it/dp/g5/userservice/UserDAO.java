@@ -1,6 +1,8 @@
 package it.dp.g5.userservice;
 
 import it.dp.g5.backend.Database;
+import it.dp.g5.exception.DatabaseException;
+import it.dp.g5.exception.UserException;
 
 /**
  * Classe che permette di definire i metodi CRUD per gli utenti.
@@ -11,8 +13,9 @@ import it.dp.g5.backend.Database;
  * @author Ferdinando Guarino
  */
 public class UserDAO {
+
     private Database db = Database.getInstance();
-    
+
     /**
      * Crea un utente
      *
@@ -22,13 +25,21 @@ public class UserDAO {
      * @param name nome dell'utente
      * @param surname cognome dell'utente
      * @param phone numero di telefono dell'utente
-     * @return true se la creazione è avvenuta con successo
+     * @throws it.dp.g5.exception.UserException eccezione aggiunta utente
      */
-    public boolean addUser(String email, String password, String address, String name, String surname, String phone) {
-        User user = new User(email, password, address, surname, name, phone);
-        return db.addNewUser(user);
+    public void addUser(String email, String password, String address, String name, String surname, String phone) throws UserException {
+        try {
+            User user = new User(email, password, address, surname, name, phone);
+            if (db != null) {
+                db.addNewUser(user);
+            } else {
+                throw new UserException();
+            }
+        } catch (DatabaseException ex) {
+            throw new UserException();
+        }
     }
-    
+
     /**
      * Modifica l'utente
      *
@@ -39,31 +50,56 @@ public class UserDAO {
      * @param name possibile nuovo nome dell'utente
      * @param surname possibile nuovo cognome dell'utente
      * @param phone possibile nuovo numero di telefono dell'utente
-     * @return true se la modifica è avvenuta con successo
+     * @throws it.dp.g5.exception.UserException eccezione modifica dati utente
      */
-    public boolean modifyUser(String oldemail, String email, String password, String address, String name, String surname, String phone) {
-        return db.updateUser(oldemail, email, password, address, name, surname, phone);
+    public void modifyUser(String oldemail, String email, String password, String address, String name, String surname, String phone) throws UserException {
+        try {
+            if (db != null) {
+                db.updateUser(oldemail, email, password, address, name, surname, phone);
+            } else {
+                throw new UserException();
+            }
+        } catch (DatabaseException ex) {
+            throw new UserException();
+        }
     }
-    
+
     /**
      * Elimina un utente
      *
      * @param email email dell'utente
-     * @return true se l'eliminazione è avvenuta con successo
+     * @throws it.dp.g5.exception.UserException eccezione rimozione utente
      */
-    public boolean deleteUser(String email) {
-        return db.deleteUser(email);
+    public void deleteUser(String email) throws UserException {
+        try {
+            if (db != null) {
+                db.deleteUser(email);
+            } else {
+                throw new UserException();
+            }
+        } catch (DatabaseException ex) {
+            throw new UserException();
+        }
     }
-    
+
     /**
      * Accede alle informazioni dell'utente
      *
      * @param email email dell'utente
      * @return stringa contenente le informazioni dell'utente
+     * @throws it.dp.g5.exception.UserException eccezione accesso info utente
      */
-    public String getUserInfo(String email){
-        return db.getUserInfoDB(email);
-        
+    public String getUserInfo(String email) throws UserException {
+        try {
+            if (db != null) {
+                return db.getUserInfoDB(email);
+            } else {
+                throw new UserException();
+            }
+        } catch (DatabaseException ex) {
+            throw new UserException();
+        }
+
     }
-    
+
 }

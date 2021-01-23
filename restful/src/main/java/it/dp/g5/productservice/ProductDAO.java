@@ -1,6 +1,8 @@
 package it.dp.g5.productservice;
 
 import it.dp.g5.backend.Database;
+import it.dp.g5.exception.DatabaseException;
+import it.dp.g5.exception.ProductServiceException;
 
 /**
  * Classe che permette di definire i metodi CRUD per i prodotti.
@@ -19,8 +21,17 @@ public class ProductDAO {
      *
      * @return una stringa contente tutti gli ordini
      */
-    public String getAllProducts() {
-        return db.getMenu();
+    public String getAllProducts() throws ProductServiceException {
+        try {
+            if (db != null) {
+                return db.getMenu();
+            } else {
+                throw new ProductServiceException();
+            }
+
+        } catch (DatabaseException ex) {
+            throw new ProductServiceException();
+        }
     }
 
 }

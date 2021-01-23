@@ -38,7 +38,7 @@ public class TakeAwayMessageListener implements MessageListener {
             TextMessage message = (TextMessage) msg;
             manager.takeAwayHandler(message.getText());
         } catch (JMSException ex) {
-            ex.printStackTrace();
+            manager.takeAwayHandler("error");
         }
 
     }
