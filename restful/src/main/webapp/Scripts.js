@@ -86,7 +86,7 @@ function getOrders() {
             for (var i = 0; i < response.length; i++) {
                 console.log(response[i]);
                 table += "<tr>";
-                table += "<td>" + response[i].ID + "</td><td>" + response[i].dataCreazione.substring(0,16) + "</td><td>" + response[i].costo + "</td></tr>";
+                table += "<td>" + response[i].ID + "</td><td>" + response[i].dataCreazione.substring(0, 16) + "</td><td>" + response[i].costo + "</td></tr>";
             }
             table += "</table>";
             document.getElementById("orderList").innerHTML = table;
@@ -156,20 +156,20 @@ function getTables() {
             var label = "Seleziona il tavolo<br/>";
             var select = "<select id=\"tableselect\" name=\"tables\">";
             for (var i = 0; i < response.length; i++) {
-                var option = "<option value=\""+response[i].ID_tavolo+","+response[i].capienza+"\">";
+                var option = "<option value=\"" + response[i].ID_tavolo + "," + response[i].capienza + "\">";
                 option += "tavolo " + response[i].ID_tavolo + " - " + response[i].capienza + " posti";
                 option += "</option>";
                 select += option;
             }
             select += "</select>";
-            document.getElementById("tableDiv").innerHTML = label+select;
+            document.getElementById("tableDiv").innerHTML = label + select;
         }
     };
     xmlHttp.open("GET", "http://localhost:8080/restful/resources/TableService/tables", true);
     xmlHttp.send();
 }
 
-function addInternalOrder(){
+function addInternalOrder() {
     var pizzaMap = new Object();
     var friedMap = new Object();
     var tr = document.getElementsByTagName("tr");
@@ -248,7 +248,6 @@ function addOrder() {
     }
     var dict = new Object();
     var date = Date.parse(document.getElementById("deliveryTime").value);
-    console.log(date.valueOf());
     dict["type"] = 3;
     dict["email"] = getCookie("email");
     dict["pizzaMap"] = JSON.stringify(pizzaMap);
@@ -286,7 +285,6 @@ function addOrder() {
             }
         }
     };
-    console.log(formBody);
     xmlHttp.open("POST", baseUrl + "OrderService/orders", true);
     xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlHttp.send(formBody);
@@ -311,6 +309,7 @@ function getInfo() {
     xmlHttp.open("GET", baseUrl + "UserService/users/" + cookie, true);
     xmlHttp.send();
 }
+
 function modifyUser() {
     var data = document.getElementById("profileform");
     var inputElements = data.getElementsByTagName("input");
@@ -347,6 +346,7 @@ function modifyUser() {
     xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlHttp.send(formBody);
 }
+
 function deleteUser() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
@@ -409,6 +409,63 @@ function addUser() {
     };
 
     xmlHttp.open("POST", baseUrl + "UserService/users", true);
+    xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xmlHttp.send(formBody);
+}
+
+function addTakeAwayOrder() {
+    var pizzaMap = new Object();
+    var friedMap = new Object();
+    var tr = document.getElementsByTagName("tr");
+    for (var i = 1; i < tr.length; i++) {
+        var ID = tr[i].getElementsByClassName("productID")[0].innerHTML;
+        var type = tr[i].getElementsByClassName("productType")[0].innerHTML;
+        var quantity = tr[i].getElementsByClassName("quantity")[0].value;
+        if (type.localeCompare("pizza") === 0 && quantity > 0) {
+            pizzaMap[ID] = quantity;
+        } else if (type.localeCompare("fritto") === 0 && quantity > 0) {
+            friedMap[ID] = quantity;
+        }
+    }
+    var dict = new Object();
+    var date = Date.parse(document.getElementById("deliveryTime").value);
+    var name = document.getElementsById(name).value;
+    dict["type"] = 1;
+    dict["pizzaMap"] = JSON.stringify(pizzaMap);
+    dict["friedMap"] = JSON.stringify(friedMap);
+    dict["deliveryTime"] = date;
+    dict["name"] = name;
+    var formBody = [];
+    for (var property in dict) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(dict[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            var response = xmlHttp.responseXML;
+            var result = response.getElementsByTagName("result")[0].innerHTML;
+            if (result.localeCompare("success") === 0) {
+                document.getElementById("result").innerHTML = "Ordine ricevuto!";
+                document.getElementById("result").style.visibility = "visible";
+
+                setTimeout(() => {
+                    window.location.href = "/restful/takeawayorder.html";
+                }, 1000);
+            } else {
+                document.getElementById("result").innerHTML = "Errore ordine";
+                document.getElementById("result").style.visibility = "visible";
+
+                setTimeout(() => {
+                    window.location.href = "/restful/takeawayorder.html";
+                }, 1000);
+            }
+        }
+    };
+    xmlHttp.open("POST", baseUrl + "OrderService/orders", true);
     xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xmlHttp.send(formBody);
 }
