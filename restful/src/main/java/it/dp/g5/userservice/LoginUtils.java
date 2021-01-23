@@ -36,6 +36,7 @@ public class LoginUtils {
      * @param token token associato al dispositivo android di chi effettua il
      * login
      * @return true se il login é effettuato correttamente, altrimenti false.
+     * @throws it.dp.g5.exception.UserException eccezione controllo password
      */
     public static boolean login(String email, String password, String token) throws UserException {
 

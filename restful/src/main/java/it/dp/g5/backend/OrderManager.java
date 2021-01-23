@@ -66,8 +66,6 @@ public class OrderManager {
      * Ottiene l'istanza dell'oggetto
      *
      * @return istanza dell'oggetto
-     * @throws it.dp.g5.exception.OrderManagerException errore durante l'istanza
-     * di order manager
      */
     public static synchronized OrderManager getInstance() {
         if (instance == null) {

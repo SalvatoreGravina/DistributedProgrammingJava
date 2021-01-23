@@ -38,6 +38,8 @@ public class OrderQueueConsumer {
      * Effettua una pop dalla coda JMS ORDER_QUEUE
      *
      * @return restitusce un'istanza di un oggetto Comanda
+     * @throws javax.jms.JMSException eccezione pop ordine da coda JMS
+     * @throws java.io.IOException eccezione parsing JSON
      */
     public Comanda popOrder() throws JMSException, IOException {
         ObjectMapper mapper = new ObjectMapper();

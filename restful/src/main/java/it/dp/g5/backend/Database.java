@@ -356,7 +356,7 @@ public class Database {
      *
      * @param email identificativa dell'utente
      * @return password dell'utente
-     * @throws it.dp.g5.exception.DatabaseException
+     * @throws it.dp.g5.exception.DatabaseException eccezione recupero password
      */
     public String getPassword(String email) throws DatabaseException {
         String password = null;
@@ -482,7 +482,7 @@ public class Database {
      * Imposta le informazioni per il delivery in uno specifico utente
      *
      * @param deliveryOrder istanza di ordine domicilio
-     * @throws it.dp.g5.exception.DatabaseException
+     * @throws it.dp.g5.exception.DatabaseException eccezione recupero info delivery
      */
     public void getDeliveryInfo(DeliveryOrder deliveryOrder) throws DatabaseException {
         try {

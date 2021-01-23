@@ -20,6 +20,7 @@ public class ProductDAO {
      * Restituisce tutti i prodotti disponibili.
      *
      * @return una stringa contente tutti gli ordini
+     * @throws it.dp.g5.exception.ProductServiceException eccezione recupero menu
      */
     public String getAllProducts() throws ProductServiceException {
         try {
