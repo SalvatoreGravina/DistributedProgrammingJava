@@ -84,9 +84,6 @@ function getOrders() {
             if (xmlHttp.responseText.localeCompare("error")) {
                 document.getElementById("orderList").innerHTML = "errore recupero ordini";
                 document.getElementById("orderList").style.visibility = "visible";
-                setTimeout(() => {
-                    window.location.href = "/restful/home.html";
-                }, 1000);
             }
             var a = new Date();
             var response = JSON.parse(xmlHttp.responseText);
@@ -110,12 +107,10 @@ function getMenu() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-            if (xmlHttp.responseText.localeCompare("error")) {
+            if (xmlHttp.responseText.localeCompare("error") === 0) {
                 document.getElementById("result").innerHTML = "errore recupero menu";
                 document.getElementById("result").style.visibility = "visible";
-                setTimeout(() => {
-                    window.location.href = "/restful/index.html";
-                }, 1000);
+
             }
             var response = JSON.parse(xmlHttp.responseText);
             var table = "<table><tr><th>tipo</th><th>nome</th><th>costo</th></tr>";
@@ -160,12 +155,9 @@ function getInternalMenu() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-            if (xmlHttp.responseText.localeCompare("error")) {
+            if (xmlHttp.responseText.localeCompare("error") === 0) {
                 document.getElementById("result").innerHTML = "errore recupero menu";
                 document.getElementById("result").style.visibility = "visible";
-                setTimeout(() => {
-                    window.location.href = "/restful/internalorder.html";
-                }, 1000);
             }
             var response = JSON.parse(xmlHttp.responseText);
             var table = "<table><tr><th>tipo</th><th>nome</th><th>costo</th></tr>";
@@ -307,7 +299,6 @@ function addOrder() {
             if (result.localeCompare("success") === 0) {
                 document.getElementById("result").innerHTML = "Ordine ricevuto!";
                 document.getElementById("result").style.visibility = "visible";
-
                 setTimeout(() => {
                     window.location.href = "/restful/myorders.html";
                 }, 1000);
@@ -330,12 +321,9 @@ function getInfo() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-            if (xmlHttp.responseText.localeCompare("error")) {
+            if (xmlHttp.responseText.localeCompare("error")===0) {
                 document.getElementById("result").innerHTML = "errore recupero info";
                 document.getElementById("result").style.visibility = "visible";
-                setTimeout(() => {
-                    window.location.href = "/restful/home.html";
-                }, 1000);
             }
             var response = JSON.parse(xmlHttp.responseText);
             document.getElementById("name").value = response[0].name;
