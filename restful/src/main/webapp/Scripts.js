@@ -28,11 +28,12 @@ function redirectRegistration() {
 }
 function redirectProfile() {
     window.location.href = "/restful/profile.html";
-
 }
 function redirectMyOrders() {
     window.location.href = "/restful/myorders.html";
-
+}
+function redirectTakeAwayOrder() {
+    window.location.href = "/restful/takeawayorder.html";
 }
 function redirectNewOrder() {
     window.location.href = "/restful/neworder.html";
@@ -429,7 +430,7 @@ function addTakeAwayOrder() {
     }
     var dict = new Object();
     var date = Date.parse(document.getElementById("deliveryTime").value);
-    var name = document.getElementsById(name).value;
+    var name = document.getElementById("name").value;
     dict["type"] = 1;
     dict["pizzaMap"] = JSON.stringify(pizzaMap);
     dict["friedMap"] = JSON.stringify(friedMap);
@@ -453,14 +454,14 @@ function addTakeAwayOrder() {
                 document.getElementById("result").style.visibility = "visible";
 
                 setTimeout(() => {
-                    window.location.href = "/restful/takeawayorder.html";
+                    window.location.href = "/restful/index.html";
                 }, 1000);
             } else {
                 document.getElementById("result").innerHTML = "Errore ordine";
                 document.getElementById("result").style.visibility = "visible";
 
                 setTimeout(() => {
-                    window.location.href = "/restful/takeawayorder.html";
+                    window.location.href = "/restful/index.html";
                 }, 1000);
             }
         }
