@@ -28,6 +28,7 @@ public class OrderQueueProducer {
     /**
      * Costruttore di OrderQueueProducer
      *
+     * @throws javax.jms.JMSException eccezione JMS
      */
     public OrderQueueProducer() throws JMSException {
         this.configuration = new ProducerConfiguration(ProducerConfiguration.ORDER_QUEUE);
@@ -44,6 +45,7 @@ public class OrderQueueProducer {
      * @param orderType tipo di ordine (sala, takeaway, domicilio)
      * @param deliveryDelay ritardo di consegna JMS in millisecondi
      * @return numero di messaggi inviati
+     * @throws javax.jms.JMSException eccezione JMS
      *
      */
     public int pushOrder(Order order, String orderType, long deliveryDelay) throws JMSException {

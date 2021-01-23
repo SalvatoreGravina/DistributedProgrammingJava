@@ -50,7 +50,9 @@ public class UserService {
      * @param surname cognome dell'utente
      * @param phone numero di telefono dell'utente
      * @param token identificativo dell'utente
+     * @param servletResponse risposta server
      * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @throws java.io.IOException eccezione IO
      */
     @POST
     @Path("/users")
@@ -82,7 +84,9 @@ public class UserService {
      * @param email email dell'utente
      * @param password password dell'utente
      * @param token identificativo dell'utente
+     * @param servletResponse risposta server
      * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @throws java.io.IOException eccezione IO
      */
     @POST
     @Path("/users/login")
@@ -107,7 +111,9 @@ public class UserService {
      * Esegue il logout tramite una POST
      *
      * @param email email dell'utente
+     * @param servletResponse risposta server
      * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @throws java.io.IOException eccezione IO
      */
     @POST
     @Path("/users/logout")
@@ -136,7 +142,9 @@ public class UserService {
      * @param name possibile nuovo nome dell'utente
      * @param surname possibile nuovo cognome dell'utente
      * @param phone possibile nuovo numero di telefono dell'utente
+     * @param servletResponse risposta server
      * @return una stringa XML che contiene un tag result con il risultato dell'operazione
+     * @throws java.io.IOException eccezione IO
      */
     @PUT
     @Path("/users")

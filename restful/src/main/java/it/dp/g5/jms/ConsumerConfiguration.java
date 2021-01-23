@@ -38,6 +38,7 @@ public class ConsumerConfiguration {
      * Restituisce un istanza di un consumer
      *
      * @return istanza di un consumer
+     * @throws javax.jms.JMSException errore jms
      *
      */
     public MessageConsumer getConsumer() throws JMSException {
@@ -55,6 +56,7 @@ public class ConsumerConfiguration {
      * Avvia la connessione del consumer al broker
      *
      *
+     * @throws javax.jms.JMSException errore jms
      */
     public void startConnection() throws JMSException {
         connection.start();
@@ -63,6 +65,7 @@ public class ConsumerConfiguration {
     /**
      * Ferma la connessione del consumer al broker
      *
+     * @throws javax.jms.JMSException eccezione JMS
      */
     public void stopConnection() throws JMSException {
         connection.close();

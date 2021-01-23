@@ -34,6 +34,7 @@ public class ProducerConfiguration {
      * Restituisce un'istanza di un producer
      *
      * @return istanza di un producer
+     * @throws javax.jms.JMSException eccezione JMS
      *
      */
     public MessageProducer getProducer() throws JMSException {
@@ -49,6 +50,7 @@ public class ProducerConfiguration {
     /**
      * Avvia la connessione del producer al broker
      *
+     * @throws javax.jms.JMSException eccezione JMS
      */
     public void startConnection() throws JMSException { //eccezione da gestire
         connection.start();
@@ -57,6 +59,7 @@ public class ProducerConfiguration {
     /**
      * Ferma la connessione del producer al broker
      *
+     * @throws javax.jms.JMSException eccezione JMS
      */
     public void stopConnection() throws JMSException { //eccezione da gestire
         connection.close();
@@ -66,6 +69,7 @@ public class ProducerConfiguration {
      * Restituisce un'istanza di un messaggio JMS
      *
      * @return istanza di un messaggio di testo JMS
+     * @throws javax.jms.JMSException eccezione JMS
      *
      */
     public TextMessage createMessage() throws JMSException {

@@ -25,7 +25,9 @@ public class CompletedOrderQueueConsumer {
      * Costruttore della classe CompletedOrderQueueConsumer
      *
      * @param selector costante per selezionare gli ordini da ricevere
-     *
+     * @throws javax.jms.JMSException eccezione JMS
+     * 
+     * 
      */
     public CompletedOrderQueueConsumer(String selector) throws JMSException {
         this.configuration = new ConsumerConfiguration("ORDER_QUEUE_COMPLETED", selector);
@@ -37,7 +39,7 @@ public class CompletedOrderQueueConsumer {
      * Associa un message listener al Consumer
      *
      * @param listener istanza di un message listener
-     *
+     * @throws javax.jms.JMSException eccezione JMS
      */
     public void setMessageListener(MessageListener listener) throws JMSException {
         consumer.setMessageListener(listener);

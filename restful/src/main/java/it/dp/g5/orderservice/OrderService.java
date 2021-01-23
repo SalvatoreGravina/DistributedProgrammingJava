@@ -75,8 +75,10 @@ public class OrderService {
      * @param pizzaMap mappa contenente le pizze ordinate
      * @param friedMap mappa contente i fritti ordinati
      * @param deliveryTime orario di consegna
+     * @param servletResponse risposta server
      * @return una stringa XML che contiene un tag result con il risultato
      * dell'operazione
+     * @throws java.io.IOException eccezione IO
      */
     @POST
     @Path("/orders")

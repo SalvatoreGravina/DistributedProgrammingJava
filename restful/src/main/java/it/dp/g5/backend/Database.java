@@ -396,13 +396,10 @@ public class Database {
     }
 
     /**
-     *
-     *
-     * @param order
-     * @return
+     * @return float
+     * @param order order
      * @deprecated
      */
-
     public float getBillInternal(InternalOrder order) {
         try {
             String query = "SELECT costo, tavolo FROM ordinesala WHERE id_ordinesala=?";
@@ -422,9 +419,8 @@ public class Database {
     }
 
     /**
-     *
-     * @param ID
-     * @return
+     * @return float
+     * @param ID id
      * @deprecated
      */
     public float getBillTakeAway(int ID) {

@@ -25,6 +25,7 @@ public class OrderQueueConsumer {
      * Costruttore della classe OrderQueueConsumer
      *
      * @param selector costante per selezionare gli ordini da ricevere
+     * @throws javax.jms.JMSException eccezione JMS
      *
      */
     public OrderQueueConsumer(String selector) throws JMSException {

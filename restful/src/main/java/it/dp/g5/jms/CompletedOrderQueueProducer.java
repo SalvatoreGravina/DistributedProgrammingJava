@@ -27,7 +27,8 @@ public class CompletedOrderQueueProducer {
 
     /**
      * Costruttore della classe CompletedOrderQueueProducer
-     *
+     * @throws javax.jms.JMSException errore jms
+     * 
      */
     public CompletedOrderQueueProducer() throws JMSException {
         this.configuration = new ProducerConfiguration("ORDER_QUEUE_COMPLETED");
@@ -41,6 +42,7 @@ public class CompletedOrderQueueProducer {
      * Inserisce una comanda sulla coda ORDER_QUEUE_COMPLETED
      *
      * @param comanda istanza di una comanda
+     * @throws javax.jms.JMSException errore jms
      *
      */
     public void pushOrder(Comanda comanda) throws JMSException { //gestire exception

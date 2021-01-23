@@ -21,7 +21,7 @@ public class UserDAO {
      * @param address indirizzo dell'utente
      * @param name nome dell'utente
      * @param surname cognome dell'utente
-     * @phone phone numero di telefono dell'utente
+     * @param phone numero di telefono dell'utente
      * @return true se la creazione è avvenuta con successo
      */
     public boolean addUser(String email, String password, String address, String name, String surname, String phone) {
@@ -38,7 +38,7 @@ public class UserDAO {
      * @param address possibile nuovo indirizzo dell'utente
      * @param name possibile nuovo nome dell'utente
      * @param surname possibile nuovo cognome dell'utente
-     * @phone phone possibile nuovo numero di telefono dell'utente
+     * @param phone possibile nuovo numero di telefono dell'utente
      * @return true se la modifica è avvenuta con successo
      */
     public boolean modifyUser(String oldemail, String email, String password, String address, String name, String surname, String phone) {

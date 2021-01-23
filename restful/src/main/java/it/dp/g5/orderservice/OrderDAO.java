@@ -52,6 +52,7 @@ public class OrderDAO {
      * @param friedMap mappa contenente i fritti ordinati
      * @param deliveryTime orario di completamento dell'ordine
      * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
+     * @throws java.io.IOException eccezione IO
      */
     public int addOrder(String name, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
         TakeAwayOrder takeAwayOrder = new TakeAwayOrder(name, Timestamp.valueOf(LocalDateTime.now()));
@@ -75,6 +76,7 @@ public class OrderDAO {
      * @param friedMap mappa contenente i fritti ordinati
      * @param deliveryTime orario di consegna
      * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
+     * @throws java.io.IOException eccezione IO
      */
     public int addDeliveryOrder(String email, String pizzaMap, String friedMap, String deliveryTime) throws IOException {
 
@@ -112,6 +114,7 @@ public class OrderDAO {
      * @param pizzaMap mappa contenente le pizze ordinate
      * @param friedMap mappa contenente i fritti ordinati
      * @return l'ID dell'ordine se avviene con successo, -1 in caso contrario
+     * @throws java.io.IOException eccezione IO
      */
     public int addOrder(int table, int sitting, String pizzaMap, String friedMap) throws IOException {
         InternalOrder internalOrder = new InternalOrder(table, sitting, Timestamp.valueOf(LocalDateTime.now()));
