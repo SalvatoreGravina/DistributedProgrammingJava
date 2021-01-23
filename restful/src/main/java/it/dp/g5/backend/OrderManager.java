@@ -1,5 +1,7 @@
 package it.dp.g5.backend;
 
+import it.dp.g5.exception.OrderManagerException;
+import it.dp.g5.exception.DatabaseException;
 import it.dp.g5.jms.CompletedOrderQueueConsumer;
 import it.dp.g5.jms.DeliveryMessageListener;
 import it.dp.g5.jms.OrderQueueProducer;
@@ -13,6 +15,8 @@ import it.dp.g5.userservice.LoginUtils;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Singleton;
 import javax.jms.JMSException;
 
@@ -62,15 +66,16 @@ public class OrderManager {
      * Ottiene l'istanza dell'oggetto
      *
      * @return istanza dell'oggetto
+     * @throws it.dp.g5.exception.OrderManagerException errore durante l'istanza di order manager
      */
-    public static synchronized OrderManager getInstance() {
+    public static synchronized OrderManager getInstance() throws OrderManagerException {
         if (instance == null) {
             try {
                 instance = new OrderManager();
                 Thread waiter = new Thread(new Waiter());
                 waiter.start();
             } catch (JMSException ex) {
-                ex.printStackTrace();
+                throw new OrderManagerException();
             }
         }
         return instance;
@@ -80,8 +85,9 @@ public class OrderManager {
      * Invia un ordine sala alla coda ORDER_QUEUE
      *
      * @param order istanza di ordine sala
+     * @throws it.dp.g5.exception.OrderManagerException errore durante l'aggiunta dell'ordine interno
      */
-    public void pushOrder(InternalOrder order) {
+    public void pushOrder(InternalOrder order) throws OrderManagerException {
         try {
             int i = serverProducer.pushOrder(order, INTERNAL, 0);
             //System.out.println("Ordine registrato: " + order.getID());
@@ -89,7 +95,7 @@ public class OrderManager {
                 orders.put(order.getID(), i);
             }
         } catch (JMSException ex) {
-            ex.printStackTrace();
+            throw new OrderManagerException();
         }
     }
 
@@ -97,8 +103,9 @@ public class OrderManager {
      * Invia un ordine asporto alla coda ORDER_QUEUE
      *
      * @param order istanza di ordine asporto
+     * @throws it.dp.g5.exception.OrderManagerException errore durante l'aggiunta dell'ordine take away
      */
-    public void pushOrder(TakeAwayOrder order) {
+    public void pushOrder(TakeAwayOrder order) throws OrderManagerException {
         int i = 0;
         try {
             long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
@@ -106,13 +113,13 @@ public class OrderManager {
             try {
                 i = serverProducer.pushOrder(order, TAKE_AWAY, deliveryDelay);
             } catch (JMSException ex) {
-                ex.printStackTrace();
+                throw new OrderManagerException();
             }
         } catch (NullPointerException ex) {
             try {
                 i = serverProducer.pushOrder(order, TAKE_AWAY, 0);
             } catch (JMSException ex1) {
-                ex.printStackTrace();
+                throw new OrderManagerException();
             }
         }
         //System.out.println("Ordine registrato: " + order.getID());
@@ -126,8 +133,9 @@ public class OrderManager {
      * Invia un ordine domicilio alla coda ORDER_QUEUE
      *
      * @param order istanza di ordine domicilio
+     * @throws it.dp.g5.exception.OrderManagerException errore durante l'aggiunta di un ordine delivery
      */
-    public void pushOrder(DeliveryOrder order) {
+    public void pushOrder(DeliveryOrder order) throws OrderManagerException {
         try {
             long delay = order.getDeliveryTime().getTime() - Calendar.getInstance().getTimeInMillis() - 15 * 60000;
             long deliveryDelay = delay <= 0 ? 0 : delay;
@@ -141,7 +149,7 @@ public class OrderManager {
                 orders.put(order.getID(), i);
             }
         } catch (JMSException ex) {
-            ex.printStackTrace();
+            throw new OrderManagerException();
         }
 
     }
@@ -151,18 +159,23 @@ public class OrderManager {
      *
      * @return un array di stringhe contente l'ID ordine, il producer di
      * partenza e il tipo di ordine
+     * @throws it.dp.g5.exception.OrderManagerException errore durante la pop di un ordine
      */
-    public String[] popOrder() {
+    public String[] popOrder() throws OrderManagerException {
 
         String[] result = salaConsumer.popOrder();
         int ID = Integer.parseInt(result[0]);
         //System.out.println("Ordine ricevuto per sala: " + ID);
         synchronized (orders) {
             if (orders.put(ID, orders.get(ID) - 1) == 1) {
-                orders.remove(ID);
-                InternalOrder order = new InternalOrder();
-                order.setID(ID);
-                Database.getInstance().getBillInternal(order);
+                try {
+                    orders.remove(ID);
+                    InternalOrder order = new InternalOrder();
+                    order.setID(ID);
+                    Database.getInstance().getBillInternal(order);
+                } catch (DatabaseException ex) {
+                    throw new OrderManagerException();
+                }
             }
         }
         return result;
@@ -200,7 +213,6 @@ public class OrderManager {
                     String email = Database.getInstance().getEmailForPushNotification(ID);
                     FCMNotification.pushFCMNotification(LoginUtils.getUserToken(email), "Pizzeria Diem", "Il tuo ordine n. " + ID + " sta arrivando, caccia la birra dal frigo!");
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
             }
         }

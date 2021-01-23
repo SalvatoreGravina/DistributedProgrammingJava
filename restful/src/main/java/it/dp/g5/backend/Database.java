@@ -1,5 +1,6 @@
 package it.dp.g5.backend;
 
+import it.dp.g5.exception.DatabaseException;
 import it.dp.g5.order.DeliveryOrder;
 import it.dp.g5.order.InternalOrder;
 import it.dp.g5.order.Order;
@@ -14,8 +15,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Singleton;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,8 +39,10 @@ public class Database {
      * Ottiene l'istanza dell'oggetto
      *
      * @return istanza dell'oggetto
+     * @throws it.dp.g5.exception.DatabaseException se non riesce a collegarsi
+     * al database
      */
-    public static synchronized Database getInstance() {
+    public static synchronized Database getInstance() throws DatabaseException {
         if (instance == null) {
             instance = new Database();
         }
@@ -51,11 +52,11 @@ public class Database {
     /**
      * Costruttore della classe Database
      */
-    private Database() {
+    private Database() throws DatabaseException {
         try {
             conn = DriverManager.getConnection(URLDB, "postgres", "dp");
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new DatabaseException();
         }
     }
 
@@ -63,9 +64,9 @@ public class Database {
      * Aggiunge un nuovo ordine asporto al DB
      *
      * @param takeAwayOrder ordine asporto
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException errore database durante la creazione dell'ordine
      */
-    public boolean addNewTakeAwayOrder(TakeAwayOrder takeAwayOrder) {
+    public void addNewTakeAwayOrder(TakeAwayOrder takeAwayOrder) throws DatabaseException {
 
         try {
             String query = "INSERT INTO ordineesterno (domicilio, deliverytime, nominativo, dataCreazione)"
@@ -78,10 +79,9 @@ public class Database {
             while (rst.next()) {
                 takeAwayOrder.setID(rst.getInt("id_ordineesterno"));
             }
-            return true;
+
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
     }
 
@@ -89,9 +89,9 @@ public class Database {
      * Aggiunge un nuovo ordine domicilio al DB
      *
      * @param deliveryOrder ordine domicilio
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException errore del database durante la add di un nuovo deliveryorder
      */
-    public boolean addNewDeliveryOrder(DeliveryOrder deliveryOrder) {
+    public void addNewDeliveryOrder(DeliveryOrder deliveryOrder) throws DatabaseException {
 
         try {
             String query = "INSERT INTO ordineesterno (domicilio, deliveryTime, nominativo, email, telefono, indirizzoconsegna, dataCreazione)"
@@ -107,10 +107,8 @@ public class Database {
             while (rst.next()) {
                 deliveryOrder.setID(rst.getInt("id_ordineesterno"));
             }
-            return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
     }
 
@@ -118,9 +116,9 @@ public class Database {
      * Aggiunge un nuovo ordine sala al DB
      *
      * @param internalOrder ordine sala
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException errore del database durante la add di un nuovo internalorder
      */
-    public boolean addNewInternalOrder(InternalOrder internalOrder) {
+    public void addNewInternalOrder(InternalOrder internalOrder) throws DatabaseException {
 
         try {
             String query = "INSERT INTO ordinesala (tavolo, coperti, datacreazione)"
@@ -134,10 +132,8 @@ public class Database {
                 internalOrder.setID(rst.getInt("id_ordinesala"));
             }
             setTableState(internalOrder.getTavolo(), false);
-            return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
     }
 
@@ -146,8 +142,9 @@ public class Database {
      *
      * @param table identificativo del tavolo
      * @param state nuovo stato del tavolo
+     * @throws it.dp.g5.exception.DatabaseException errore durante l'update nel database
      */
-    public void setTableState(int table, boolean state) {
+    public void setTableState(int table, boolean state) throws DatabaseException {
         try {
             String query = "UPDATE tavolo SET libero=? WHERE id_tavolo = ?";
             stm = conn.prepareStatement(query);
@@ -155,7 +152,7 @@ public class Database {
             stm.setInt(2, table);
             stm.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DatabaseException();
         }
     }
 
@@ -163,9 +160,10 @@ public class Database {
      * Aggiunge gli ingredienti allo specifico prodotto
      *
      * @param product istanza di un prodotto
+     * @throws it.dp.g5.exception.DatabaseException errore durante la add dei prodotti
      *
      */
-    public void updateProductsInfo(Product product) {
+    public void updateProductsInfo(Product product) throws DatabaseException {
         try {
             String query = "SELECT nome FROM prodotto "
                     + "WHERE id_prodotto=?";
@@ -189,7 +187,7 @@ public class Database {
             }
             product.setIngredientsList(list);
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new DatabaseException();
         }
     }
 
@@ -199,8 +197,9 @@ public class Database {
      * @param email di uno specifico utente
      * @return json con tutti gli ordini (ID, domicilio, nominativo,
      * dataCreazione, costo)
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get dal database
      */
-    public String getAllOrdersDB(String email) {
+    public String getAllOrdersDB(String email) throws DatabaseException {
         try {
             String query = "SELECT * FROM ordineesterno "
                     + "WHERE email=?";
@@ -220,8 +219,7 @@ public class Database {
             }
             return json.toString();
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
+            throw new DatabaseException();
         }
     }
 
@@ -232,8 +230,9 @@ public class Database {
      * @param orderID identificativo dell'ordine
      * @return json con i prodotti e le quantità dello specifico ordine (ID,
      * nome, costo)
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get del database
      */
-    public String getOrderProducts(String email, int orderID) {
+    public String getOrderProducts(String email, int orderID) throws DatabaseException {
         try {
             String query = "SELECT prodotto.id_prodotto, prodotto.nome, prodotto.costo, contenutoordineesterno.quantita "
                     + "FROM contenutoordineesterno join prodotto ON contenutoordineesterno.id_prodotto=prodotto.id_prodotto "
@@ -252,8 +251,7 @@ public class Database {
             }
             return json.toString();
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
+            throw new DatabaseException();
         }
     }
 
@@ -261,9 +259,9 @@ public class Database {
      * Aggiunge un nuovo utente al DB
      *
      * @param user istanza di un utente
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException errore del database durante la add di un nuovo user
      */
-    public boolean addNewUser(User user) {
+    public void addNewUser(User user) throws DatabaseException {
         try {
             String query = "INSERT INTO utente (email,password,indirizzo, cognome, nome, telefono) "
                     + "VALUES (?,?,?,?,?,?)";
@@ -275,11 +273,9 @@ public class Database {
             stm.setString(5, user.getSurname());
             stm.setString(6, user.getPhone());
             stm.executeUpdate();
-            return true;
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
 
     }
@@ -294,9 +290,9 @@ public class Database {
      * @param name nuovo nome dell'utente
      * @param surname nuovo cognome dell'utente
      * @param phone nuovo numero di telefono dell'utente
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException errore durante l'update nel database
      */
-    public boolean updateUser(String oldemail, String email, String password, String address, String name, String surname, String phone) {
+    public void updateUser(String oldemail, String email, String password, String address, String name, String surname, String phone) throws DatabaseException {
         try {
             String query = "UPDATE utente "
                     + "SET email=?, "
@@ -315,10 +311,8 @@ public class Database {
             stm.setString(6, phone);
             stm.setString(7, oldemail);
             stm.executeUpdate();
-            return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
     }
 
@@ -326,9 +320,9 @@ public class Database {
      * Rimuove un utente dal DB
      *
      * @param email identificativa dell'utente
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException Errore durante la cancellazione dell' user nel database
      */
-    public boolean deleteUser(String email) {
+    public void deleteUser(String email) throws DatabaseException {
         try {
             String query = "UPDATE ordineesterno SET email='deleteduser' "
                     + "WHERE email=?";
@@ -340,10 +334,8 @@ public class Database {
             stm = conn.prepareStatement(query);
             stm.setString(1, email);
             stm.executeUpdate();
-            return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
     }
 
@@ -352,8 +344,10 @@ public class Database {
      *
      * @param email identificativa dell'utente
      * @return password dell'utente
+     * @throws it.dp.g5.exception.DatabaseException
      */
-    public String getPassword(String email) {
+    public String getPassword(String email) throws DatabaseException {
+        String password = null;
         try {
             String query = "SELECT password FROM utente "
                     + "WHERE email=?";
@@ -362,20 +356,21 @@ public class Database {
             ResultSet rst = stm.executeQuery();
 
             while (rst.next()) {
-                return rst.getString("password");
+                password = rst.getString("password");
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new DatabaseException();
         }
-        return null;
+        return password;
     }
 
     /**
      * Recupera i tavoli liberi
      *
      * @return json con i tavoli liberi (ID_tavolo,capienza)
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel database
      */
-    public String getFreeTablesDB() {
+    public String getFreeTablesDB() throws DatabaseException {
         try {
             String query = "SELECT id_tavolo, capienza FROM tavolo WHERE libero=true";
             stm = conn.prepareStatement(query);
@@ -389,18 +384,17 @@ public class Database {
             }
             return json.toString();
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
+            throw new DatabaseException();
         }
-
     }
 
     /**
      * @return float
      * @param order order
+     * @throws it.dp.g5.exception.DatabaseException deprecata
      * @deprecated
      */
-    public float getBillInternal(InternalOrder order) {
+    public float getBillInternal(InternalOrder order) throws DatabaseException {
         try {
             String query = "SELECT costo, tavolo FROM ordinesala WHERE id_ordinesala=?";
             stm = conn.prepareStatement(query);
@@ -412,8 +406,7 @@ public class Database {
                 return rst.getFloat("costo");
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
-
+            throw new DatabaseException();
         }
         return -1;
     }
@@ -421,9 +414,10 @@ public class Database {
     /**
      * @return float
      * @param ID id
+     * @throws it.dp.g5.exception.DatabaseException deprecata
      * @deprecated
      */
-    public float getBillTakeAway(int ID) {
+    public float getBillTakeAway(int ID) throws DatabaseException {
         try {
             String query = "SELECT costo FROM ordineesterno WHERE id_ordineesterno=?";
             stm = conn.prepareStatement(query);
@@ -433,8 +427,7 @@ public class Database {
                 return rst.getFloat("costo");
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
-
+            throw new DatabaseException();
         }
         return -1;
     }
@@ -445,8 +438,9 @@ public class Database {
      * @param email identificativa di un utente
      * @return json con le informazioni dell'utente
      * (email,passoword,address,name,surname,phone)
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel database
      */
-    public String getUserInfoDB(String email) {
+    public String getUserInfoDB(String email) throws DatabaseException {
         try {
             String query = "SELECT * FROM utente WHERE email=?";
             stm = conn.prepareStatement(query);
@@ -466,18 +460,17 @@ public class Database {
             }
             return json.toString();
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
+            throw new DatabaseException();
         }
     }
 
     /**
-     * Recupera le informazioni per il delivery per uno specifico utente
+     * Imposta le informazioni per il delivery in uno specifico utente
      *
      * @param deliveryOrder istanza di ordine domicilio
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException
      */
-    public boolean getDeliveryInfo(DeliveryOrder deliveryOrder) {
+    public void getDeliveryInfo(DeliveryOrder deliveryOrder) throws DatabaseException {
         try {
             String query = "SELECT indirizzo, telefono, nome FROM utente WHERE email=?";
             stm = conn.prepareStatement(query);
@@ -488,10 +481,8 @@ public class Database {
                 deliveryOrder.setDeliveryAddress(rst.getString("indirizzo"));
                 deliveryOrder.setName(rst.getString("nome"));
             }
-            return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
     }
 
@@ -499,8 +490,9 @@ public class Database {
      * Recupera il menù dal DB
      *
      * @return json con il menù (id_prodotto,nome,tipo,costo)
+     * @throws it.dp.g5.exception.DatabaseException errore durante la gen nel database
      */
-    public String getMenu() {
+    public String getMenu() throws DatabaseException {
         try {
             String query = "SELECT id_prodotto, nome,costo, tipo FROM prodotto";
             stm = conn.prepareStatement(query);
@@ -516,8 +508,7 @@ public class Database {
             }
             return json.toString();
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
+            throw new DatabaseException();
         }
     }
 
@@ -525,9 +516,9 @@ public class Database {
      * Associa dei prodotti ad un ordine takeaway
      *
      * @param order istanza di un generico ordine
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException errore durante il get dal database
      */
-    public boolean addProductsToOrderEsterno(Order order) {
+    public void addProductsToOrderEsterno(Order order) throws DatabaseException {
         try {
             String query = "INSERT INTO contenutoordineesterno VALUES (?, ?, ?)";
             stm = conn.prepareStatement(query);
@@ -544,10 +535,8 @@ public class Database {
                 stm.addBatch();
             }
             stm.executeBatch();
-            return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
     }
 
@@ -555,9 +544,9 @@ public class Database {
      * Associa dei prodotti ad un ordine sala
      *
      * @param order istanza di un generico ordine
-     * @return boolean sul risultato della query
+     * @throws it.dp.g5.exception.DatabaseException errore durante la add nel database
      */
-    public boolean addProductsToOrderSala(Order order) {
+    public void addProductsToOrderSala(Order order) throws DatabaseException {
         try {
             String query = "INSERT INTO contenutoordinesala VALUES (?, ?, ?)";
             stm = conn.prepareStatement(query);
@@ -574,10 +563,8 @@ public class Database {
                 stm.addBatch();
             }
             stm.executeBatch();
-            return true;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+            throw new DatabaseException();
         }
     }
 
@@ -586,8 +573,9 @@ public class Database {
      *
      * @param orderID identificativo dell'ordine
      * @return email dell'utente associato all'ordine
+     * @throws it.dp.g5.exception.DatabaseException errore durante la get nel database
      */
-    public String getEmailForPushNotification(int orderID) {
+    public String getEmailForPushNotification(int orderID) throws DatabaseException {
         try {
             String query = "SELECT email FROM ordineesterno WHERE id_ordineesterno=?";
             stm = conn.prepareStatement(query);
@@ -597,7 +585,7 @@ public class Database {
                 return rst.getString("email");
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            throw new DatabaseException();
         }
         return null;
     }
