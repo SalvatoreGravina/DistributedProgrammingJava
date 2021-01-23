@@ -110,7 +110,7 @@ function getMenu() {
                 table += "<td class=\"productID\" hidden>" + response[i].id_prodotto + "</td>";
                 table += "<td class=\"productType\">" + response[i].tipo + "</td>";
                 table += "<td>" + response[i].nome + "</td>";
-                table += "<td>" + response[i].costo + "</td><td><input class=\"quantity\" type=\"number\" value=\"0\" min=\"0\"></td>";
+                table += "<td class=\"costo\">" + response[i].costo + "</td><td><input onchange=\"updateCost()\" class=\"quantity\" type=\"number\" value=\"0\" min=\"0\"></td>";
                 table += "</tr>";
             }
             table += "</table>";
@@ -125,6 +125,21 @@ function getMenu() {
 
     document.getElementById("deliveryTime").min = todayn;
 
+}
+
+function updateCost() {
+    var tot = 0;
+    var tr = document.getElementsByTagName("tr");
+    for (var i = 1; i < tr.length; i++) {
+        var quantity = tr[i].getElementsByClassName("quantity")[0].value;
+        var cost = tr[i].getElementsByClassName("costo")[0].innerHTML;
+        tot = tot + quantity * cost;
+        console.log("quantity: " + quantity);
+        console.log("cost: " + cost);
+    }
+    console.log(tot);
+    document.getElementById("result").innerHTML = tot;
+    document.getElementById("result").style.visibility = "visible";
 }
 
 function getInternalMenu() {
@@ -245,7 +260,6 @@ function addOrder() {
             friedMap[ID] = quantity;
         }
         console.log(ID);
-
     }
     var dict = new Object();
     var date = Date.parse(document.getElementById("deliveryTime").value);
@@ -443,7 +457,7 @@ function addTakeAwayOrder() {
         formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    
+
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
