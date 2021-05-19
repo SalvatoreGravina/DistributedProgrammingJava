@@ -91,7 +91,7 @@ function getOrders() {
             for (var i = 0; i < response.length; i++) {
                 console.log(response[i]);
                 table += "<tr>";
-                table += "<td>" + response[i].ID + "</td><td>" + response[i].dataCreazione.substring(0, 16) + "</td><td>" + response[i].costo + "</td></tr>";
+                table += "<td>" + response[i].ID + "</td><td>" + response[i].dataCreazione.substring(0, 16) + "</td><td>" + response[i].costo + "&euro;</td></tr>";
             }
             table += "</table>";
             document.getElementById("orderList").innerHTML = table;
@@ -113,7 +113,7 @@ function getMenu() {
 
             }
             var response = JSON.parse(xmlHttp.responseText);
-            var table = "<table><tr><th>tipo</th><th>nome</th><th>costo</th></tr>";
+            var table = "<table><tr><th>tipo</th><th>nome</th><th>costo &euro;</th></tr>";
             for (var i = 0; i < response.length; i++) {
                 table += "<tr>";
                 table += "<td class=\"productID\" hidden>" + response[i].id_prodotto + "</td>";
@@ -147,7 +147,7 @@ function updateCost() {
         console.log("cost: " + cost);
     }
     console.log(tot);
-    document.getElementById("result").innerHTML = tot;
+    document.getElementById("result").innerHTML = "totale: " + tot + "&euro;";
     document.getElementById("result").style.visibility = "visible";
 }
 
